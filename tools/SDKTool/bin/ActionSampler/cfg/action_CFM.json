@@ -1,0 +1,81 @@
+{
+    "screenHeight": 720, 
+    "screenWidth": 1280, 
+    "actions": [
+        {
+            "startRectx": 148,
+            "startRecty": 487,
+            "width": 80,
+            "height": 80,
+            "type": 3, 
+            "id": 2,
+            "name": "move left"
+        }, 
+        {
+            "startRectx": 230,
+            "startRecty": 408,
+            "width": 80,
+            "height": 80,
+            "type": 3, 
+            "id": 0,
+            "name": "forward"
+        }, 
+        {
+            "startRectx": 311,
+            "startRecty": 487,
+            "width": 80,
+            "height": 80,
+            "type": 3, 
+            "id": 3,
+            "name": "move right"
+        }, 
+        {
+            "startRectx": 232,
+            "startRecty": 572,
+            "width": 80,
+            "height": 80,
+            "type": 3, 
+            "id": 1,
+            "name": "backward"
+        }, 
+        {
+            "startX": 1048, 
+            "startY": 538, 
+            "startRecty": 220,
+            "endRectHeight": 495,
+            "endY": 538, 
+            "endX": 928, 
+            "startRectx": 1212,
+            "type": 4, 
+            "endRecty": 220,
+            "endRectx": 735,
+            "startRectHeight": 495,
+            "endRectWidth": 22, 
+            "startRectWidth": 20, 
+            "id": 4,
+            "name": "turn left"
+        }, 
+        {
+            "startX": 1060,
+            "startY": 563,
+            "startRecty": 200,
+            "endRectHeight": 495,
+            "endY": 563, 
+            "endX": 1180, 
+            "startRectx": 765,
+            "type": 4, 
+            "endRecty": 220,
+            "endRectx": 1212,
+            "startRectHeight": 495,
+            "endRectWidth": 25,
+            "startRectWidth": 23,
+            "id": 5,
+            "name": "turn right"
+        },
+        { 
+            "type": 0,
+            "id": 6,
+            "name": "none"
+        } 
+    ]
+}

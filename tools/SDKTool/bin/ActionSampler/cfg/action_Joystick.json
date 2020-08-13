@@ -1,0 +1,21 @@
+{
+    "screenHeight": 720,
+    "screenWidth": 1280,
+    "actions": [
+        {
+            "type": 0,
+            "id": 0,
+            "name": "none"
+        },
+        {
+            "id": 1000,
+            "type": 5,
+            "QuantizedNumber": 4,
+            "centerx": 230,
+            "centery": 480,
+            "rangeInner": 35,
+            "rangeOuter": 90,
+            "name" : "joystick"
+        }
+    ]
+}

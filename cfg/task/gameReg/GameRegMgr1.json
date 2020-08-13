@@ -1,0 +1,12 @@
+{
+	"worker":
+	{
+		"count":8
+	},
+	"multiResolution":
+	{
+		"flag":false
+	},
+	"maxResultQueueSize":5
+
+}

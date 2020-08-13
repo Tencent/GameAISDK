@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import logging
+import time
+
+from ActionAPI.ActionAPIMgr import ActionAPIMgr
+
+LOG = logging.getLogger('agent')
+
+ACTION_CONTACT_MAX = 10
+
+# Contact ID
+CONTACT_ID_MOVE = 0  # 移动摇杆使用的contact
+CONTACT_ID_OTHERS = 1  # 其他点击使用的contact
+
+
+class XXXWindow(object):
+    def __init__(self):
+        # 移动摇杆中心点和半径
+        self.movingCenter = None
+        self.movingRange = 90
+
+        self.attackBtn = None
+        self.skillBtn = None
+
+
+class XXXAction(object):
+    def __init__(self, actionWindow):
+        self.__actionMgr = ActionAPIMgr()
+        self.__actionWindow = actionWindow
+
+    def Initialize(self):
+        if not self.__actionMgr.Initialize():
+            LOG.error('ActionAPI initialize failed!')
+            return False
+
+        self.ResetAction()
+        return True
+
+    def Finish(self):
+        self.__actionMgr.Finish()
+
+    def ResetAction(self, frameSeq=-1):
+        for contact in range(ACTION_CONTACT_MAX):
+            self.__actionMgr.Up(contact=contact, frameSeq=frameSeq)
+
+        self.__actionMgr.Reset(frameSeq=frameSeq)
+
+    def MoveInit(self, waitTime=1000, frameSeq=-1):
+        if self.__actionWindow.movingCenter is None:
+            return
+
+        self.__actionMgr.MovingInit(centerX=self.__actionWindow.movingCenter[0],
+                                    centerY=self.__actionWindow.movingCenter[1],
+                                    radius=self.__actionWindow.movingRange,
+                                    contact=CONTACT_ID_MOVE,
+                                    frameSeq=frameSeq,
+                                    waitTime=waitTime)
+        time.sleep(waitTime / 1000)
+
+    def MoveFinish(self, frameSeq=-1):
+        if self.__actionWindow.movingCenter is None:
+            return
+
+        self.__actionMgr.MovingFinish(frameSeq=frameSeq)
+
+    def Move(self, dirAngle, frameSeq=-1):
+        if self.__actionWindow.movingCenter is None:
+            return
+
+        if dirAngle >= 0:
+            dirAngle = dirAngle % 360
+        else:
+            dirAngle = -1
+
+        self.__actionMgr.Moving(dirAngle, frameSeq=frameSeq)
+
+    def DoAttack(self, frameSeq=-1):
+        self.Click(self.__actionWindow.attackBtn, frameSeq=frameSeq)
+
+    def DoSkill(self, frameSeq=-1):
+        self.Click(self.__actionWindow.skillBtn, frameSeq=frameSeq)
+
+    def Click(self, point, frameSeq=-1):
+        if point is None:
+            return
+
+        self.__actionMgr.Click(point[0], point[1], contact=CONTACT_ID_OTHERS, frameSeq=frameSeq)

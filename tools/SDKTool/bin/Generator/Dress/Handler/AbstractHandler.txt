@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import logging
+from abc import ABC, abstractmethod
+
+LOG = logging.getLogger('agent')
+
+
+class AbstractHandler(ABC):
+    """
+    Abstract Handler class, define abstract interface
+    """
+
+    def __init__(self, agentEnv, *args, **kwargs):
+        self.agentEnv = agentEnv
+
+    @abstractmethod
+    def Initialize(self, *args, **kwargs):
+        """
+        Abstract interface, Initialize
+        """
+        ...
+
+    @abstractmethod
+    def Finish(self, *args, **kwargs):
+        """
+        Abstract interface, Finish
+        """
+        ...
+
+    @abstractmethod
+    def Update(self, *args, **kwargs):
+        """
+        Abstract interface, Update
+        """
+        ...

@@ -1,0 +1,1 @@
+SUBDIRS=GameRecognize UI

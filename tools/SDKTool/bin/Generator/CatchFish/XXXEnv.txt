@@ -1,0 +1,215 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import time
+import random
+
+from .XXXAction import XXXAction, Point
+
+from AgentAPI import AgentAPIMgr
+from agentenv.GameEnv import GameEnv
+from util import util
+
+GAMEREG_API_JSON_FILE = util.ConvertToSDKFilePath("cfg/task/gameReg/Task.json")
+GAMEREG_API_REF_FILE = util.ConvertToSDKFilePath("cfg/task/gameReg/Refer.json")
+
+# task setting
+# 选取在对局内的一个图标作为游戏开始的标志，在倍率模式捕鱼场景中，我们可以选择“退出”图标
+TASK_RUN = 1
+# 拾取金币或是钻石
+TASK_COLLECT = 2
+# 炮台升级
+TASK_UPDATE = 3
+# 退出对局
+TASK_EXIT = 4
+
+
+class XXXEnv(GameEnv):
+    def __init__(self):
+        GameEnv.__init__(self)
+        self.frameSeq = -1
+        self.__actionXXX = XXXAction()
+        self.__agentAPI = AgentAPIMgr.AgentAPIMgr()
+        self.__state = dict()
+        self.__start = False
+        self.__over = True
+        self.__exitPt = Point()
+        self.__collectPt = Point()
+        self.__updatePt = Point()
+
+    def Init(self):
+        if not self._InitRegAPI():
+            self.logger.error('Init AgentAPI failed!')
+            return False
+
+        if not self.__actionXXX.Initialize():
+            self.logger.error('Init Action failed!')
+            return False
+
+        return True
+
+    def Finish(self):
+        self.__actionXXX.Finish()
+        self.__agentAPI.Release()
+
+    def GetActionSpace(self):
+        return 0
+
+    def GetState(self):
+        self._RestState()
+        while True:
+            info = self.__agentAPI.GetInfo(AgentAPIMgr.GAME_RESULT_INFO)
+            if info is not None:
+                break
+            else:
+                time.sleep(0.001)
+
+        retDict = info['result']
+
+        self.__state['image'] = info['image']
+
+        self.__state['frameIndex'] = info['frameSeq']
+        self.__state['scene'] = self._GetScene(retDict)
+
+        self.logger.debug('scene is {}'.format(self.__state['scene']))
+        if self.__state['scene'] == 'run':
+            self.__start = True
+            self.__over = False
+
+        if self.__state['scene'] == 'exit':
+            self.__start = False
+            self.__over = True
+            self.logger.debug("over is true")
+
+        return self.__state
+
+    def Reset(self):
+        self.logger.info('Env Reset')
+
+        self.__actionXXX.ResetAction(self.__state['frameIndex'])
+
+    def IsEpisodeStart(self):
+        self.GetState()
+        return self.__start
+
+    def IsEpisodeOver(self):
+        return self.__over
+
+    def DoAction(self, action):
+        if action.get('type') == 'exit':
+            self._DoExit()
+        elif action.get('type') == 'run':
+            self._DoCollect()
+            self._DoUpdate()
+            # 在范围[imgw*0.25, imgw*0.75]中随机选取一个值作为x
+            # 图像高的中心位置作为y
+            # 从 (x, y) 滑动到 (x + 10, y) 作为捕鱼动作
+            image = self.__state['image']
+            width = image.shape[1]
+            height = image.shape[0]
+            x = int(width * 0.25) + int(random.random() * width * 0.5)
+            y = int(height * 0.5)
+            self._DoCatch(x, y)
+
+    # 捕鱼
+    def _DoCatch(self, x, y):
+        if x >= 0 and y >= 0:
+            spt = Point()
+            spt.x = x
+            spt.y = y
+            ept = Point()
+            ept.x = x + 10
+            ept.y = y
+            self.__actionXXX.Swipe(spt, ept, self.__state['frameIndex'])
+        else:
+            self.logger.error("Catch Point({},{}) is invalid".format(x, y))
+
+    # 退出对局
+    def _DoExit(self):
+        if self.__exitPt.IsValid():
+            self.__actionXXX.Click(self.__exitPt, self.__state['frameIndex'])
+            time.sleep(10.0)
+        else:
+            self.logger.debug("exit point({},{}) is invalid".format(self.__exitPt.x, self.__exitPt.y))
+
+    # 拾取金币或钻石等
+    def _DoCollect(self):
+        if self.__collectPt.IsValid():
+            self.__actionXXX.Click(self.__collectPt, self.__state['frameIndex'])
+        else:
+            self.logger.debug("collect point({},{}) is invalid".format(self.__collectPt.x, self.__collectPt.y))
+
+    # 升级炮台
+    def _DoUpdate(self):
+        if self.__updatePt.IsValid():
+            self.__actionXXX.Click(self.__updatePt, self.__state['frameIndex'])
+        else:
+            self.logger.debug("update point({}, {}) is invalid".format(self.__updatePt.x, self.__updatePt.y))
+
+    def _InitRegAPI(self):
+        if not self.__agentAPI.Initialize(confFile=GAMEREG_API_JSON_FILE):
+            self.logger.debug('init task params failed')
+            return False
+
+        if not self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_GROUP_ID, 1):
+            self.logger.error('send message failed')
+            return False
+
+        return True
+
+    def _GetScene(self, retDict):
+        state = 'none'
+        if self._CheckFlag(retDict, TASK_RUN) is True:
+            self.__exitPt.x, self.__exitPt.y = self._GetBtnLoc(retDict, TASK_RUN)
+            self.logger.debug("get exit icon, state is run, point({},{})".format(self.__exitPt.x, self.__exitPt.y))
+            state = 'run'
+
+        if self._CheckFlag(retDict, TASK_COLLECT) is True:
+            self.__collectPt.x, self.__collectPt.y = self._GetBtnLoc(retDict, TASK_COLLECT)
+            state = 'run'
+            self.logger.debug("Collect x {} y {}".format(self.__collectPt.x, self.__collectPt.y))
+
+        if self._CheckFlag(retDict, TASK_UPDATE) is True:
+            self.__updatePt.x, self.__updatePt.y = self._GetBtnLoc(retDict, TASK_UPDATE)
+            state = 'run'
+            self.logger.debug("Update x {} y {}".format(self.__updatePt.x, self.__updatePt.y))
+
+        if self._CheckFlag(retDict, TASK_EXIT) is True:
+            state = 'exit'
+            self.logger.debug("exit state")
+
+        return state
+
+    def _CheckFlag(self, retDict, taskID):
+        flag = False
+
+        results = retDict.get(taskID)
+        if results is None:
+            return flag
+
+        for result in results:
+            if result['flag'] is True:
+                flag = True
+                break
+
+        return flag
+
+    def _GetBtnLoc(self, retDict, taskID):
+        result = retDict.get(taskID)
+
+        if result is None:
+            return -1, -1
+
+        if result[0]['flag'] is False:
+            return -1, -1
+
+        x = result[0]['boxes'][0]['x'] + result[0]['boxes'][0]['w'] // 2
+        y = result[0]['boxes'][0]['y'] + result[0]['boxes'][0]['h'] // 2
+
+        return x, y
+
+    def _RestState(self):
+        self.__exitPt = Point()
+        self.__collectPt = Point()
+        self.__updatePt = Point()
+

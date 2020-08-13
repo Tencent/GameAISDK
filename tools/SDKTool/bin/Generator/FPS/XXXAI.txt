@@ -1,0 +1,788 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import os
+import json
+import cv2
+import time
+import numpy as np
+import sys
+
+sys.path.append('./AgentAI')
+from aimodel.AIModel import AIModel
+
+# 受伤方向的定义
+HURT_DIRECTION = ["HurtDown", "HurtDownLeft", "HurtDownRight",
+                  "HurtUp", "HurtUpLeft", "HurtUpRight",
+                  "HurtLeft", "HurtLeftDown", "HurtLeftUp",
+                  "HurtRight", "HurtRightDown", "HurtRightUp"]
+
+
+class XXXAI(AIModel):
+    def __init__(self):
+        AIModel.__init__(self)
+        self.__screenWidth = 0
+        self.__screenHeight = 0
+        # 定义迷路时对应动作
+        self.missAction = MissAction()
+        # 定义卡住时对应动作
+        self.stuckAction = StuckAction()
+        # 定义受伤时对应的动作
+        self.hurtAction = HurtAction()
+        # 设置AI参数
+        self._SetAIParams()
+        # 不同阵营在当前地图的所有路径
+        self.walkPathFull = None
+        # 地图当前阵营完整移动路径
+        self.walkPathCurrentOri = []
+        # 地图当前阵营剩余移动路径
+        self.walkPathCurrent = []
+
+        self.__lastAction = 'noAction'
+        self.__upFlag = 1
+        self.embedFeatureOld = None
+        self.__aimLoc = [-1, -1]
+
+    # 初始化
+    def Init(self, agentEnv):
+        self.agentEnv = agentEnv
+        self._AIParamsInitial()
+        return True
+
+    def _EnemyParamsInitial(self):
+        # 发现敌人后射击次数
+        self.__shootTimes = 5
+
+    def _TurnParamsInitial(self):
+        self.__turnDirection = 'turnLeft'
+
+    def _AimParamsInitial(self):
+        # 头部比例
+        self.__headRatio = 0.4
+        self.__enemyNearThr = 400
+
+    def _MoveTargetParamsInitial(self):
+        self.__angleTurnThresh = 30
+        self.__minDisWalkInd = 0
+
+    def _HurtParamsInitial(self):
+        self.__hurtTime = time.time()
+        self.__hurtAgainSleepTime = 1
+
+    def _TimeParamsInitial(self):
+        # 检测到游戏开始后休息的时间(s)
+        self.__waitBeginTime = 0.5
+
+        # 执行不同动作对应的休息时间(s)
+        self.__clickSleepTime = 0.1
+        self.__pickupSleepTime = 0.2
+        self.__shootSleepTime = 0.06
+
+        # 游戏开始的时间
+        self.__timeGameStart = 0
+        # 在游戏开始后,一段时间内完成路径设置
+        self.__timeSetCurrentPathWaitTime = 4
+
+        # 跳跃的时间
+        self.__timeJump = 0
+        # 跳跃的时间间隔
+        self.__timeJumpWaitTime = 8
+        # 跳跃的休息时间
+        self.__jumpSleepTime = 0.5
+
+        # 卡住的时间
+        self.__stuckTime = 0
+        # 检测卡住的时间间隔
+        self.__stuckWaitTime = 3
+
+        # 拾取的时间
+        self.__timePickUp = 0
+        # 拾取的时间间隔
+        self.__timePickUpWaitTime = 10
+
+    def _StateInitial(self):
+        self.__playingFlag = 0
+        self.__enemyDetectFlag = 0
+        self.__enemyDetectedTime = 0
+        self.__enemyDetected = []
+        self.__lastBlood = 100
+        self.__stuckFlag = 0
+
+    def _AIParamsInitial(self):
+        # 初始化攻击敌人相关参数
+        self._EnemyParamsInitial()
+        # 初始化转向参数
+        self._TurnParamsInitial()
+        # 初始化瞄准参数
+        self._AimParamsInitial()
+        # 初始化受伤参数
+        self._HurtParamsInitial()
+        # 初始化时间设置
+        self._TimeParamsInitial()
+        # 初始化状态
+        self._StateInitial()
+        # 初始化地图移动参数
+        self._MoveTargetParamsInitial()
+
+    def _SetAIParams(self):
+        # 定义移动和转向的休息时间
+        self.__moveActionDuringTime = 0.15
+        self.__turnActionDuringTime = 0.2
+        self.__turnLargeActionDuringTime = 0.3
+
+        # 定义卡住判断的阈值
+        self.__disStuckThre = 200
+        # 定义到达目标点的阈值
+        self.__disWalkThresh = 12
+        # 是否检测受伤
+        self.__detectHurtFlag = 1
+        return
+
+    def __RunOneStep(self):
+        # 决定做什么动作
+        inputAction = self._DetermineAction()
+        # 执行对应动作
+        self._ExecuteAction(inputAction)
+
+    # 动作决策
+    def _DetermineAction(self):
+        inputAction = 'noAction'
+        # 更新
+        self._Update()
+        if self.frame is None:
+            return inputAction
+
+        self._DetermineResetState()
+
+        # 检测是否在玩游戏
+        playingFlag = self._DeterminePlaying()
+        if playingFlag == 0:
+            self.__playingFlag = 0
+            return inputAction
+
+        if self.__playingFlag == 0:
+            time.sleep(self.__waitBeginTime)
+            self.__timeGameStart = time.time()
+            self.agentEnv.actionCtrl.DoActionInit()
+            self._Update()
+            self.__playingFlag = 1
+
+        # 初始化地图路径
+        if time.time() - self.__timeGameStart < self.__timeSetCurrentPathWaitTime:
+            self.logger.debug('Game is start, init walk path in map.')
+            self._DetermineInitWalkPathFull()
+            self._SetInitWalkPath()
+
+        # 检测敌人
+        self.logger.debug('determine whether has enemy')
+        shootEnemyFlag = self._DetermineShootEnemy()
+        if shootEnemyFlag == 1:
+            self.stuckAction.Reset()
+            self.hurtAction.Reset()
+            inputAction = self._RandJumpUpBack()
+            return inputAction
+
+        # 跳跃
+        if time.time() - self.__timeJump > self.__timeJumpWaitTime:
+            self.__timeJump = time.time()
+            self.logger.debug('agent jump.')
+            self.agentEnv.actionCtrl.DoActionJump(self.frameSeq)
+            time.sleep(self.__jumpSleepTime)
+            self._Update()
+            return inputAction
+
+        # 检测受伤
+        if self.__detectHurtFlag == 1:
+            inputAction = self._DetermineHurt()
+
+        # 检测拾取武器
+        if time.time() - self.__timePickUp > self.__timePickUpWaitTime:
+            self._DeterminePickup()
+
+        if inputAction != 'noAction':
+            self.stuckAction.Reset()
+            return inputAction
+        elif self.hurtAction.hurtFirstActionState != 1:
+            inputAction = self.hurtAction.hurtInputAction
+            self.stuckAction.Reset()
+            return inputAction
+
+        if self.stuckAction.stuckFirstActionState != 1:
+            return 'stuck'
+
+        # 检测是否走完路径
+        if self._DetermineMovePath() == 0:
+            inputAction = 'finishWalk'
+
+        self.logger.debug('__minDisWalkInd is {}'.format(self.__minDisWalkInd))
+
+        # 检测卡住
+        if self.__lastAction != 'finishWalk' or self.currentMapInfo['myLocPoint']['x'] != -1:
+            if time.time() - self.__stuckTime > self.__stuckWaitTime:
+                stuckFlag = self._DetermineStuck()
+                self.__stuckTime = time.time()
+                if stuckFlag == 1:
+                    if self.__minDisWalkInd > 0:
+                        self.walkPathCurrent = self.walkPathCurrentOri[self.__minDisWalkInd - 1:]
+                        self.__minDisWalkInd = self.__minDisWalkInd - 1
+                        self.logger.debug('agent is stuck, reset walkPath to previous path, __minDisWalkInd is {}'
+                                          .format(self.__minDisWalkInd))
+                    return 'stuck'
+
+        if self.agentEnv.group == -1:
+            return 'missing'
+
+        return inputAction
+
+    # 动作执行
+    def _ExecuteAction(self, inputAction):
+        action = 'noAction'
+        if inputAction == 'hurtLeft' or inputAction == 'hurtRight' or \
+                inputAction == 'hurtLeftLarge' or inputAction == 'hurtRightLarge':
+            self.logger.info(inputAction)
+            action = self.hurtAction.ReactToHurt(inputAction)
+            self.agentEnv.actionCtrl.DoAction(action, self.frameSeq, self.__moveActionDuringTime,
+                                              self.__turnActionDuringTime,
+                                              self.__turnLargeActionDuringTime)
+
+        elif inputAction == 'missing':
+            self.logger.debug("missing!")
+            action = self.missAction.ReactToMissing()
+            self.agentEnv.actionCtrl.DoAction(action, self.frameSeq, self.__moveActionDuringTime,
+                                              self.__turnActionDuringTime,
+                                              self.__turnLargeActionDuringTime)
+
+        elif inputAction == 'stuck':
+            self.logger.debug("stuck!")
+            action = self.stuckAction.ReactToStuck()
+            self.agentEnv.actionCtrl.DoAction(action, self.frameSeq, self.__moveActionDuringTime,
+                                              self.__turnActionDuringTime,
+                                              self.__turnLargeActionDuringTime)
+
+        elif inputAction == 'upJump':
+            action = inputAction
+            self.agentEnv.actionCtrl.DoAction(action, self.frameSeq, self.__moveActionDuringTime,
+                                              self.__turnActionDuringTime,
+                                              self.__turnLargeActionDuringTime)
+
+        elif inputAction == 'finishWalk':
+            action = inputAction
+
+        self.__lastAction = action
+
+    def OnEpisodeOver(self):
+        pass
+
+    def TestOneStep(self):
+        self.__RunOneStep()
+
+    # 更新游戏状态
+    def _Update(self):
+        image, frameSeq = self.agentEnv.GetState()
+        self.frame = image
+        self.frameSeq = frameSeq
+        imageHeight = image.shape[0]
+        imageWidth = image.shape[1]
+
+        # 准心位置
+        self.__aimLoc = [int(imageWidth / 2), int(imageHeight / 2)]
+
+    # 按比例缩放位置
+    def _ScaleLocation(self, location, scaleRatioW, scaleRatioH):
+        locationOut = location
+        locationOut[0] = int(location[0] * scaleRatioW)
+        locationOut[1] = int(location[1] * scaleRatioW)
+        locationOut[2] = int(location[2] * scaleRatioH)
+        locationOut[3] = int(location[3] * scaleRatioH)
+        return locationOut
+
+    # 检测到敌人之后如何反应
+    def _ReactToDetectEnemy(self):
+        enemyDetectFlag = 0
+
+        if self.__enemyDetected is None:
+            return enemyDetectFlag
+
+        if len(self.__enemyDetected) == 0:
+            return enemyDetectFlag
+
+        enemyDetectedResult = self.__enemyDetected
+
+        enemySize = [enemyDetectedResult[i][4] * enemyDetectedResult[i][5] for
+                     i in range(len(enemyDetectedResult))]
+
+        enemyDetectFlag = 1
+        enemySizeMax = np.max(enemySize)
+        index = enemySize.index(enemySizeMax)
+        self.logger.debug("Enemy is detected, score is " + str(enemyDetectedResult[index][1]))
+
+        enemySelChoose = enemyDetectedResult[index]
+        enemyCenterLoc = [enemySelChoose[2] + enemySelChoose[4] / 2,
+                          enemySelChoose[3] + enemySelChoose[5] * self.__headRatio]
+
+        self.logger.debug("Enemy is detected, score is {}, location is {}".format(enemyDetectedResult[index][1],
+                                                                                  enemyCenterLoc))
+
+        distanceEnemyWithAim = np.linalg.norm([enemyCenterLoc[0] - self.__aimLoc[0],
+                                               enemyCenterLoc[1] - self.__aimLoc[1]])
+
+        if distanceEnemyWithAim < self.__enemyNearThr:
+            time.sleep(self.__clickSleepTime)
+
+            for n in range(self.__shootTimes):
+                self.logger.debug('agent find enemy and shoot enemy for {} times'.format(self.__shootTimes))
+                self.agentEnv.actionCtrl.DoActionShoot(self.frameSeq)
+                time.sleep(self.__shootSleepTime)
+
+        self.agentEnv.actionCtrl.AimQuick(enemyCenterLoc, self.__aimLoc, self.__turnActionDuringTime, self.frameSeq)
+
+        if distanceEnemyWithAim < self.__enemyNearThr:
+            for n in range(self.__shootTimes):
+                self.logger.debug('agent find enemy and shoot enemy for {} times'.format(self.__shootTimes))
+                self.agentEnv.actionCtrl.DoActionShoot(self.frameSeq)
+                time.sleep(self.__shootSleepTime)
+
+        enemySize = enemySize[index]
+        enemySizeRatio = enemySize * 1.0 / (1280 * 720)
+        self.logger.debug("Enemy ratio is {0}".format(enemySizeRatio))
+
+        return enemyDetectFlag
+
+    # 检测是否在游戏中
+    def _DeterminePlaying(self):
+        currentPlayingState = self.agentEnv.currentPlayingState
+        if currentPlayingState == 0:
+            if self.__upFlag == 0:
+                self.agentEnv.actionCtrl.DoPressUpAll(self.frameSeq)
+                time.sleep(self.__clickSleepTime)
+            self.__upFlag = 1
+            playingFlag = 0
+        else:
+            playingFlag = 1
+            self.__upFlag = 0
+
+        return playingFlag
+
+    # 检测是否拾取
+    def _DeterminePickup(self):
+        currentPickupState = self.agentEnv.currentPickupState
+        if currentPickupState == 1:
+            self.__timePickUp = time.time()
+            self.agentEnv.actionCtrl.DoPressUp()
+            time.sleep(self.__pickupSleepTime)
+            self.logger.info('Pickup Weapon')
+            self.agentEnv.actionCtrl.DoActionPickup(self.frameSeq)
+            time.sleep(self.__clickSleepTime)
+
+    # 检测是否受伤,并返回受伤方向
+    def _DetermineHurt(self):
+        inputAction = 'noAction'
+        hurtDirection = self._DetectHurt()
+
+        # 根据受伤方向进行转向
+        if hurtDirection is not None:
+            timeNow = time.time()
+            if timeNow < self.__hurtTime + self.__hurtAgainSleepTime:
+                return inputAction
+            self.__hurtTime = time.time()
+            self.__actionContinueFlag = 0
+            self.__actionCnt = 0
+            inputAction = self._HurtAction(hurtDirection)
+
+        return inputAction
+
+    # 检测是否攻击敌人
+    def _DetermineShootEnemy(self):
+        # 更新帧
+        shootEnemyFlag = 0
+        self.__enemyDetectFlag = 0
+        # 检测敌人
+        self._DetectEnemy()
+
+        if self.__enemyDetected is None:
+            return shootEnemyFlag
+
+        if len(self.__enemyDetected) == 0:
+            return shootEnemyFlag
+
+        timeNow = time.time()
+        if timeNow > self.__hurtTime + self.__hurtAgainSleepTime:
+            self.agentEnv.actionCtrl.DoPressUp()
+
+        enemyDetectFlag = self._ReactToDetectEnemy()
+
+        self.__enemyDetectFlag = enemyDetectFlag
+        self.__enemyDetectedTime = time.time()
+        shootEnemyFlag = 1
+
+        return shootEnemyFlag
+
+    # 检测是否卡住,对比当前帧与之前帧的相似度
+    def _DetermineStuck(self):
+        stuckFlag = 0
+        imgTemp = cv2.resize(self.frame, (47, 47))
+        imgTemp = (imgTemp / 255.).astype(np.float32)
+        self.embedFeature = np.double(imgTemp.flatten())
+        if self.embedFeatureOld is None:
+            self.embedFeatureOld = self.embedFeature
+            return stuckFlag
+
+        self.__stuckFlag = self._DetectStuck()
+        if self.__stuckFlag == 1:
+            self.__actionContinueFlag = 0
+            stuckFlag = 1
+
+        self.embedFeatureOld = self.embedFeature
+
+        return stuckFlag
+
+    # 重置状态
+    def _DetermineResetState(self):
+        currentPlayingState = self.agentEnv.currentPlayingState
+        if currentPlayingState == -1:
+            return
+
+        if not currentPlayingState:
+            self.logger.info('Reset walk path in map.')
+            self._SetInitWalkPath()
+            self.stuckAction.Reset()
+            self.hurtAction.Reset()
+
+    # 确定初始路径
+    def _DetermineInitWalkPathFull(self):
+        self.walkPathFull = self.agentEnv.currentWalkPathFull
+
+    def _SetInitWalkPath(self):
+        group = self.agentEnv.group
+        self.__minDisWalkInd = 0
+
+        if self.walkPathFull is None:
+            self.logger.info('walk path in map is not detected')
+            self.walkPathCurrentOri = []
+            self.walkPathCurrent = self.walkPathCurrent
+            return
+
+        if group == 0:
+            randLineKey = np.random.choice(list(self.walkPathFull['Team0']))
+            self.walkPathCurrentOri = self.walkPathFull['Team0'][randLineKey]
+            self.walkPathCurrent = self.walkPathCurrentOri
+        elif group == 1:
+            randLineKey = np.random.choice(list(self.walkPathFull['Team1']))
+            self.walkPathCurrentOri = self.walkPathFull['Team1'][randLineKey]
+            self.walkPathCurrent = self.walkPathCurrentOri
+        else:
+            self.walkPathCurrentOri = []
+
+    # 根据路径进行移动
+    def _DetermineMovePath(self):
+        self.currentMapInfo = self.agentEnv.currentMapInfo
+
+        if self.currentMapInfo is None:
+            return 0
+
+        if self.currentMapInfo['viewAnglePoint']['x'] == -1:
+            return 0
+
+        if self.currentMapInfo['myLocPoint']['x'] == -1:
+            return 0
+
+        currentLoc = [int(self.currentMapInfo['myLocPoint']['x']), int(self.currentMapInfo['myLocPoint']['y'])]
+        myLoc = currentLoc
+
+        self.logger.debug('currentLoc is {}'.format(currentLoc))
+        self.logger.debug('walkPathCurrent is {}'.format(self.walkPathCurrent))
+
+        if len(self.walkPathCurrent) == 0:
+            return 0
+
+        minDisWalkInd = 0
+        minDisWalk = np.sum(abs(np.mat(myLoc) - np.mat(self.walkPathCurrent[minDisWalkInd][0:2])))
+
+        currentViewAngle = [self.currentMapInfo['viewAnglePoint']['x'], self.currentMapInfo['viewAnglePoint']['y']]
+        if minDisWalk < self.__disWalkThresh:
+            if len(self.walkPathCurrent) > 1:
+                self.logger.debug('Turn to middle view. the walkPathCurrent is {}'.format(self.walkPathCurrent))
+                targetViewAngle = [self.walkPathCurrent[minDisWalkInd][2], self.walkPathCurrent[minDisWalkInd][3]]
+                self.agentEnv.actionCtrl.DoPressUp()
+                minDisWalkInd = minDisWalkInd + 1
+                self.__minDisWalkInd = self.__minDisWalkInd + 1
+                self._TurnToTargetView(currentViewAngle, targetViewAngle)
+
+                if len(self.walkPathCurrent) > minDisWalkInd:
+                    self.walkPathCurrent = self.walkPathCurrent[minDisWalkInd:]
+                else:
+                    self.walkPathCurrent = []
+                    self.agentEnv.actionCtrl.DoPressUp()
+                self.logger.debug('walkPathFull is {}'.format(self.walkPathFull))
+                return 1
+
+            if len(self.walkPathCurrent) == 1:
+                self.logger.debug('Turn to target view. the walkPathCurrent is {}'.format(self.walkPathCurrent))
+                targetViewAngle = [self.walkPathCurrent[-1][2], self.walkPathCurrent[-1][3]]
+                self.agentEnv.actionCtrl.DoPressUp()
+                self._TurnToTargetView(currentViewAngle, targetViewAngle)
+                self.__minDisWalkInd = self.__minDisWalkInd + 1
+                self.walkPathCurrent = []
+                return 0
+
+        targetViewAngle = [self.walkPathCurrent[minDisWalkInd][0] - myLoc[0],
+                           self.walkPathCurrent[minDisWalkInd][1] - myLoc[1]]
+        angle = self.GetRotateAngle(int(currentViewAngle[0]), int(currentViewAngle[1]),
+                                    targetViewAngle[0], targetViewAngle[1])
+
+        self.agentEnv.actionCtrl.DoActionMove(angle, self.frameSeq)
+        time.sleep(self.__moveActionDuringTime)
+
+        if len(self.walkPathCurrent) > minDisWalkInd:
+            self.walkPathCurrent = self.walkPathCurrent[minDisWalkInd:]
+        else:
+            self.walkPathCurrent = []
+            self.agentEnv.actionCtrl.DoPressUp()
+        self.logger.debug('walkPathFull is {}'.format(self.walkPathFull))
+
+        return 1
+
+    # 转向目标视角
+    def _TurnToTargetView(self, currentViewAngle, targetViewAngle):
+        angle = self.GetRotateAngle(int(currentViewAngle[0]), int(currentViewAngle[1]),
+                                    targetViewAngle[0], targetViewAngle[1])
+
+        if angle > 180:
+            self.logger.debug('map turn left {0}'.format(360 - angle))
+            if (360 - angle) < self.__angleTurnThresh:
+                return
+
+            for n in range(int((360 - angle) / 90 * 4)):
+                self.agentEnv.actionCtrl.DoActionTurnLeft(self.frameSeq)
+                time.sleep(self.__turnActionDuringTime)
+
+        if angle <= 180:
+            if angle < self.__angleTurnThresh:
+                return
+
+            self.logger.debug('map turn right {0}'.format(angle))
+            for n in range(int(angle / 90 * 4)):
+                self.agentEnv.actionCtrl.DoActionTurnRight(self.frameSeq)
+                time.sleep(self.__turnActionDuringTime)
+
+    # 计算转向视角
+    def GetRotateAngle(self, x1, y1, x2, y2):
+        epsilonTer = 1.0e-6
+        nyPI = np.arccos(-1.0)
+        dist = np.sqrt(x1 * x1 + y1 * y1)
+        x1 /= dist
+        y1 /= dist
+        dist = np.sqrt(x2 * x2 + y2 * y2)
+        x2 /= dist
+        y2 /= dist
+        dot = x1 * x2 + y1 * y2
+
+        if np.abs(dot - 1.0) <= epsilonTer:
+            angle = 0.0
+        elif np.abs(dot + 1.0) <= epsilonTer:
+            angle = nyPI
+        else:
+            angle = np.arccos(dot)
+            cross = x1 * y2 - x2 * y1
+            if cross < 0:
+                angle = 2 * nyPI - angle
+
+        degree = angle * 180.0 / nyPI
+
+        return degree
+
+    # 随机跳跃或后退
+    def _RandJumpUpBack(self):
+        index = np.random.randint(0, 6, 1)
+        action = 'noaction'
+        if index < 4:
+            action = 'noaction'
+        elif index == 4:
+            action = 'moveBack'
+        elif index == 5:
+            action = 'upJump'
+        return action
+
+    # 检测卡住
+    def _DetectStuck(self):
+        stuckFlag = 0
+        self.__disStuck = self._Distance(self.embedFeature, self.embedFeatureOld)
+        if self.__disStuck < self.__disStuckThre:
+            stuckFlag = 1
+
+        return stuckFlag
+
+    # 计算特征距离
+    def _Distance(self, emb1, emb2):
+        return np.sum(np.abs(emb1 - emb2))
+
+    # 检测受伤
+    def _DetectHurt(self):
+        # 检测血量
+        currentBlood = self.agentEnv.currentBlood
+        hurtDirection = None
+
+        # 检测受伤
+        if currentBlood < self.__lastBlood and currentBlood != 0:
+            currentHurtFeature = self.agentEnv.currentHurtFeature
+            colorMeanVar = currentHurtFeature
+            hurtDirection = HURT_DIRECTION[colorMeanVar.index(min(colorMeanVar))]
+            self.logger.debug('hurt Direction:' + hurtDirection)
+        self.__lastBlood = currentBlood
+
+        return hurtDirection
+
+    # 检测敌人
+    def _DetectEnemy(self):
+        currentEnemyInfo = self.agentEnv.currentEnemyInfo
+        group = self.agentEnv.group
+
+        if group is None or not currentEnemyInfo:
+            return
+
+        enemyDetectedResult = currentEnemyInfo[0]
+        numEnemy = len(enemyDetectedResult)
+        enemyDetectedFilter = []
+        if numEnemy == 0:
+            self.__enemyDetected = None
+            return
+
+        for n in range(numEnemy):
+            enemySelChoose = enemyDetectedResult[n]
+            if enemySelChoose[0] == group:
+                continue
+
+            enemyDetectedFilter.append(enemyDetectedResult[n])
+
+        if len(enemyDetectedFilter) == 0:
+            self.__enemyDetected = None
+            return
+
+        self.__enemyDetected = enemyDetectedFilter
+
+    # 定义受伤动作
+    def _HurtAction(self, hurtDirection):
+        inputAction = None
+        # 如果检测到敌人,不转向
+        if self.__enemyDetectFlag == 1:
+            return inputAction
+
+        if hurtDirection in ["HurtDown", "HurtDownLeft", "HurtLeftDown"]:
+            inputAction = 'hurtLeftLarge'
+            self.__turnDirection = 'turnLeft'
+
+        elif hurtDirection in ["HurtLeft", "HurtLeftUp"]:
+            inputAction = 'hurtLeft'
+            self.__turnDirection = 'turnLeft'
+
+        elif hurtDirection in ["HurtDownRight", "HurtRightDown"]:
+            inputAction = 'hurtRightLarge'
+            self.__turnDirection = 'turnRight'
+
+        elif hurtDirection in ["HurtRight", "HurtRightUp"]:
+            inputAction = 'hurtRight'
+
+        elif hurtDirection in ["HurtUpRight", "HurtUpLeft", "HurtUp"]:
+            pass
+
+        return inputAction
+
+
+# 定义走失时的动作策略
+class MissAction:
+    def __init__(self, moveUpRatio=90, turnLeftLargeRatio=5, turnRightLargeRatio=5):
+        self.__moveUpRatio = moveUpRatio
+        self.__turnLeftLargeRatio = turnLeftLargeRatio
+        self.__turnRightLargeRatio = turnRightLargeRatio
+
+    def ReactToMissing(self):
+        outAction = 'noAction'
+        index = np.random.randint(0, self.__moveUpRatio + self.__turnLeftLargeRatio + self.__turnRightLargeRatio, 1)
+        if index <= self.__moveUpRatio:
+            outAction = 'moveUp'
+
+        elif self.__moveUpRatio + self.__turnLeftLargeRatio > index > self.__moveUpRatio:
+            outAction = 'turnLeftLarge'
+
+        elif self.__moveUpRatio + self.__turnLeftLargeRatio + self.__turnRightLargeRatio >= index \
+                > self.__moveUpRatio + self.__turnLeftLargeRatio:
+            outAction = 'turnRightLarge'
+
+        return outAction
+
+
+# 定义卡住时的动作策略
+class StuckAction:
+    def __init__(self):
+        self.__stuckActionCnt = 0
+        self.stuckFirstActionState = 1
+        self.__actionRandIndex = 0
+        self.__actionRandNum = 0
+
+    def Reset(self):
+        self.__stuckActionCnt = 0
+        self.stuckFirstActionState = 1
+
+    def ReactToStuck(self):
+        action = 'noAction'
+        # 随机探索, 第一个动作是前跳，随后连续左转或右转
+        if self.stuckFirstActionState == 1:
+            action = 'upJump'
+            self.stuckFirstActionState = 0
+            self.__actionRandIndex = np.random.randint(0, 2, 1)
+            self.__actionRandNum = np.random.randint(0, 2, 1)
+
+            return action
+
+        if self.__actionRandIndex == 0:
+            action = 'turnLeftLarge'
+
+        elif self.__actionRandIndex == 1:
+            action = 'turnRightLarge'
+
+        self.__stuckActionCnt = self.__stuckActionCnt + 1
+
+        if self.__stuckActionCnt == (self.__actionRandNum[0] + 1) * 3:
+            self.Reset()
+
+        return action
+
+
+# 定义受伤时动作策略
+class HurtAction:
+    def __init__(self):
+        self.__hurtActionNum = 10
+        self.__hurtActionCnt = 0
+        self.hurtFirstActionState = 1
+        self.hurtInputAction = 'hurtRight'
+
+    def Reset(self):
+        self.__hurtActionCnt = 0
+        self.hurtFirstActionState = 1
+
+    # React to hurt from right back
+    def ReactToHurt(self, inputAction):
+        self.hurtInputAction = inputAction
+        action = 'turnRight'
+        if inputAction == 'hurtRightLarge':
+            action = 'turnRightLarge'
+
+        elif inputAction == 'hurtLeftLarge':
+            action = 'turnLeftLarge'
+
+        elif inputAction == 'hurtRight':
+            action = 'turnRight'
+
+        elif inputAction == 'hurtLeft':
+            action = 'turnLeft'
+
+        else:
+            return action
+
+        self.__hurtActionCnt = self.__hurtActionCnt + 1
+        self.hurtFirstActionState = 0
+
+        if self.__hurtActionCnt == self.__hurtActionNum:
+            self.Reset()
+
+        return action

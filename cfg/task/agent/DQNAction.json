@@ -1,0 +1,44 @@
+{
+    "screenHeight": 360,
+    "screenWidth": 640,
+    "actions": [
+        {
+            "startRectx": 44,
+            "startRecty": 262,
+            "imgpath": "12.png", 
+            "width": 52,
+            "contact": 0, 
+            "y": 285,
+            "x": 70,
+            "height": 46,
+            "type": 3, 
+            "id": 0,
+            "durationMS": 50
+        }, 
+        {
+            "startRectx": 130,
+            "startRecty": 250,
+            "imgpath": "13.png", 
+            "width": 45,
+            "contact": 0, 
+            "y": 278,
+            "x": 152,
+            "height": 55,
+            "type": 3, 
+            "id": 1,
+            "durationMS": 50
+        }, 
+        {
+            "startRectx": 400,
+            "startRecty": 233,
+            "imgpath": "15.png", 
+            "width": 12,
+            "contact": -1, 
+            "y": 236,
+            "x": 405,
+            "height": 8,
+            "type": 0, 
+            "id": 2
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+#coding: utf-8
+
+#采集的坐标在 1280 * 720像素的图像为基准采集的
+SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 1280
+
+#移动转盘中心坐标
+MOVE_CENTER_X = 205
+MOVE_CENTER_Y = 540
+MOVE_RADIUS = 180   #正常移动的转盘半径
+SLOW_MOVE_RADIUS = 12   #慢速移动的转盘半径
+
+
+#以下调整人物视角的相关坐标
+#水平滑动起点坐标
+H_SWAP_BEGIN_X = 940
+H_SWAP_BEGIN_Y = 300
+
+#水平滑动终点坐标
+H_SWAP_END_X = 1000
+H_SWAP_END_Y = 300
+
+#垂直滑动起点坐标
+V_SWAP_BEGIN_X = 1000
+V_SWAP_BEGIN_Y = 300
+
+#垂直滑动终点坐标
+V_SWAP_END_X = 1000
+V_SWAP_END_Y = 370
+
+
+#各动作ID定义
+ACTION_ATTACK = 1  #攻击
+ACTION_JUMP = 2  #跳跃
+ACTION_LEAVE = 3  #跳伞
+ACTION_FLOAT = 4  #上浮
+ACTION_OPEN_MAP = 5  #打开大地图
+ACTION_CLOSE_MAP = 6  #关闭大地图
+
+ACTION_SWAP_LEFT = 31   #向左调整视角
+ACTION_SWAP_RIGHT = 32   #向右调整视角
+ACTION_SWAP_UP = 33   #向上调整视角
+ACTION_SWAP_DOWN = 34   #向下调整视角

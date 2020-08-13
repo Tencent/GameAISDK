@@ -1,0 +1,12 @@
+{  
+    "name":"Mike Jiang",  
+    "age":23,  
+    "sex_is_male":true,  
+    "partner":  
+    {  
+        "partner_name":"Galatea",  
+        "partner_age":21,  
+        "partner_sex_is_male":false  
+    },  
+    "achievement":["ach1","ach2","ach3"]  
+}  

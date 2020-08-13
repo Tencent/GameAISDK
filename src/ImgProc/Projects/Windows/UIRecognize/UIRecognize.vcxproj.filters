@@ -1,0 +1,696 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Os">
+      <UniqueIdentifier>{bdd813d8-c108-4f98-9267-1922f2dc24b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{e9c7aa43-8681-4a1c-b5df-6cdcb0ddd9a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{40554241-2019-4e4a-8825-91a36657f1dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Communicate">
+      <UniqueIdentifier>{3914aed2-80ce-4a9a-8688-74874b706c61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protobuf">
+      <UniqueIdentifier>{919f193a-12e1-4687-baa1-69b1bab3d575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{c9d7f80e-5a69-4d31-a415-557f8856360b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\darknetV3-win">
+      <UniqueIdentifier>{79812fe8-026a-484d-97a0-19a838f9f1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utils">
+      <UniqueIdentifier>{27177b30-3754-470e-b732-aaabeaea40e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ImgReg">
+      <UniqueIdentifier>{8bbe6b24-401d-4ee4-a411-5cce02782fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ImgReg\ImgProcess">
+      <UniqueIdentifier>{5f9b091f-f532-4f05-a74c-ec58aeca1d1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ImgReg\Recognizer">
+      <UniqueIdentifier>{8abee14c-3ccb-418c-b9a9-9b7a87f2fbd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\UICfg">
+      <UniqueIdentifier>{b39e2382-b405-48a1-b325-b9b2b359fed2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\UIReg">
+      <UniqueIdentifier>{9afd5db8-e6ca-4f52-bbbc-191490245ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Action">
+      <UniqueIdentifier>{299f66d7-6cda-44aa-b421-d4ad5b4ac96d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\GameState">
+      <UniqueIdentifier>{81d8e16e-015f-40ba-a0c1-51f4f4c0b153}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\activations.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\activation_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\avgpool_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\batchnorm_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\blas.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\box.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\classifier.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\col2im.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\connected_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\convolutional_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\cost_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\crnn_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\crop_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\cuda.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\data.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\deconvolutional_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\demo.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\detection_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\dropout_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\gemm.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\getopt.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\gettimeofday.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\gru_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\http_stream.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\im2col.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\image.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\list.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\local_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\matrix.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\maxpool_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\network.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\normalization_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\ObjDet.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\option_list.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\parser.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\region_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_old_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\route_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\shortcut_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\softmax_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\stb_image.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\stb_image_write.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\tree.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\unistd.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\upsample_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\utils.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\yolo_layer.h">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Os\TqcOs.h">
+      <Filter>Os</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\Config.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\Debug.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\IndexThreadReduce.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\IniConfig.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\JsonConfig.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\Log.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\TqcCommon.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\TqcLock.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\TqcLog.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\TqcString.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\TSingleton.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\CColorMatch.h">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\ImgComn.h">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\IImgProc.h">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\CLocationReg.h">
+      <Filter>Common\ImgReg\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IComnBaseReg.h">
+      <Filter>Common\ImgReg\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IImgBaseReg.h">
+      <Filter>Common\ImgReg\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IObjReg.h">
+      <Filter>Common\ImgReg\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IRecognizer.h">
+      <Filter>Common\ImgReg\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UICfg\GameOverCfg.h">
+      <Filter>UI\UICfg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UICfg\GameStartCfg.h">
+      <Filter>UI\UICfg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UICfg\POPUICfg.h">
+      <Filter>UI\UICfg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UICfg\UICfg.h">
+      <Filter>UI\UICfg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIReg\GameOverReg.h">
+      <Filter>UI\UIReg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIReg\GameStartReg.h">
+      <Filter>UI\UIReg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIReg\HallReg.h">
+      <Filter>UI\UIReg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIReg\POPUIReg.h">
+      <Filter>UI\UIReg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIReg\UIReg.h">
+      <Filter>UI\UIReg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\GameState\GameOverState.h">
+      <Filter>UI\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\GameState\GameRunState.h">
+      <Filter>UI\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\GameState\GameStartState.h">
+      <Filter>UI\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\GameState\HallState.h">
+      <Filter>UI\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\GameState\UIState.h">
+      <Filter>UI\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\CORBMatch.h">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\Action\Action.h">
+      <Filter>UI\Action</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\Communicate\DataComm.h">
+      <Filter>Communicate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UICfg\CommUICfg.h">
+      <Filter>UI\UICfg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UICfg\HallCfg.h">
+      <Filter>UI\UICfg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIReg\CommonUIReg.h">
+      <Filter>UI\UIReg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\GameUtils.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Protobuf\common.pb.h">
+      <Filter>Protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Protobuf\gameregProtoc.pb.h">
+      <Filter>Protobuf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIFrameWork.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UITypes.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\UIDefine.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\CObjDet.h">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Comm\Utils\Base64.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\Communicate\PBMsgManager.h">
+      <Filter>Communicate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\Communicate\DataManager.h">
+      <Filter>Communicate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\Src\Action\SendAction.h">
+      <Filter>UI\Action</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\activations.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\activation_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\art.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\avgpool_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\batchnorm_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\blas.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\box.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\captcha.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cifar.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\classifier.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\coco.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\col2im.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\compare.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\connected_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\convolutional_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cost_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cpu_gemm.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\crnn_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\crop_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cuda.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\darknet.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\data.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\deconvolutional_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\demo.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\detection_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\detector.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\dice.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\dropout_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\gemm.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\getopt.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\gettimeofday.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\go.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\gru_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\http_stream.cpp">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\im2col.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\image.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\list.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\local_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\matrix.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\maxpool_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\network.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\nightmare.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\normalization_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\option_list.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\parser.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\region_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_old_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn_vid.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\route_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\shortcut_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\softmax_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\super.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\swag.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\tag.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\tree.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\upsample_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\utils.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\voxel.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\writing.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\yolo.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\yolo_layer.c">
+      <Filter>Modules\darknetV3-win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Os\Windows\TqcWindowsOS.cpp">
+      <Filter>Os</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\IniConfig.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\JsonConfig.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\Log.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\TqcCommon.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\TqcLock.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\TqcString.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\CColorMatch.cpp">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\ImgComn.cpp">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\ImgReg\Recognizer\CLocationReg.cpp">
+      <Filter>Common\ImgReg\Recognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UICfg\GameStartCfg.cpp">
+      <Filter>UI\UICfg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UICfg\POPUICfg.cpp">
+      <Filter>UI\UICfg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UIReg\GameOverReg.cpp">
+      <Filter>UI\UIReg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UIReg\GameStartReg.cpp">
+      <Filter>UI\UIReg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UIReg\HallReg.cpp">
+      <Filter>UI\UIReg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UIReg\POPUIReg.cpp">
+      <Filter>UI\UIReg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\GameState\GameOverState.cpp">
+      <Filter>UI\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\GameState\GameRunState.cpp">
+      <Filter>UI\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\GameState\GameStartState.cpp">
+      <Filter>UI\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\GameState\HallState.cpp">
+      <Filter>UI\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\CORBMatch.cpp">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\Action\Action.cpp">
+      <Filter>UI\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UICfg\CommUICfg.cpp">
+      <Filter>UI\UICfg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UICfg\HallCfg.cpp">
+      <Filter>UI\UICfg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UIFrameWork.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\main.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UIReg\CommonUIReg.cpp">
+      <Filter>UI\UIReg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\Utils\GameUtils.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Protobuf\common.pb.cc">
+      <Filter>Protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Protobuf\gameregProtoc.pb.cc">
+      <Filter>Protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\CObjDet.cpp">
+      <Filter>Common\ImgReg\ImgProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\Communicate\PBMsgManager.cpp">
+      <Filter>Communicate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\Communicate\DataManager.cpp">
+      <Filter>Communicate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\Action\SendAction.cpp">
+      <Filter>UI\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI\Src\UICfg\GameOverCfg.cpp">
+      <Filter>UI\UICfg</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\activation_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\avgpool_layer_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\blas_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\col2im_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\convolutional_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\crop_layer_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\deconvolutional_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\dropout_layer_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\im2col_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\maxpool_layer_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\network_kernels.cu">
+      <Filter>Modules\darknetV3-win</Filter>
+    </None>
+  </ItemGroup>
+</Project>

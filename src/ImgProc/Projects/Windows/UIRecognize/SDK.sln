@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UIRecognize", "UIRecognize.vcxproj", "{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameReg", "..\..\..\GameRecognize\Windows\GameReg.vcxproj", "{52DB999E-1E75-44B5-AC57-726414CAD409}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_cpu|x64 = Debug_cpu|x64
+		Debug_cuda|x64 = Debug_cuda|x64
+		Debug|x64 = Debug|x64
+		Release_cpu|x64 = Release_cpu|x64
+		Release_cuda|x64 = Release_cuda|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Debug_cpu|x64.ActiveCfg = Debug_cpu|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Debug_cpu|x64.Build.0 = Debug_cpu|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Debug_cuda|x64.ActiveCfg = Debug_cuda|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Debug_cuda|x64.Build.0 = Debug_cuda|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Debug|x64.ActiveCfg = Debug_cuda|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Debug|x64.Build.0 = Debug_cuda|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Release_cpu|x64.ActiveCfg = Release_cpu|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Release_cpu|x64.Build.0 = Release_cpu|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Release_cuda|x64.ActiveCfg = Release_cuda|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Release_cuda|x64.Build.0 = Release_cuda|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Release|x64.ActiveCfg = Release_cpu|x64
+		{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}.Release|x64.Build.0 = Release_cpu|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Debug_cpu|x64.ActiveCfg = Debug|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Debug_cpu|x64.Build.0 = Debug|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Debug_cuda|x64.ActiveCfg = Debug|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Debug_cuda|x64.Build.0 = Debug|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Debug|x64.ActiveCfg = Debug|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Debug|x64.Build.0 = Debug|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Release_cpu|x64.ActiveCfg = Release|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Release_cpu|x64.Build.0 = Release|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Release_cuda|x64.ActiveCfg = Release|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Release_cuda|x64.Build.0 = Release|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Release|x64.ActiveCfg = Release|x64
+		{52DB999E-1E75-44B5-AC57-726414CAD409}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39D23AFA-6DEC-43A0-BB60-438131603902}
+	EndGlobalSection
+EndGlobal

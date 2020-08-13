@@ -1,0 +1,279 @@
+# 益智图块消除类游戏 Puzzle Block Elimination Game
+
+import time
+import cv2
+
+from agentenv.GameEnv import GameEnv
+from AgentAPI import AgentAPIMgr
+from util import util
+from XXXAction import XXXAction, XXXWindow
+
+# 游戏场景识别任务配置文件
+TASK_CFG_FILE = 'cfg/task/gameReg/Task.json'
+REFER_CFG_FILE = 'cfg/task/gameReg/Refer.json'
+
+REG_GROUP_ID = 1
+
+BEGIN_TASK_ID = 1  # 游戏对局开始的识别任务ID
+RUN_TASK_ID = 2  # 游戏对局进行中的识别任务ID
+OVER_TASK_ID = 2  # 游戏对局结束的识别任务ID
+
+BLOCK_RED_TASK_ID = 101  # 红色消除块的识别任务ID
+BLOCK_GREEN_TASK_ID = 102  # 绿色消除块的识别任务ID
+BLOCK_BLUE_TASK_ID = 103  # 蓝色消除块的识别任务ID
+BLOCK_YELLOW_TASK_ID = 104  # 黄色消除块的识别任务ID
+BLOCK_BROWN_TASK_ID = 105  # 棕色消除块的识别任务ID
+BLOCK_PURPLE_TASK_ID = 106  # 紫色消除块的识别任务ID
+
+BLOCK_TASK_IDS = [BLOCK_RED_TASK_ID, BLOCK_GREEN_TASK_ID, BLOCK_BLUE_TASK_ID, BLOCK_YELLOW_TASK_ID, BLOCK_BROWN_TASK_ID, BLOCK_PURPLE_TASK_ID]  # 所有消除块的识别任务ID
+
+BLOCK_ROI_TASK_ID = 201  # 消除块区域的识别任务ID
+
+BLOCK_ROW = 9  # 消除块的行数
+BLOCK_COL = 9  # 消除块的列数
+
+
+class XXXEnv(GameEnv):
+    def __init__(self):
+        GameEnv.__init__(self)
+        self.__windowXXX = XXXWindow()
+        self.__actionXXX = XXXAction(self.__windowXXX)  # 创建执行动作对象
+        self.__agentAPI = AgentAPIMgr.AgentAPIMgr()  # 创建场景识别对象
+        self.__state = dict()
+        self.__begin = False
+        self.__over = True
+
+    # 初始化函数，通常初始化动作模块和识别模块
+    def Init(self):
+        taskCfgFile = util.ConvertToSDKFilePath(TASK_CFG_FILE)
+        referCfgFile = util.ConvertToSDKFilePath(TASK_REFER_CFG_FILE)
+        ret = self.__agentAPI.Initialize(taskCfgFile, referCfgFile)
+        if not ret:
+            self.logger.error('Agent API init failed!')
+            return False
+
+        ret = self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_GROUP_ID, REG_GROUP_ID)
+        if not ret:
+            self.logger.error('Send message failed!')
+            return False
+
+        ret = self.__actionXXX.Initialize()
+        if not ret:
+            self.logger.error('Action init failed!')
+            return False
+
+        return True
+
+    # 退出函数，是否申请的资源
+    def Finish(self):
+        self.__agentAPI.Release()
+        self.__actionXXX.Finish()
+
+    # 重置游戏状态，通常可以在每局游戏结束或开始时调用
+    def Reset(self):
+        self.__actionXXX.ResetAction()
+
+    # 根据Agent API获取游戏状态信息，并返回状态信息
+    def GetState(self):
+        while True:
+            info = self.__agentAPI.GetInfo(AgentAPIMgr.GAME_RESULT_INFO)
+            if info is None:
+                time.sleep(0.002)
+                continue
+
+            if info.get('result') is None:
+                time.sleep(0.002)
+                continue
+
+            retDict = info['result']
+
+            self.__state['image'] = info['image']
+            self.__state['frameIndex'] = info['frameSeq']
+            self.__state['scene'] = self._GetScene(retDict)
+            self.__state['block'] = self._GetBlock(retDict)
+            self.__state['grid'] = self._GetGrid(self.__state['block'])
+
+            if self.__state['scene'] == 'begin' or self.__state['scene'] == 'run':
+                self.__begin = True
+                self.__over = False
+
+            if self.__state['scene'] == 'over':
+                self.__begin = False
+                self.__over = True
+
+            break
+
+        return
+
+    # 输出游戏动作
+    def DoAction(self, action, *args, **kwargs):
+        if action is None:
+            return
+
+        if action['type'] == 'swipe':
+            width = self.__state['block']['width']
+            height = self.__state['block']['height']
+
+            if action.get('sx') is None and action.get('sy') is None:
+                sx = round((action['col'] + 0.5) * width) + self.__state['block']['ROI'][0]
+                sy = round((action['row'] + 0.5) * height) + self.__state['block']['ROI'][1]
+            else:
+                sx = action['sx']
+                sy = action['sy']
+
+            if action['direction'] == 'up':
+                ex = sx
+                ey = round(sy - height)
+                self.__actionXXX.DoSwipe(sx, sy, ex, ey, action['frameIndex'])
+
+            elif action['direction'] == 'down':
+                ex = sx
+                ey = round(sy + height)
+                self.__actionXXX.DoSwipe(sx, sy, ex, ey, action['frameIndex'])
+
+            elif action['direction'] == 'left':
+                ex = round(sx - width)
+                ey = sy
+                self.__actionXXX.DoSwipe(sx, sy, ex, ey, action['frameIndex'])
+
+            elif action['direction'] == 'right':
+                ex = round(sx + width)
+                ey = sy
+                self.__actionXXX.DoSwipe(sx, sy, ex, ey, action['frameIndex'])
+
+            else:
+                self.logger.error('Unknown direction')
+
+        return
+
+    # 根据识别模块获取的信息，判断游戏对局是否开始
+    def IsEpisodeStart(self):
+        self.GetState()
+        return self.__begin
+
+    # 根据识别模块获取的信息，判断游戏对局是否结束
+    def IsEpisodeOver(self):
+        self.GetState()
+        return self.__over
+
+    # 从识别结果中获得场景名称
+    def _GetScene(self, retDict):
+        if self._CheckFlag(retDict, BEGIN_TASK_ID) is True:
+            scene = 'begin'
+
+        elif self._CheckFlag(retDict, RUN_TASK_ID) is True:
+            scene = 'run'
+
+        elif self._CheckFlag(retDict, OVER_TASK_ID) is True:
+            scene = 'over'
+
+        else:
+            scene = 'none'
+
+        return scene
+
+    # 检查每个场景识别任务的状态
+    def _CheckFlag(self, retDict, taskID):
+        flag = False
+
+        results = retDict.get(taskID)
+        if results is None:
+            return flag
+
+        for result in results:
+            if result['flag'] is True:
+                flag = True
+                break
+
+        return flag
+
+    # 从识别结果中获取消除块的信息
+    def _GetBlock(self, retDict):
+        block = dict()
+
+        block['boxes'] = list()
+        for taskID in BLOCK_TASK_IDS:
+            boxes = self._GetBox(retDict, taskID)
+
+            if not boxes:
+                continue
+
+            for box in boxes:
+                block['boxes'].append(box)
+
+        num = len(block['boxes'])
+
+        if num == 0:
+            return None
+
+        if self.__windowXXX.IsPosOK() is not True:
+            self.__windowXXX.blockROIX, self.__windowXXX.blockROIY, self.__windowXXX.blockROIW, self.__windowXXX.blockROIH = self._GetROI(retDict, BLOCK_ROI_TASK_ID)
+
+        block['ROI'] = [self.__windowXXX.blockROIX, self.__windowXXX.blockROIY, self.__windowXXX.blockROIW, self.__windowXXX.blockROIH]
+
+        block['height'] = round(self.__windowXXX.blockROIH / block['row'])
+        block['width'] = round(self.__windowXXX.blockROIW / block['col'])
+
+        return block
+
+    # 获取taskID对应的box信息
+    def _GetBox(self, retDict, taskID):
+        results = retDict.get(taskID)
+
+        if results is None:
+            return None
+
+        result = results[0]
+        if result is None:
+            return None
+
+        return result['boxes']
+
+    # 获取taskID对应的ROI坐标
+    def _GetROI(self, retDict, taskID):
+        x = -1
+        y = -1
+        w = -1
+        h = -1
+
+        results = retDict.get(taskID)
+        if results is None:
+            return x, y, w, h
+
+        for result in regResults:
+            x = result['ROI']['x']
+            y = result['ROI']['y']
+            w = result['ROI']['w']
+            h = result['ROI']['h']
+
+            if x > 0 and y > 0 and w > 0 and h > 0:
+                break
+
+        return x, y, w, h
+
+    # 根据消除块识别结果构建网格
+    def _GetGrid(self, block):
+        if not block:
+            return None
+
+        grid = dict()
+
+        grid['padding'] = 3
+        grid['row'] = block['row'] + grid['padding'] * 2
+        grid['col'] = block['col'] + grid['padding'] * 2
+
+        grid['map'] = np.zeros([grid['row'], grid['col'], 2])
+
+        for box in block['boxes']:
+            col = round((box['x'] - block['ROI'][0]) / block['width'])
+            row = round((box['y'] - block['ROI'][1]) / block['height'])
+
+            gridRow = row + grid['padding']
+            gridCol = col + grid['padding']
+
+            # 设置网格中每个格子的类别和分数
+            if grid['map'][gridRow, gridCol, 1] < box['score']:
+                grid['map'][gridRow, gridCol, 0] = box['classID']
+                grid['map'][gridRow, gridCol, 1] = box['score']
+
+        return grid

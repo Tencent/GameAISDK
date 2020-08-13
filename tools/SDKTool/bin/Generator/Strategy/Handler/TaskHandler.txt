@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import random
+
+from .AbstractHandler import AbstractHandler, LOG
+from LSWZ.Tools import *
+
+
+TASK_ID_TASK = 41  # 识别任务标志
+TASK_ID_BAO_XIANG = 42  # 识别任务宝箱
+TASK_ID_ZHU_XIAN_REN_WU = 43  # 主线任务
+TASK_ID_QIAN_WANG2 = 44  # 任务前往
+TASK_ID_MEI_RI_REN_WU = 45  # 每日任务
+
+
+class TaskHandler(AbstractHandler):
+    '''
+    剧情任务Handler，输出剧情自动接任务，对话，选择等的动作
+    '''
+    def __init__(self, *args, **kwargs):
+        super(TaskHandler, self).__init__(args, kwargs)
+
+    def Initialize(self, *args, **kwargs):
+        return True
+
+    def Finish(self, *args, **kwargs):
+        return True
+
+    def Update(self, resultDict, *args, **kwargs):
+        if not CheckTaskFlag(resultDict, TASK_ID_TASK):
+            self.action = None
+            return
+
+        pointList = []
+        if CheckTaskFlag(resultDict, TASK_ID_BAO_XIANG):
+            point = GetTaskPoint(resultDict, TASK_ID_BAO_XIANG)
+            pointList.append(point)
+
+        if CheckTaskFlag(resultDict, TASK_ID_ZHU_XIAN_REN_WU):
+            point = GetTaskPoint(resultDict, TASK_ID_ZHU_XIAN_REN_WU)
+            pointList.append(point)
+
+        if CheckTaskFlag(resultDict, TASK_ID_MEI_RI_REN_WU):
+            point = GetTaskPoint(resultDict, TASK_ID_MEI_RI_REN_WU)
+            pointList.append(point)
+
+        if CheckTaskFlag(resultDict, TASK_ID_QIAN_WANG2):
+            pl = GetTaskAllPoint(resultDict, TASK_ID_QIAN_WANG2)
+            pointList += pl
+
+        point = None
+        if len(pointList) > 0:
+            point = random.choice(pointList)
+
+        if point is not None:
+            self.action = {
+                "actionType": 'click',
+                "point": point
+            }
+        else:
+            self.action = None
+        return

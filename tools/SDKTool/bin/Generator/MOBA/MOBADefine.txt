@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import numpy as np
+
+# 阵营枚举
+GROUP_RED = 0
+GROUP_BLUE = 1
+GROUP_INVALID = -1
+
+# 地图元素类型枚举
+MAP_OBSTACLE = 0
+MAP_GROUND = 1
+MAP_OUR_TOWER = 2
+MAP_OPP_TOWER = 3
+MAP_OUR_TOWER_OBSTACLE = 4
+MAP_OPP_TOWER_OBSTACLE = 5
+MAP_MAX_SEARCH_RADIUS = 20
+
+# 默认的图像分辨率
+IMG_WIDTH_DEFAULT = 1280
+IMG_HEIGHT_DEFAULT = 720
+
+# 同屏血条类型枚举
+SCENE_BLOOD_OPP = 0
+SCENE_BLOOD_SELF = 1
+SCENE_BLOOD_OUR = 2
+
+# 同屏物体类型枚举
+SCENE_CLASS_RSOLDIER = 0
+SCENE_CLASS_BSOLDIER = 1
+SCENE_CLASS_BBLOOD = 2
+SCENE_CLASS_RBLOOD = 3
+SCENE_CLASS_BTOWER = 4
+SCENE_CLASS_RTOWER = 5
+
+# 攻击目标识别索引值
+ATTACK_HERO_ID_MAX = 999
+ATTACK_TOWER_ID = 1000
+ATTACK_SOLDIER_ID = 2000
+ATTACK_MONSTER_ID = 3000
+ATTACK_BASE_ID = 4000
+
+# 攻击目标类型枚举
+ATTACK_TYPE_TOWER = 1
+ATTACK_TYPE_SOLDIER = 2
+ATTACK_TYPE_MONSTER = 3
+ATTACK_TYPE_HERO = 4
+ATTACK_TYPE_INVALID = 5
+
+# 游戏状态枚举
+GAME_STATE_INVALID = 0
+GAME_STATE_RUN = 1
+GAME_STATE_OVER = 2
+
+# 地图数据中的一些特定坐标
+G_HOME_POINT = np.array([1, 98])  # 出生点坐
+G_FAR_MID_TOWER_POINT = np.array([48, 50])  # 中路外塔
+G_MID_TOWER_POINT = np.array([27, 69])  # 中路二塔
+G_HIGH_LAND_POINT = np.array([24, 75])  # 中路高地塔
+G_ENEMY_MID_TOWER_POINT = np.array([69, 31])  # 敌方中路二塔
+G_ENEMY_HIGH_LAND_POINT = np.array([80, 16])  # 敌方高地塔
+G_FAR_DOWN_TOWER_POINT = np.array([87, 87])  # 下路外塔
+G_FAR_UP_TOWER_POINT = np.array([13, 13])  # 上路外塔
+G_BLUE_POINT = np.array([25, 46])  # 蓝buff野怪
+G_DOMINATOR_POINT = np.array([31, 28])  # 主宰
+G_DRAGON_POINT = np.array([67, 69])  # 小龙
+G_RED_POINT = np.array([49, 81])  # 红buff野怪
+
+BUY_EQUIPMENT_INTERVAL = 10  # 买装备默认周期，10秒
+
+
+class SelfAttr(object):
+    '''
+    自己属性，包括等级，血量，是否死亡，同屏坐标
+    '''
+    def __init__(self, scenePoint=(IMG_WIDTH_DEFAULT / 2, IMG_HEIGHT_DEFAULT / 2)):
+        self.level = 1
+        self.blood = 100.
+        self.isDead = False
+        self.scenePosition = np.array(scenePoint)
+
+
+class AttackTarget(object):
+    '''
+    攻击目标属性，包括类型，血量（暂未识别）
+    '''
+    def __init__(self, type=ATTACK_TYPE_INVALID, blood=-1):
+        self.type = type
+        self.blood = blood
+
+
+class UIInfo(object):
+    '''
+    UI相关按键
+    '''
+    def __init__(self):
+        self.backHomeEnable = 0
+        self.recoverBloodEnable = 0
+        self.playerMagic = 0
+        self.homeFlagEnable = 0

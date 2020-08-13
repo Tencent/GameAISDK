@@ -1,0 +1,39 @@
+[settings]
+    arch=x86_64
+    build_type=Release
+    compiler=gcc
+    compiler.libcxx=libstdc++
+    compiler.version=4.8
+    os=Linux
+
+[requires]
+    jsoncpp/1.Y.Z
+
+[options]
+
+
+[full_settings]
+    arch=x86_64
+    build_type=Release
+    compiler=gcc
+    compiler.libcxx=libstdc++
+    compiler.version=4.8
+    os=Linux
+
+[full_requires]
+    cmake_installer/0.1@lasote/stable:9226834d9e9ddb4bfd56eda805b06560031aed8a
+    jsoncpp/1.8.0@theirix/ci:2518982365778da725da2efc4033e25dbb37a644
+
+[full_options]
+    cmake_installer:version=3.6.0
+    jsoncpp:shared=False
+    jsoncpp:use_pic=False
+
+[scope]
+    dev=True
+
+[recipe_hash]
+
+
+[env]
+    PATH=[/home/berry/.conan/data/cmake_installer/0.1/lasote/stable/package/9226834d9e9ddb4bfd56eda805b06560031aed8a/bin]

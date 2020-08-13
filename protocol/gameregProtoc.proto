@@ -1,0 +1,226 @@
+syntax = "proto3";
+
+// *************************************************
+// 发送给Agent的消息总结构体
+// *************************************************
+message tagPBAgentMsg
+{
+    EAgentMsgID               eAgentMsgID        = 1;
+    tagPBResultValue          stPBResultValue    = 2;
+
+    tagPBAgentTaskValue       stPBAgentTaskValue = 3;
+    repeated tagPBTaskFlagMap stPBTaskFlagMaps   = 4;
+    repeated int32            nDelTaskIDs        = 5;
+    repeated string           strConfFileName    = 6;
+}
+
+// *************************************************
+// 图像检测结果消息结构体中的value字段结构体
+// *************************************************
+message tagPBResultValue
+{
+    int32                nFrameSeq    = 1;
+    int32                nDeviceIndex = 2;
+    bytes                byImgData    = 3;
+    int32                nWidth       = 4;
+    int32                nHeight      = 5;
+    string               strJsonData  = 6;
+    repeated tagPBResult stPBResult   = 7;
+}
+
+// *************************************************
+// 图像检测结果消息结构体中具体算法的检测结果
+// *************************************************
+message tagPBResult
+{
+    int32                   nTaskID       = 1;
+    EREGTYPE                eRegType      = 2;
+    repeated tagPBResultRes stPBResultRes = 3;
+}
+
+// *************************************************
+// 图像检测结果消息结构体中结果具体的结构
+// *************************************************
+message tagPBResultRes
+{
+    int32               nFlag      = 1;
+    tagPBBox            stPBBox    = 2;
+    repeated tagPBBox   stPBBoxs   = 3;
+    repeated tagPBPoint stPBPoints = 4;
+    float               fNum       = 5;
+    tagPBRect           stPBROI    = 6;
+    tagPBRect           stPBRect   = 7;
+    repeated tagPBBlood stPBBloods = 8;
+    tagPBPoint          stPBViewAnglePoint = 9;
+    tagPBPoint          stPBMyLocPoint = 10;
+    repeated float      fColorMeanVars = 11;
+    bytes               byImage        = 12;
+}
+
+// *************************************************
+// tagPBPoint
+// *************************************************
+message tagPBPoint
+{
+    int32 nX = 1;
+    int32 nY = 2;
+}
+
+// *************************************************
+// bloods
+// *************************************************
+message tagPBBlood
+{
+    int32        nLevel = 1;
+    float        fScore = 2;
+    float        fPercent = 3;
+    int32        nClassID = 4;
+    string       strName = 5;
+    tagPBRect    stPBRect = 6;
+}
+
+// *************************************************
+// tagPBBox
+// *************************************************
+message tagPBBox
+{
+    string strTmplName = 1;
+    int32  nClassID    = 2;
+    float  fScore      = 3;
+    float  fScale      = 4;
+    tagPBRect stPBRect = 5;
+}
+
+// *************************************************
+// 接受任务消息结构体，设置任务，添加任务，修改任务中的value
+// *************************************************
+message tagPBAgentTaskValue
+{
+    uint32                     uGroupID          = 1;
+    repeated tagPBAgentTaskTsk stPBAgentTaskTsks = 2;
+}
+
+// *************************************************
+// 具体任务结构体
+// *************************************************
+message tagPBAgentTaskTsk
+{
+    int32                          nTaskID               = 1;
+    EREGTYPE                       eType                 = 2;
+    int32                          nSkipFrame            = 3;
+    repeated tagPBAgentTaskElement stPBAgentTaskElements = 4;
+}
+
+// *************************************************
+// 任务具体元素结构体
+// *************************************************
+message tagPBAgentTaskElement
+{
+    tagPBRect      stPBRect      = 1;
+    string         strAlgorithm  = 2;
+    float          fMinScale     = 3;
+    float          fMaxScale     = 4;
+    int32          nScaleLevel   = 5;
+    string         strCondition  = 6;
+    int32          nFilterSize   = 7;
+    tagPBTemplates stPBTemplates = 8;
+    float          fIntervalTime = 9;
+    float          fThreshold     = 10;
+    string         strCfgPath     = 11;
+    string         strWeightPath  = 12;
+    string         strNamePath    = 13;
+    int32          nBloodLength   = 14;
+    int32          nMaxPointNum   = 15;
+    string         strMaskPath    = 16;
+    string         strMyLocCondition = 17;
+    string         strFriendsCondition = 18;
+    string         strViewLocCondition = 19;
+    string         strMapPath         = 20;
+    string         strImgFilePath     = 21;
+    int32          nMaxBBoxNum        = 22;
+    int32          nDilateSize        = 23;
+    int32          nErodeSize         = 24;
+    int32          nRegionSize        = 25;
+}
+
+// *************************************************
+// Rect结构体
+// *************************************************
+message tagPBRect
+{
+    int32 nX = 1;
+    int32 nY = 2;
+    int32 nW = 3;
+    int32 nH = 4;
+}
+
+message tagPBTemplates
+{
+    repeated tagPBTemplate stPBTemplates = 1;
+}
+
+// *************************************************
+// template模板结构体
+// *************************************************
+message tagPBTemplate
+{
+    string    strPath    = 1;
+    string    strName    = 2;
+    tagPBRect stPBRect   = 3;
+    float     fThreshold = 4;
+    int32     nClassID   = 5;
+}
+
+// *************************************************
+// 任务Flag键值对
+// *************************************************
+message tagPBTaskFlagMap
+{
+    int32 nTaskID = 1;
+    bool  bFlag   = 2;
+}
+
+// *************************************************
+// 发送给agent的结果数据的算法类型
+// *************************************************
+enum EREGTYPE
+{
+    TYPE_BEGIN     = 0;
+
+    TYPE_STUCKREG  = 1;
+    TYPE_FIXOBJREG = 2;
+    TYPE_PIXREG    = 3;
+    TYPE_DEFORMOBJ = 4;
+    TYPE_NUMBER    = 5;
+    TYPE_FIXBLOOD  = 6;
+    TYPE_KINGGLORYBLOOD = 7;
+    TYPE_MAPREG    = 8;
+    TYPE_MULTCOLORVAR = 9;
+    TYPE_SHOOTBLOOD = 10;
+    TYPE_SHOOTHURT = 11;
+    TYPE_MAPDIRECTIONREG = 12;
+
+    TYPE_REFER_LOCATION = 50;
+    TYPE_REFER_BLOODREG = 51;
+
+    TYPE_MAX       = 100;
+};
+
+// *************************************************
+// 接收task任务消息类型
+// *************************************************
+enum EAgentMsgID
+{
+    MSG_RECV_BEGIN = 0;
+
+    MSG_RECV_ID_START  = 40000;
+    MSG_RECV_GROUP_ID  = 40001;
+    MSG_RECV_TASK_FLAG = 40002;
+    MSG_RECV_ADD_TASK  = 40003;
+    MSG_RECV_DEL_TASK  = 40004;
+    MSG_RECV_CHG_TASK  = 40005;
+    MSG_RECV_CONF_TASK = 40006;
+    MSG_RECV_ID_Max    = 40007;
+
+    MSG_SEND_RESULT = 45000;
+};

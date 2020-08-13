@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import random
+
+from .AbstractHandler import AbstractHandler, LOG
+from LSWZ.Tools import *
+
+TASK_ID_GUIDE = 1  # 手形引导
+TASK_ID_SHI_JIE = 51  # 世界图标
+TASK_ID_JIA_SU = 52  # 加速图标
+TASK_ID_JIAN_TOU = 53  # 箭头图标
+TASK_ID_SOU_SUO = 54  # 搜索图标
+
+TASK_ID_YE_WAI_DI_BING = 55  # 野外敌兵
+TASK_ID_SHI_LI_JU_DIAN = 56  # 势力据点
+TASK_ID_NONG_TIAN = 57  # 农田
+TASK_ID_FA_MU_CHANG = 58  # 伐木厂
+TASK_ID_SOU_SUO_BUTTON = 59  # 搜索按钮
+TASK_ID_HUI_CHENG = 60  # 回城
+TASK_ID_CHE_JUN = 61  # 撤军
+TASK_ID_ZHAN_LING = 62  # 占领
+
+class OutsideHandler(AbstractHandler):
+    '''
+    野外打野、占领资源点位等，可根据业务逻辑调整点击顺序
+    '''
+    def __init__(self, *args, **kwargs):
+        super(OutsideHandler, self).__init__(args, kwargs)
+
+    def Initialize(self, *args, **kwargs):
+        return True
+
+    def Finish(self, *args, **kwargs):
+        return True
+
+    def Update(self, resultDict):
+        if not CheckTaskFlag(resultDict, TASK_ID_SHI_JIE):
+            self.action = None
+            return
+
+        #处理各种提示操作
+        point = None
+        if CheckTaskFlag(resultDict, TASK_ID_GUIDE):
+            point = GetTaskPoint(resultDict, TASK_ID_GUIDE)
+        elif CheckTaskFlag(resultDict, TASK_ID_JIAN_TOU):
+            point = GetTaskPoint(resultDict, TASK_ID_JIAN_TOU)
+            point += np.array([0, 90])
+        elif CheckTaskFlag(resultDict, TASK_ID_ZHAN_LING):
+            point = GetTaskPoint(resultDict, TASK_ID_ZHAN_LING)
+
+        if point is not None:
+            self.action = {"actionType": 'click', "point": point}
+            return
+
+        #如果行军队列超过1，则回城
+        pointList1 = GetTaskAllPoint(resultDict, TASK_ID_JIA_SU)
+        pointList2 = GetTaskAllPoint(resultDict, TASK_ID_CHE_JUN)
+        if len(pointList1) + len(pointList2) >= 1:
+            point = GetTaskPoint(resultDict, TASK_ID_HUI_CHENG)
+            if point is not None:
+                self.action = {"actionType": 'click', "point": point}
+            else:
+                self.action = None
+            return
+
+        #点击搜索
+        point = None
+        if CheckTaskFlag(resultDict, TASK_ID_SOU_SUO):
+            point = GetTaskPoint(resultDict, TASK_ID_SOU_SUO)
+            self.action = {"actionType": 'click', "point": point}
+            return
+
+        #随机选择打怪、占领资源点
+        #tmpID = random.choice([TASK_ID_YE_WAI_DI_BING, TASK_ID_SHI_LI_JU_DIAN, TASK_ID_NONG_TIAN, TASK_ID_FA_MU_CHANG])
+        tmpID = random.choice([TASK_ID_YE_WAI_DI_BING, TASK_ID_YE_WAI_DI_BING, TASK_ID_NONG_TIAN, TASK_ID_FA_MU_CHANG])
+        taskID = random.choice([tmpID, TASK_ID_SOU_SUO_BUTTON])
+        if CheckTaskFlag(resultDict, taskID):
+            point = GetTaskPoint(resultDict, taskID)
+            self.action = {"actionType": 'click', "point": point}
+            return
+
+        self.action = None
+        return

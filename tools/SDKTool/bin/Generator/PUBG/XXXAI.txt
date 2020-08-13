@@ -1,0 +1,468 @@
+import os
+import sys
+import cv2
+import time
+import math
+import json
+import random
+import logging
+import numpy as np
+
+from aimodel.AIModel import AIModel
+from util import util
+
+from .XXXActionConfig import *
+
+RANDOM_JUMP_TIMER_ID = 1
+ADJUST_ROLL_TIMER_ID = 3
+MOVE_TOWARD_HOUSE_TIMER_ID = 4
+MOVE_INTO_HOUSE_TIMER_ID = 5
+ADJUST_MOVE_TIMER_ID = 6
+ADJUST_TO_DEST_ANGLE_TIMER_ID = 8
+CHECK_STUCK_TIMER_ID = 9
+CHECK_BIG_MAP_TIMER_ID = 11
+FLOAT_UP_TIMER_ID = 12
+CHECK_CAR_TIMER_ID = 16
+
+H_SWAP_TO_ENEMY_TIME = 0.35
+
+class XXXAI(AIModel):
+
+    def __init__(self):
+        AIModel.__init__(self)
+        self.__gameState = None
+        self.__behaviorTimer = {}
+        self.__lastBehaviorTime = {}
+
+    def Init(self, agentEnv):
+        self.__agentEnv = agentEnv
+        self._InitBehaviorTimer()
+        return self._LoadAIParams()
+
+    def Finish(self):
+        pass
+
+    def OnEpisodeStart(self):
+        self.__detectLeaveTime = -1
+        self.__leaveTime = -1
+        self.__detectWindowDoorTime = -1
+        self.__detectEnemyTime = -1
+        self.__detectCarTime = -1
+
+        self._InitLastBehaviorTime()
+        self.__episodeStartTime = time.time()
+        self.__hSwapToEnemyTime = time.time()
+        self.__agentEnv.Reset()
+
+    def OnEpisodeOver(self):
+        self.__agentEnv.Reset()
+
+    def TrainOneStep(self):
+        self._RunOneStep()
+
+    def TestOneStep(self):
+        self._RunOneStep()
+
+    def _RunOneStep(self):
+        self._UpdateState()
+
+        timeNow = time.time()
+        if self.__leaveTime > 0 and timeNow - self.__leaveTime < self.__leaveToDestTime:
+            self._Leave()
+            return
+
+        if self.__gameState['attackBtnState'] is True:
+            self._DoHangOut()
+        elif self.__gameState['leaveBtnState'] is True:
+            self._DoLeave()
+        elif self.__gameState['floatBtnState'] is True:
+            self._DoSwim()
+        else:
+            self._DoHangOut()
+
+        return
+
+    def _LoadAIParams(self):
+        self.__leaveAfterDetectTime = 25
+        self.__checkStuckAfterEpisodeStart = 150
+        self.__adjustViewAfterEpisodeStart = 160
+        self.__leaveToDestTime = 45
+        return True
+
+    def _UpdateState(self):
+        self.__gameState = self.__agentEnv.GetState()
+
+        if self._HasIntoHouseTarget() is True:
+            self.__detectWindowDoorTime = time.time()
+
+        if self._HasEnemy() is True:
+            self.__detectEnemyTime = time.time()
+
+        if self._HasCar() is True:
+            self.__detectCarTime = time.time()
+
+    def _InitBehaviorTimer(self):
+        self.__behaviorTimer[RANDOM_JUMP_TIMER_ID] = 3
+        self.__behaviorTimer[ADJUST_ROLL_TIMER_ID] = 30
+        self.__behaviorTimer[MOVE_TOWARD_HOUSE_TIMER_ID] = 0.5
+        self.__behaviorTimer[MOVE_INTO_HOUSE_TIMER_ID] = 0.5
+        self.__behaviorTimer[ADJUST_MOVE_TIMER_ID] = 0.5
+        self.__behaviorTimer[ADJUST_TO_DEST_ANGLE_TIMER_ID] = 25
+        self.__behaviorTimer[CHECK_STUCK_TIMER_ID] = 3
+        self.__behaviorTimer[CHECK_BIG_MAP_TIMER_ID] = 25
+        self.__behaviorTimer[FLOAT_UP_TIMER_ID] = 0.5
+        self.__behaviorTimer[CHECK_CAR_TIMER_ID] = 0.5
+
+    def _InitLastBehaviorTime(self):
+        timeNow = time.time()
+        self.__lastBehaviorTime[RANDOM_JUMP_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[ADJUST_ROLL_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[MOVE_TOWARD_HOUSE_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[MOVE_INTO_HOUSE_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[ADJUST_MOVE_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[ADJUST_TO_DEST_ANGLE_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[CHECK_STUCK_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[CHECK_BIG_MAP_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[FLOAT_UP_TIMER_ID] = timeNow
+        self.__lastBehaviorTime[CHECK_CAR_TIMER_ID] = timeNow
+
+    def _CheckBehaviorTimer(self, behaviorTimerID):
+        timeNow = time.time()
+        timer = self.__behaviorTimer[behaviorTimerID]
+        lastTime = self.__lastBehaviorTime[behaviorTimerID]
+
+        isTmerOk = True if (timeNow - lastTime > timer) else False
+
+        if isTmerOk is True:
+            self.__lastBehaviorTime[behaviorTimerID] = timeNow
+
+        return isTmerOk
+
+    def _RandomJump(self):
+        timeNow = time.time()
+        if timeNow - self.__detectEnemyTime < 2:
+            return
+
+        if timeNow - self.__detectCarTime < 2:
+            return
+
+        if self._CheckBehaviorTimer(RANDOM_JUMP_TIMER_ID) is not True:
+            return
+
+        self.__agentEnv.DoAction({'SelfAction': ACTION_JUMP})
+
+    def _AdjustViewOfRoll(self):
+        timeNow = time.time()
+        if timeNow - self.__episodeStartTime < self.__adjustViewAfterEpisodeStart:
+            return
+
+        if self._CheckBehaviorTimer(ADJUST_ROLL_TIMER_ID) is not True:
+            return
+
+        self.logger.info('adjust view of roll')
+
+        for i in range(0, 8):
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_UP, 'swapY': 65})
+            time.sleep(0.05)
+            self._UpdateState()
+
+        for i in range(0, 5):
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_DOWN, 'swapY': 65})
+            time.sleep(0.05)
+            self._UpdateState()
+
+        #self._UpdateCheckStuckTime()
+
+    def _IsAgentStuck(self):
+        if self.__gameState['stuckState'] is True:
+            return True
+
+        return False
+
+    def _UpdateCheckStuckTime(self):
+        self.__lastBehaviorTime[CHECK_STUCK_TIMER_ID] = time.time()
+
+    def _CheckStuck(self):
+        timeNow = time.time()
+        if timeNow - self.__episodeStartTime < self.__checkStuckAfterEpisodeStart:
+            return
+
+        if self._CheckBehaviorTimer(CHECK_STUCK_TIMER_ID) is not True:
+            return
+
+        if self._IsAgentStuck() is True:
+            self.logger.info('Agent stuck, turn right!')
+
+            detectCount = 0
+            for i in range(0, 10):
+                if self._HasEnemy() is True and self._HasGun() is True:
+                    detectCount += 1
+
+                if detectCount >= 1:
+                    break
+
+                if i % 2 == 0:
+                    self.__agentEnv.DoAction({'MoveAction': 210, 'FastMove' : False})
+                else:
+                    self.__agentEnv.DoAction({'MoveAction': 150, 'FastMove' : False})
+
+                time.sleep(0.2)
+                self._UpdateState()
+
+            for i in range(0, 10):
+                if self._HasEnemy() is True and self._HasGun() is True:
+                    detectCount += 1
+
+                if detectCount >= 1:
+                    break
+
+                if i < 8:
+                    self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_RIGHT, 'swapX': 80})
+                else:
+                    self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_LEFT, 'swapX': 80})
+
+                time.sleep(0.1)
+                self._UpdateState()
+
+            if detectCount >= 1:
+                self.__agentEnv.DoAction({'MoveAction': -1})
+
+            self._UpdateCheckStuckTime()
+
+    def _HasEnemy(self):
+        if len(self.__gameState['senceInfo']['enemyPos']) > 0:
+            return True
+        return False
+
+    def _HasGun(self):
+        if self.__gameState['attackBtnState'] is not True and self.__gameState['floatBtnState'] is not True :
+            return True
+        return False
+
+    def _CheckBattle(self):
+        if self._HasEnemy() is not True:
+            return
+
+        if self._HasGun() is True:
+            self.__agentEnv.DoAction({'MoveAction': -1})
+
+        enemyPos = self.__gameState['senceInfo']['enemyPos']
+
+        maxEnymySize = 0
+        maxEnymyIndex = -1
+        for i in range(0, len(enemyPos)):
+            x, y, w, h = enemyPos[i]
+            enemySize = w * h
+            if enemySize > maxEnymySize:
+                maxEnymySize = enemySize
+                maxEnymyIndex = i
+
+        x,y,w,h = enemyPos[maxEnymyIndex]
+        centerX = x + w/2
+        centerY = y + h/3
+
+        imgWidth = self.__agentEnv.GetImgWidth()
+        imgHeight = self.__agentEnv.GetImgHeight()
+        imgCenterX = imgWidth/2
+        imgCenterY = imgHeight/2
+
+        if imgCenterX - 65 < centerX < imgCenterX + 65 and imgCenterY - 80 < centerY < imgCenterY + 80:
+            for i in range(0, 3):
+                self.logger.info('Attack enemy')
+                self.__agentEnv.DoAction({'SelfAction': ACTION_ATTACK})
+                time.sleep(0.1)
+
+        if self._HasGun() is not True:
+            return
+
+        hScale = 0.33
+        vScale = 0.18
+        distX = abs(centerX - imgCenterX)
+        if distX > 360:
+            hScale = 0.25
+
+        bNeedHSwap = False
+        timeNow = time.time()
+        if timeNow - self.__hSwapToEnemyTime > H_SWAP_TO_ENEMY_TIME:
+            bNeedHSwap = True
+
+        if centerX < imgCenterX - 40 and bNeedHSwap is True:
+            moveX =  int(hScale * (imgCenterX - centerX))
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_LEFT, 'swapX': moveX})
+            self.__hSwapToEnemyTime = timeNow
+            self.logger.info('batele: swap left: {}'.format(moveX))
+        elif centerX > imgCenterX + 40 and bNeedHSwap is True:
+            moveX =  int(hScale * (centerX - imgCenterX))
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_RIGHT, 'swapX': moveX})
+            self.__hSwapToEnemyTime = timeNow
+            self.logger.info('batele: swap right: {}'.format(moveX))
+
+        if centerY < imgCenterY - 50:
+            moveY = int(vScale * (imgCenterY - centerY))
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_UP, 'swapY': moveY})
+            self.logger.info('batele: swap up: {}'.format(moveY))
+        elif centerY > imgCenterY + 50:
+            moveY = int(vScale * (centerY - imgCenterY))
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_DOWN, 'swapY': moveY})
+            self.logger.info('batele: swap down: {}'.format(moveY))
+
+        self._UpdateCheckStuckTime()
+
+        return
+
+    def _HasCar(self):
+        if len(self.__gameState['senceInfo']['carPos']) > 0:
+            return True
+
+        return False
+
+    def _CheckCar(self):
+        if self._HasCar() is not True:
+            return
+
+        if self._CheckBehaviorTimer(CHECK_CAR_TIMER_ID) is not True:
+            return
+
+        carPos = self.__gameState['senceInfo']['carPos']
+        self._MoveInToTarget(carPos)
+
+    def _MoveTowardsHouse(self):
+        if self._CheckBehaviorTimer(MOVE_TOWARD_HOUSE_TIMER_ID) is not True:
+            return
+
+        housePos = self.__gameState['senceInfo']['housePos']
+        if len(housePos) == 0:
+            return
+
+        maxHouseSize = 0
+        maxHouseIndex = -1
+        for i in range(0, len(housePos)):
+            x, y, w, h = housePos[i]
+            houseSize = w * h
+            if houseSize > maxHouseSize:
+                maxHouseSize = houseSize
+                maxHouseIndex = i
+
+        x,y,w,h = housePos[maxHouseIndex]
+        centerX = x + w/2
+        imageCenterX = self.__agentEnv.GetImgWidth()/2
+
+        if centerX < imageCenterX - 120:
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_LEFT, 'swapX': 30})
+        elif centerX > imageCenterX + 120:
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_RIGHT, 'swapX': 30})
+
+    def _MoveInToTarget(self, targetPos):
+        maxSize = 0
+        maxIndex = -1
+
+        timeNow = time.time()
+        if timeNow - self.__detectEnemyTime < 2:
+            return
+
+        for i in range(0, len(targetPos)):
+            x, y, w, h = targetPos[i]
+            size = w * h
+            if size > maxSize:
+                maxSize = size
+                maxIndex = i
+
+        x, y, w, h = targetPos[maxIndex]
+        centerX = x + w/2
+        imageCenterX = self.__agentEnv.GetImgWidth()/2 - 40
+
+        if centerX < imageCenterX - 60:
+            moveX =  int(0.2 * (imageCenterX - centerX))
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_LEFT, 'swapX': moveX})
+            self.logger.info('Into target: swap left: {}'.format(moveX))
+        elif centerX > imageCenterX + 60:
+            moveX =  int(0.2 * (centerX - imageCenterX))
+            self.__agentEnv.DoAction({'SwapAction': ACTION_SWAP_RIGHT, 'swapX': moveX})
+            self.logger.info('Into target: swap right: {}'.format(moveX))
+
+    def _MoveInToHouse(self):
+        if self._CheckBehaviorTimer(MOVE_INTO_HOUSE_TIMER_ID) is not True:
+            return
+
+        windowPos = self.__gameState['senceInfo']['windowPos']
+        oDoorPos = self.__gameState['senceInfo']['oDoorPos']
+        if len(oDoorPos) > 0:
+            self._MoveInToTarget(oDoorPos)
+        elif len(windowPos) > 0:
+            self._MoveInToTarget(windowPos)
+        else:
+            pass
+
+    def _HasIntoHouseTarget(self):
+        windowPos = self.__gameState['senceInfo']['windowPos']
+        oDoorPos = self.__gameState['senceInfo']['oDoorPos']
+
+        if len(windowPos) > 0 or len(oDoorPos) > 0:
+            return True
+
+        return False
+
+    def _Move(self):
+        if self._CheckBehaviorTimer(ADJUST_MOVE_TIMER_ID) is not True:
+            return
+
+        timeNow = time.time()
+        fastMove = True
+        if timeNow - self.__detectWindowDoorTime < 10:
+            fastMove = False
+
+        if timeNow - self.__detectEnemyTime < 4:
+            fastMove = False
+            if self._HasGun() is True:
+                self._UpdateCheckStuckTime()
+                return
+
+        if timeNow - self.__detectCarTime < 4:
+            fastMove = False
+
+        moveAngle = 0
+
+        self.__agentEnv.DoAction({'MoveAction': moveAngle, 'FastMove': fastMove})
+
+    def _FloatUp(self):
+        if self._CheckBehaviorTimer(FLOAT_UP_TIMER_ID) is not True:
+            return
+
+        self.__agentEnv.DoAction({'SelfAction': ACTION_FLOAT})
+
+    def _Leave(self):
+        pass
+
+    def _DoHangOut(self):
+        self._Move()
+
+        if self._HasIntoHouseTarget() is True:
+            self._MoveInToHouse()
+        else:
+            self._MoveTowardsHouse()
+
+        self._RandomJump()
+        if not self._HasEnemy():
+            self._AdjustViewOfRoll()
+            self._CheckStuck()
+            self._CheckCar()
+        else:
+            self._CheckBattle()
+
+    def _DoLeave(self):
+        if self.__detectLeaveTime == -1:
+            self.__detectLeaveTime = time.time()
+            self.__agentEnv.DoAction({'MoveAction': -1})
+        else:
+            if time.time() - self.__detectLeaveTime > self.__leaveAfterDetectTime:
+                self.__leaveTime = time.time()
+                self.__agentEnv.DoAction({'SelfAction': ACTION_LEAVE})
+                time.sleep(0.5)
+
+        time.sleep(0.1)
+
+    def _DoSwim(self):
+        self._Move()
+        self._FloatUp()
+        self._MoveTowardsHouse()
+        self._CheckStuck()

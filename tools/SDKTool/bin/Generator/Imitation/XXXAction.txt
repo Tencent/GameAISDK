@@ -1,0 +1,180 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import logging
+import time
+import sys
+
+from ActionAPI.ActionAPIMgr import ActionAPIMgr
+from aimodel.ImitationLearning.MainImitationLearning import MainImitationLearning
+
+
+class XXXAction(object):
+    """
+    定义模仿学习动作类
+    """
+
+    def __init__(self):
+        self.logger = logging.getLogger('agent')
+        self.__actionMgr = ActionAPIMgr()
+
+        self.mainImitationLearning = MainImitationLearning()
+        self.mainImitationLearning.Init()
+        self.cfgData = self.mainImitationLearning.cfgData
+        self.actionsContextList = self.mainImitationLearning.cfgData['actionsContextList']
+        self.actionName = self.mainImitationLearning.actionName
+        self.actionDefine = self.mainImitationLearning.cfgData['actionDefine']
+        self.taskActionDict = self.mainImitationLearning.taskActionDict
+
+        # 多分辨下更新点击动作对应的按钮位置，初始化点击任务名称列表actionClickList和是否更新的状态列表actionUpdateList
+        self.actionClickList = list()
+        self.actionUpdateList = dict()
+        for key in self.actionsContextList.keys():
+            actionType = self.actionsContextList[key]['type']
+            if actionType == 3:
+                self.actionClickList.append(key)
+                self.actionUpdateList[key] = 0
+
+        self.preAction = [None] * len(self.taskActionDict)
+
+
+        self.resetWaitTime = 5
+        self.timeInit = -1
+
+        self.timeNow = -1
+        self.centerx = -1
+        self.centery = -1
+        self.radius = -1
+        self.contactJoyStick = -1
+
+    def Initialize(self, height, width):
+        """
+        动作定义
+        """
+        return self.__actionMgr.Initialize()
+
+    def Finish(self):
+        """
+        停止动作
+        """
+        self.__actionMgr.Finish()
+
+    def ActionInit(self):
+        """
+        摇杆动作初始化
+        """
+        self.__actionMgr.MovingInit(self.centerx, self.centery,
+                                    self.radius, contact=self.contactJoyStick,
+                                    frameSeq=-1, waitTime=100)
+
+    def ActionFinish(self, frameIndex):
+        """
+        摇杆停止
+        """
+        self.__actionMgr.MovingFinish(frameSeq=frameIndex)
+
+    def ActionResetContact(self, frameIndex):
+        """
+        重置触点
+        """
+        for n in range(3):
+            if n != self.contactJoyStick:
+                self.__actionMgr.Up(contact=n, frameSeq=frameIndex)
+            else:
+                self.__actionMgr.Moving(-1, frameSeq=frameIndex)
+
+    def DoAction(self, actionIdListInput, imgHeight, imgWidth, timeMs, frameIndex):
+        """
+        做动作
+        actionId 为动作序号
+        imgHeight 为输入图像高度
+        imgWidth 为输入图像宽度
+        timeMs 为点击动作的持续时间
+        frameIndex 为帧序号
+        """
+        ratioX = imgWidth * 1. / self.cfgData['inputWidth']
+        ratioY = imgHeight * 1. / self.cfgData['inputHeight']
+        actionIdList = list()
+        if len(self.taskActionDict) == 1:
+            actionIdList.append(actionIdListInput)
+        else:
+            actionIdList = actionIdListInput
+
+        self.ActionResetContact(frameIndex)
+
+        for ind in range(len(actionIdList)):
+            actionId = actionIdList[ind]
+
+            if self.actionDefine is not None:
+                actionIdOriList = self.taskActionDict[ind][actionId]["actionIDGroup"]
+
+                # if self.preAction[ind] == actionId:
+                #     continue
+
+                self.preAction[ind] = actionId
+                for actionIdOri in actionIdOriList:
+                    if self.actionsContextList[actionIdOri]['type'] == 0:
+                        # self.ActionResetContact(frameIndex)
+                        continue
+
+                    actionType = self.actionsContextList[actionIdOri]['type']
+                    self.DoSpecificAction(actionIdOri, actionType, ratioX, ratioY, frameIndex)
+            else:
+                 self.logger.error('Should define actionDefine in imitationLearning.json')
+
+    def DoSpecificAction(self, actionId, actionType, ratioX, ratioY, frameIndex):
+        """
+        做特定动作
+        actionId 为动作序号
+        actionType == 0: 不做动作
+        actionType == 3: 点击
+        actionType == 4: 滑动
+        actionType == 5: 使用摇杆
+        ratioX： X轴方向的比例
+        ratioY： Y轴方向的比例
+        frameIndex： 帧序号
+        """
+        if actionType == 0:
+            return
+        if actionType == 3:
+            # 多分辨率下只支持点击动作的位置更新
+            # 如果点击动作位置更新，则采用最新动作位置
+            if self.actionUpdateList[actionId]:
+                self.__actionMgr.Down(self.actionsContextList[actionId]['updateBtnX'],
+                                      self.actionsContextList[actionId]['updateBtnY'],
+                                      contact=self.actionsContextList[actionId]['contact'],
+                                      frameSeq=frameIndex)
+                self.logger.info('Use the updated button position based on Task.json for actionId {}'.format(actionId))
+            else:
+                actionX = int((self.actionsContextList[actionId]['regionX1'] +
+                               self.actionsContextList[actionId]['regionX2']) / 2 * ratioX)
+                actionY = int((self.actionsContextList[actionId]['regionY1'] +
+                               self.actionsContextList[actionId]['regionY2']) / 2 * ratioY)
+                self.__actionMgr.Down(actionX, actionY,
+                                      contact=self.actionsContextList[actionId]['contact'],
+                                      frameSeq=frameIndex)
+
+        if actionType == 4:
+            swipeStartX = int(self.actionsContextList[actionId]['swipeStartX'] * ratioX)
+            swipeStartY = int(self.actionsContextList[actionId]['swipeStartY'] * ratioY)
+            swipeEndX = int(self.actionsContextList[actionId]['swipeEndX'] * ratioX)
+            swipeEndY = int(self.actionsContextList[actionId]['swipeEndY'] * ratioY)
+
+            self.__actionMgr.Swipe(swipeStartX, swipeStartY,swipeEndX,swipeEndY,
+                                   contact=self.actionsContextList[actionId]['contact'],
+                                   frameSeq=frameIndex, durationMS=80, needUp=False)
+
+        if actionType == 5:
+            self.timeNow = time.time()
+            if self.timeNow - self.timeInit > self.resetWaitTime:
+                self.centerx = int(self.actionsContextList[actionId]['centerx'] * ratioX)
+                self.centery = int(self.actionsContextList[actionId]['centery'] * ratioY)
+                self.radius = int(0.5 * (self.actionsContextList[actionId]['rangeInner'] +
+                                         self.actionsContextList[actionId]['rangeOuter']) * ratioX)
+
+                self.contactJoyStick = self.actionsContextList[actionId]['contact']
+
+                self.ActionInit()
+                self.timeInit = self.timeNow
+
+            self.__actionMgr.Moving(self.actionsContextList[actionId]['angle'], frameSeq=frameIndex)

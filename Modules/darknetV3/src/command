@@ -1,0 +1,13 @@
+
+
+# cfm2
+
+./darknet detector train cfg/cfm2.data cfg/tiny-yolo-cfm2-tiny-yolo.cfg  yolov2-tiny.14
+
+
+
+./darknet detector demo cfg/cfm2.data cfg/yolov3-cfm2.cfg  yolov3-cfm2_final.weights ../dataset/CFM/1.mp4
+
+
+./darknet detector valid cfg/cfm2.data cfg/yolov3-cfm2.cfg  yolov3-cfm2_final.weights
+

@@ -1,0 +1,10 @@
+{
+    "Debug": true,
+    "GameName": "TTKP",
+    "FrameFPS": 10,
+    "FrameHeight": 360,
+    "FrameWidth": 640,
+    "ActionCfgFile": "cfg/action_TTKP.json",
+    "OutputAsVideo": false,
+    "LogTimestamp": false
+}

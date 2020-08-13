@@ -1,0 +1,36 @@
+{
+    "screenHeight": 360, 
+    "screenWidth": 640, 
+    "actions": [
+        
+        {
+            "id":0,
+            "name":"None",
+            "type":0
+        },
+        {
+            "id":1,
+            "name":"slip",
+            "type":3,
+            "contact": 0, 
+            "x": 0, 
+            "y": 230, 
+            "startRectx":0,
+            "startRecty":230,
+            "width":115,
+            "height":129
+        },
+        {
+            "id":2,
+            "name":"jump",
+            "type":3,
+            "contact": 0, 
+            "x": 528, 
+            "y": 244, 
+            "startRectx":528,
+            "startRecty":244,
+            "width":103,
+            "height":106
+        }
+    ]
+}

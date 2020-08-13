@@ -1,0 +1,290 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import time
+import os
+import sys
+
+import configparser
+import cv2
+
+from AgentAPI import AgentAPIMgr
+from util import util
+
+from .XXXAction import *
+from aimodel.ImitationLearning.MainImitationLearning import MainImitationLearning
+from agentenv.GameEnv import GameEnv
+
+# Task.json定义动作位置，确定模仿学习ImitationAction.json中type=3（点击）动作的位置，相同动作的taskID需要与
+# ImitationAction.json中的'id'一致。Task.json新增两项确定游戏开始和结束，在Env中的beginTaskID和overTaskID确定。
+# Refer.json用来确定Task.json中的区域位置，主要用于多分辨率。
+TASK_CFG_FILE = 'cfg/task/gameReg/Task.json'
+TASK_REFER_CFG_FILE = 'cfg/task/gameReg/Refer.json'
+
+REG_GROUP_ID = 1
+
+GAME_STATE_INVALID = 0
+GAME_STATE_RUN = 1
+GAME_STATE_OVER = 2
+
+
+class XXXEnv(GameEnv):
+    """
+    Env class for imitation learning
+    """
+
+    def __init__(self):
+        GameEnv.__init__(self)
+        self.actionCtrl = XXXAction()
+
+        #除去None的动作个数
+        actionNum = len(self.actionCtrl.actionsContextList) - 1
+        self.beginTaskID = actionNum + 1  # 游戏开始识别任务ID
+        self.overTaskID = actionNum + 2  # 游戏结束识别任务ID
+
+        self.__frameIndex = -1
+
+        self.__agentAPI = AgentAPIMgr.AgentAPIMgr()
+
+        self.mainImitationLearning = MainImitationLearning()
+        self.mainImitationLearning.Init()
+
+        self.__inputImgWidth = self.mainImitationLearning.inputWidth
+        self.__inputImgHeight = self.mainImitationLearning.inputHeight
+
+        self.__timeMs = self.mainImitationLearning.actionTimeMs
+
+        self.__gameState = GAME_STATE_OVER
+
+    def Init(self):
+        """
+        Int function for env
+        """
+        taskCfgFile = util.ConvertToSDKFilePath(TASK_CFG_FILE)
+        taskReferCfgFile = util.ConvertToSDKFilePath(TASK_REFER_CFG_FILE)
+        ret = self.__agentAPI.Initialize(taskCfgFile, referFile=taskReferCfgFile)
+        if not ret:
+            self.logger.error('Agent API Init Failed')
+            return False
+
+        ret = self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_GROUP_ID, REG_GROUP_ID)
+        if not ret:
+            self.logger.error('send message failed')
+            return False
+
+        return True
+
+    def Finish(self):
+        """
+        Finish env
+        """
+        self.__agentAPI.Release()
+        self.actionCtrl.Finish()
+
+    def GetActionSpace(self):
+        """
+        Get action number
+        """
+        pass
+
+    def Reset(self):
+        """
+        Reset env
+        """
+        pass
+
+    def RestartAction(self):
+        """
+        Restart action
+        """
+        pass
+
+    def StopAction(self):
+        """
+        Stop action
+        """
+        pass
+
+    def DoAction(self, action, *args, **kwargs):
+        """
+        Do specific action
+        """
+        self._OutPutAction(action)
+
+    def _OutPutAction(self, actionIndex):
+        self.actionCtrl.DoAction(actionIndex,
+                                 self.__imgHeight,
+                                 self.__imgWidth,
+                                 self.__timeMs,
+                                 self.__frameIndex)
+
+    def GetState(self):
+        """
+        Get game data , image and state
+        """
+        gameInfo = self._GetGameInfo()
+        image = gameInfo['image']
+        self.__frameIndex = gameInfo['frameSeq']
+        state = self.__gameState
+        img = image
+        img = cv2.resize(img, (self.__inputImgWidth, self.__inputImgHeight))
+        self.__isTerminal = True
+
+        if state == GAME_STATE_RUN:
+            self.__isTerminal = False
+
+        return img, self.__isTerminal
+
+    def IsTrainable(self):
+        """
+        Whether model is trainable
+        """
+        return True
+
+    def IsEpisodeStart(self):
+        """
+        Whether game is begin
+        """
+        _ = self._GetGameInfo()
+        if self.__gameState == GAME_STATE_RUN:
+            self.__isTerminal = False
+            return True
+
+        return False
+
+    def IsEpisodeOver(self):
+        """
+        Whether game is over
+        """
+        return self.__isTerminal
+
+    def OnEpisodeStart(self):
+        """
+        Initital env when episode is begin
+        """
+        self.actionCtrl.Initialize(self.__imgHeight, self.__imgWidth)
+        self.logger.info('init:  height: {}  width: {}'.format(self.__imgHeight, self.__imgWidth))
+
+    def OnEpisodeOver(self):
+        """
+        End env when episode is over
+        """
+        pass
+
+    #获取taskID对应的识别结果
+    def _GetTemplateState(self, resultDict, taskID):
+        state = False
+        px = -1
+        py = -1
+        regResults = resultDict.get(taskID)
+        if regResults is None:
+            return (state, px, py)
+
+        for item in regResults:
+            flag = item['flag']
+            if flag:
+                x = item['boxes'][0]['x']
+                y = item['boxes'][0]['y']
+                w = item['boxes'][0]['w']
+                h = item['boxes'][0]['h']
+
+                state = True
+                px = int(x + w/2)
+                py = int(y + h/2)
+                break
+
+        return (state, px, py)
+
+    #获取taskID对应的位置坐标
+    def _GetBtnPostion(self, resultDict, taskID):
+        state = False
+        px = -1
+        py = -1
+
+        regResults = resultDict.get(taskID)
+        if regResults is None:
+            return (state, px, py)
+
+        for result in regResults:
+            x = result['ROI']['x']
+            y = result['ROI']['y']
+            w = result['ROI']['w']
+            h = result['ROI']['h']
+
+            if x > 0 and y > 0:
+                state = True
+                px = int(x + w/2)
+                py = int(y + h/2)
+                break
+
+        return (state, px, py)
+
+    #根据识别模块API获取识别的的游戏状态信息
+    def _GetGameInfo(self):
+        gameInfo = None
+
+        while True:
+            gameInfo = self.__agentAPI.GetInfo(AgentAPIMgr.GAME_RESULT_INFO)
+            if gameInfo is None:
+                time.sleep(0.002)
+                continue
+
+            result = gameInfo['result']
+            if result is None:
+                time.sleep(0.002)
+                continue
+
+            image = gameInfo['image']
+            self.__imgHeight = image.shape[0]
+            self.__imgWidth = image.shape[1]
+
+            self._ParseGameState(result)
+            self._ParseBtnPostion(result)
+            self._ParseSceneInfo(result)
+
+            break
+
+        return gameInfo
+
+    #解析游戏开始、结束等状态
+    def _ParseGameState(self, resultDict):
+        flag, _, _ = self._GetTemplateState(resultDict, self.beginTaskID)
+        if flag is True:
+            self.__gameState = GAME_STATE_RUN
+
+        flag, _, _ = self._GetTemplateState(resultDict, self.overTaskID)
+        if flag is True:
+            self.__gameState = GAME_STATE_OVER
+
+    #解析游戏操作按键的位置坐标,关闭完成位置更新的识别任务
+    def _ParseBtnPostion(self, resultDict):
+        totalTask = list(resultDict.keys())
+        disableTask = list()
+        for actionClickId in self.actionCtrl.actionClickList:
+            if actionClickId in resultDict.keys():
+                _, updateBtnX, updteBtnY = self._GetBtnPostion(resultDict, actionClickId)
+                self.actionCtrl.actionsContextList[actionClickId]['updateBtnX'] = updateBtnX
+                self.actionCtrl.actionsContextList[actionClickId]['updateBtnY'] = updteBtnY
+                self.actionCtrl.actionUpdateList[actionClickId] = 1
+                disableTask.append(actionClickId)
+
+        enableTask = [totalTask[n] for n in range(len(totalTask)) if totalTask[n] not in disableTask]
+        self.SendUpdateTask(disableTask, enableTask)
+
+    #解析游戏场景信息
+    def _ParseSceneInfo(self, resultDict):
+        pass
+
+    def SendUpdateTask(self, disableTask, enableTask):
+        taskFlagDict = dict()
+        for taskID in disableTask:
+            taskFlagDict[taskID] = False
+
+        for taskID in enableTask:
+            taskFlagDict[taskID] = True
+
+        ret = self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_TASK_FLAG, taskFlagDict)
+        if not ret:
+            self.logger.error('AgentAPI MSG_SEND_TASK_FLAG failed')
+            return False
+        return True

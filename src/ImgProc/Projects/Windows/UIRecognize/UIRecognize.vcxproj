@@ -1,0 +1,465 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\PokerSamples\packages\OpenCV.2.4.11\build\native\OpenCV.props" Condition="Exists('..\PokerSamples\packages\OpenCV.2.4.11\build\native\OpenCV.props')" />
+  <Import Project="..\GameRecognize\packages\OpenCV.2.4.10\build\native\OpenCV.props" Condition="Exists('..\GameRecognize\packages\OpenCV.2.4.10\build\native\OpenCV.props')" />
+  <Import Project="packages\OpenCV.2.4.10\build\native\OpenCV.props" Condition="Exists('packages\OpenCV.2.4.10\build\native\OpenCV.props')" />
+  <Import Project="packages\glog.0.3.3.0\build\native\glog.props" Condition="Exists('packages\glog.0.3.3.0\build\native\glog.props')" />
+  <Import Project="packages\gflags.2.1.2.1\build\native\gflags.props" Condition="Exists('packages\gflags.2.1.2.1\build\native\gflags.props')" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_cpu|x64">
+      <Configuration>Debug_cpu</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_cuda|x64">
+      <Configuration>Debug_cuda</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_cpu|x64">
+      <Configuration>Release_cpu</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_cuda|x64">
+      <Configuration>Release_cuda</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\activations.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\activation_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\art.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\avgpool_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\batchnorm_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\blas.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\box.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\captcha.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cifar.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\classifier.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\coco.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\col2im.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\compare.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\connected_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\convolutional_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cost_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cpu_gemm.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\crnn_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\crop_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\cuda.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\darknet.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\data.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\deconvolutional_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\demo.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\detection_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\detector.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\dice.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\dropout_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\gemm.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\getopt.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\gettimeofday.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\go.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\gru_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\http_stream.cpp" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\im2col.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\image.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\list.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\local_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\matrix.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\maxpool_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\network.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\nightmare.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\normalization_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\option_list.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\parser.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\region_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_old_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn_vid.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\route_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\shortcut_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\softmax_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\super.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\swag.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\tag.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\tree.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\upsample_layer.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\utils.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\voxel.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\writing.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\yolo.c" />
+    <ClCompile Include="..\..\..\..\..\Modules\darknetV3-win\src\yolo_layer.c" />
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\CColorMatch.cpp" />
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\CObjDet.cpp" />
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\CORBMatch.cpp" />
+    <ClCompile Include="..\..\..\Comm\ImgReg\ImgProcess\ImgComn.cpp" />
+    <ClCompile Include="..\..\..\Comm\ImgReg\Recognizer\CLocationReg.cpp" />
+    <ClCompile Include="..\..\..\Comm\Os\Windows\TqcWindowsOS.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\GameUtils.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\IniConfig.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\JsonConfig.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\Log.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\TqcCommon.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\TqcLock.cpp" />
+    <ClCompile Include="..\..\..\Comm\Utils\TqcString.cpp" />
+    <ClCompile Include="..\..\..\Protobuf\common.pb.cc" />
+    <ClCompile Include="..\..\..\Protobuf\gameregProtoc.pb.cc" />
+    <ClCompile Include="..\..\..\UI\Src\Action\Action.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\Action\SendAction.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\Communicate\DataManager.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\Communicate\PBMsgManager.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\GameState\GameOverState.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\GameState\GameRunState.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\GameState\GameStartState.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\GameState\HallState.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\main.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UICfg\GameOverCfg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UICfg\GameStartCfg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UICfg\CommUICfg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UICfg\HallCfg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UICfg\POPUICfg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UIFrameWork.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UIReg\CommonUIReg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UIReg\GameOverReg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UIReg\GameStartReg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UIReg\HallReg.cpp" />
+    <ClCompile Include="..\..\..\UI\Src\UIReg\POPUIReg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\activations.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\activation_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\avgpool_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\batchnorm_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\blas.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\box.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\classifier.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\col2im.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\connected_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\convolutional_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\cost_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\crnn_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\crop_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\cuda.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\data.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\deconvolutional_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\demo.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\detection_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\dropout_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\gemm.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\getopt.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\gettimeofday.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\gru_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\http_stream.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\im2col.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\image.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\list.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\local_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\matrix.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\maxpool_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\network.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\normalization_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\ObjDet.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\option_list.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\parser.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\region_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\reorg_old_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\rnn_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\route_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\shortcut_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\softmax_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\stb_image.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\stb_image_write.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\tree.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\unistd.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\upsample_layer.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\utils.h" />
+    <ClInclude Include="..\..\..\..\..\Modules\darknetV3-win\src\yolo_layer.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\CColorMatch.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\CObjDet.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\CORBMatch.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\IImgProc.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\ImgProcess\ImgComn.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\CLocationReg.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IComnBaseReg.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IImgBaseReg.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IObjReg.h" />
+    <ClInclude Include="..\..\..\Comm\ImgReg\Recognizer\IRecognizer.h" />
+    <ClInclude Include="..\..\..\Comm\Os\TqcOs.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\Base64.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\Config.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\Debug.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\GameUtils.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\IndexThreadReduce.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\IniConfig.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\JsonConfig.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\Log.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\TqcCommon.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\TqcLock.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\TqcLog.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\TqcString.h" />
+    <ClInclude Include="..\..\..\Comm\Utils\TSingleton.h" />
+    <ClInclude Include="..\..\..\Protobuf\common.pb.h" />
+    <ClInclude Include="..\..\..\Protobuf\gameregProtoc.pb.h" />
+    <ClInclude Include="..\..\..\UI\Src\Action\Action.h" />
+    <ClInclude Include="..\..\..\UI\Src\Action\SendAction.h" />
+    <ClInclude Include="..\..\..\UI\Src\Communicate\DataComm.h" />
+    <ClInclude Include="..\..\..\UI\Src\Communicate\DataManager.h" />
+    <ClInclude Include="..\..\..\UI\Src\Communicate\PBMsgManager.h" />
+    <ClInclude Include="..\..\..\UI\Src\GameState\GameOverState.h" />
+    <ClInclude Include="..\..\..\UI\Src\GameState\GameRunState.h" />
+    <ClInclude Include="..\..\..\UI\Src\GameState\GameStartState.h" />
+    <ClInclude Include="..\..\..\UI\Src\GameState\HallState.h" />
+    <ClInclude Include="..\..\..\UI\Src\GameState\UIState.h" />
+    <ClInclude Include="..\..\..\UI\Src\UICfg\GameOverCfg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UICfg\GameStartCfg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UICfg\CommUICfg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UICfg\HallCfg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UICfg\POPUICfg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UICfg\UICfg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIDefine.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIFrameWork.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIReg\CommonUIReg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIReg\GameOverReg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIReg\GameStartReg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIReg\HallReg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIReg\POPUIReg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UIReg\UIReg.h" />
+    <ClInclude Include="..\..\..\UI\Src\UITypes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\activation_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\avgpool_layer_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\blas_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\col2im_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\convolutional_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\crop_layer_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\deconvolutional_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\dropout_layer_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\im2col_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\maxpool_layer_kernels.cu" />
+    <None Include="..\..\..\..\..\Modules\darknetV3-win\src\network_kernels.cu" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A9DDE094-3EC0-4F38-A4C4-F2EFBD574D3A}</ProjectGuid>
+    <RootNamespace>CaffeRecognize</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cpu|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cpu|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cpu|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_cpu|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">
+    <OutDir>$(SolutionDir)output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)output\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cpu|x64'">
+    <OutDir>$(SolutionDir)output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)output\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">
+    <OutDir>$(SolutionDir)output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)output\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_cpu|x64'">
+    <OutDir>$(SolutionDir)output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)output\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cuda|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../../Communicate/libtbus/include;../../Src/Protobuf;../../../../../Modules/protobuf/include;../../../../../Modules/Lua/include;../../../../../Modules/Json/include;../../../../../Modules/boost/Windows/include;../../../Communicate;../../../UI;../../Src;../../../include;../../../Common;../../../Os;./</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4819;4244;4251;4661;4267;4244;4251;4661;4267;4800;</DisableSpecificWarnings>
+      <PreprocessorDefinitions>UI_PROCESS=1;NOMINMAX;SKIP_FRAME=0;GAME_RUNNING_UI_CHECK_INTERVAL=1;GAME_PLANES_UI_CHECK_INTERVAL=1;_MBCS;WINDOWS;_WINDOWS;OPENCV_2;POKER_SAMPLES;GAME_POKER=1;DISABLE_IMAGE_SHOW=0;DISABLE_KEYBOARD=0;USE_CUDA;GLOG_NO_ABBREVIATED_SEVERITIES;_SCL_SECURE_NO_WARNINGS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libprotobufd.lib;busdll.lib;Lua_Lib.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../../Modules/boost/Windows/x64;../../../../../Modules/protobuf/Windows/x64/Debug;../../../Communicate/libtbus/Windows;../../../../../Modules/Lua/windows/x64/Debug;../../../../../Modules/Json/lib/windows/Debug;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_cpu|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../../../../Modules/darknetV3-win/3rdparty/include;../../../../../Modules/opencv-3.4.2/include;../../../../../;../../../../../Modules/tbus/libtbus/include;../../Src/Protobuf;../../../../../Modules/protobuf/include;../../../../../Modules/python3.6/include/Windows;../../../../../Modules/Json/include;../../../../../Modules/boost/Windows/include;../../../Communicate;../../../UI;../../Src;../../../include;../../../Comm/Utils;../../../Os;../../../</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4819;4244;4251;4661;4267;</DisableSpecificWarnings>
+      <PreprocessorDefinitions>UI_PROCESS=1;NOMINMAX;_MBCS;WINDOWS;_WINDOWS;DISABLE_IMAGE_SHOW=0;DISABLE_KEYBOARD=0;USE_CPU;CPU_ONLY;WIN32;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ws2_32.lib;libprotobufd.lib;busdll.lib;jsoncpp.lib;opencv_world342d.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../../Modules/darknetV3-win/3rdparty/lib/x64;../../../../../Modules/python3.6/libs;../../../../../Modules/opencv-3.4.2/x64/vc15/lib;../../../../../Modules/Json/lib/windows/Debug;../../../../../Modules/protobuf/Windows/x64/Debug;../../../../../Modules/tbus/tbusdll/x64/Debug;../../../../../Modules/boost/Windows/x64</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cuda|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../../Communicate/libtbus/include;../../Src/Protobuf;../../../../../Modules/protobuf/include;../../../../../Modules/Lua/include;../../../../../Modules/Json/include;../../../../../Modules/boost/Windows/include;../../../Communicate;../../../UI;../../Src;../../../include;../../../Common;../../../Os;./</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>UI_PROCESS=1;NOMINMAX;GAME_RUNNING_UI_CHECK_INTERVAL=20;_MBCS;WINDOWS;_WINDOWS;OPENCV_2;POKER_SAMPLES;GAME_POKER=1;DISABLE_IMAGE_SHOW=0;DISABLE_KEYBOARD=0;USE_CUDA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996;4819;4244;4251;4661;4267;4244;4251;4800;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libprotobuf.lib;busdll.lib;Lua_Lib.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../../Modules/boost/Windows/x64;../../../../../Modules/protobuf/Windows/x64/Release;../../../Communicate/libtbus/Windows;../../../../../Modules/Lua/windows/x64/Release;../../../../../Modules/Json/lib/windows/Release</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_cpu|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../../../../Modules/darknetV3-win/3rdparty/include;../../../../../Modules/opencv-3.4.2/include;../../../../../;../../../../../Modules/tbus/libtbus/include;../../Src/Protobuf;../../../../../Modules/protobuf/include;../../../../../Modules/python3.6/include/Windows;../../../../../Modules/Json/include;../../../../../Modules/boost/Windows/include;../../../Communicate;../../../UI;../../Src;../../../include;../../../Comm/Utils;../../../Os;../../../</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>UI_PROCESS=1;NOMINMAX;_MBCS;WINDOWS;_WINDOWS;DISABLE_IMAGE_SHOW=0;DISABLE_KEYBOARD=0;USE_CPU;CPU_ONLY;WIN32;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996;4819;4244;4251;4661;4267;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;libprotobuf.lib;busdll.lib;jsoncpp.lib;opencv_world342.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../../Modules/darknetV3-win/3rdparty/lib/x64;../../../../../Modules/python3.6/libs;../../../../../Modules/opencv-3.4.2/x64/vc15/lib;../../../../../Modules/boost/Windows/x64;../../../../../Modules/Json/lib/windows/Release;../../../../../Modules/protobuf/Windows/x64/Release;../../../../../Modules/tbus/tbusdll/x64/Release</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\gflags.2.1.2.1\build\native\gflags.targets" Condition="Exists('packages\gflags.2.1.2.1\build\native\gflags.targets')" />
+    <Import Project="packages\glog.0.3.3.0\build\native\glog.targets" Condition="Exists('packages\glog.0.3.3.0\build\native\glog.targets')" />
+    <Import Project="packages\OpenBLAS.0.2.14.1\build\native\openblas.targets" Condition="Exists('packages\OpenBLAS.0.2.14.1\build\native\openblas.targets')" />
+    <Import Project="packages\protobuf-v120.2.6.1\build\native\protobuf-v120.targets" Condition="Exists('packages\protobuf-v120.2.6.1\build\native\protobuf-v120.targets')" />
+    <Import Project="packages\boost.1.63.0.0\build\native\boost.targets" Condition="Exists('packages\boost.1.63.0.0\build\native\boost.targets')" />
+    <Import Project="packages\boost_atomic-vc120.1.63.0.0\build\native\boost_atomic-vc120.targets" Condition="Exists('packages\boost_atomic-vc120.1.63.0.0\build\native\boost_atomic-vc120.targets')" />
+    <Import Project="packages\boost_bzip2-vc120.1.63.0.0\build\native\boost_bzip2-vc120.targets" Condition="Exists('packages\boost_bzip2-vc120.1.63.0.0\build\native\boost_bzip2-vc120.targets')" />
+    <Import Project="packages\boost_chrono-vc120.1.63.0.0\build\native\boost_chrono-vc120.targets" Condition="Exists('packages\boost_chrono-vc120.1.63.0.0\build\native\boost_chrono-vc120.targets')" />
+    <Import Project="packages\boost_container-vc120.1.63.0.0\build\native\boost_container-vc120.targets" Condition="Exists('packages\boost_container-vc120.1.63.0.0\build\native\boost_container-vc120.targets')" />
+    <Import Project="packages\boost_context-vc120.1.63.0.0\build\native\boost_context-vc120.targets" Condition="Exists('packages\boost_context-vc120.1.63.0.0\build\native\boost_context-vc120.targets')" />
+    <Import Project="packages\boost_coroutine-vc120.1.63.0.0\build\native\boost_coroutine-vc120.targets" Condition="Exists('packages\boost_coroutine-vc120.1.63.0.0\build\native\boost_coroutine-vc120.targets')" />
+    <Import Project="packages\boost_date_time-vc120.1.63.0.0\build\native\boost_date_time-vc120.targets" Condition="Exists('packages\boost_date_time-vc120.1.63.0.0\build\native\boost_date_time-vc120.targets')" />
+    <Import Project="packages\boost_filesystem-vc120.1.63.0.0\build\native\boost_filesystem-vc120.targets" Condition="Exists('packages\boost_filesystem-vc120.1.63.0.0\build\native\boost_filesystem-vc120.targets')" />
+    <Import Project="packages\boost_graph-vc120.1.63.0.0\build\native\boost_graph-vc120.targets" Condition="Exists('packages\boost_graph-vc120.1.63.0.0\build\native\boost_graph-vc120.targets')" />
+    <Import Project="packages\boost_iostreams-vc120.1.63.0.0\build\native\boost_iostreams-vc120.targets" Condition="Exists('packages\boost_iostreams-vc120.1.63.0.0\build\native\boost_iostreams-vc120.targets')" />
+    <Import Project="packages\boost_locale-vc120.1.63.0.0\build\native\boost_locale-vc120.targets" Condition="Exists('packages\boost_locale-vc120.1.63.0.0\build\native\boost_locale-vc120.targets')" />
+    <Import Project="packages\boost_log-vc120.1.63.0.0\build\native\boost_log-vc120.targets" Condition="Exists('packages\boost_log-vc120.1.63.0.0\build\native\boost_log-vc120.targets')" />
+    <Import Project="packages\boost_log_setup-vc120.1.63.0.0\build\native\boost_log_setup-vc120.targets" Condition="Exists('packages\boost_log_setup-vc120.1.63.0.0\build\native\boost_log_setup-vc120.targets')" />
+    <Import Project="packages\boost_math_c99-vc120.1.63.0.0\build\native\boost_math_c99-vc120.targets" Condition="Exists('packages\boost_math_c99-vc120.1.63.0.0\build\native\boost_math_c99-vc120.targets')" />
+    <Import Project="packages\boost_math_c99f-vc120.1.63.0.0\build\native\boost_math_c99f-vc120.targets" Condition="Exists('packages\boost_math_c99f-vc120.1.63.0.0\build\native\boost_math_c99f-vc120.targets')" />
+    <Import Project="packages\boost_math_c99l-vc120.1.63.0.0\build\native\boost_math_c99l-vc120.targets" Condition="Exists('packages\boost_math_c99l-vc120.1.63.0.0\build\native\boost_math_c99l-vc120.targets')" />
+    <Import Project="packages\boost_math_tr1-vc120.1.63.0.0\build\native\boost_math_tr1-vc120.targets" Condition="Exists('packages\boost_math_tr1-vc120.1.63.0.0\build\native\boost_math_tr1-vc120.targets')" />
+    <Import Project="packages\boost_math_tr1f-vc120.1.63.0.0\build\native\boost_math_tr1f-vc120.targets" Condition="Exists('packages\boost_math_tr1f-vc120.1.63.0.0\build\native\boost_math_tr1f-vc120.targets')" />
+    <Import Project="packages\boost_math_tr1l-vc120.1.63.0.0\build\native\boost_math_tr1l-vc120.targets" Condition="Exists('packages\boost_math_tr1l-vc120.1.63.0.0\build\native\boost_math_tr1l-vc120.targets')" />
+    <Import Project="packages\boost_prg_exec_monitor-vc120.1.63.0.0\build\native\boost_prg_exec_monitor-vc120.targets" Condition="Exists('packages\boost_prg_exec_monitor-vc120.1.63.0.0\build\native\boost_prg_exec_monitor-vc120.targets')" />
+    <Import Project="packages\boost_program_options-vc120.1.63.0.0\build\native\boost_program_options-vc120.targets" Condition="Exists('packages\boost_program_options-vc120.1.63.0.0\build\native\boost_program_options-vc120.targets')" />
+    <Import Project="packages\boost_python-vc120.1.63.0.0\build\native\boost_python-vc120.targets" Condition="Exists('packages\boost_python-vc120.1.63.0.0\build\native\boost_python-vc120.targets')" />
+    <Import Project="packages\boost_random-vc120.1.63.0.0\build\native\boost_random-vc120.targets" Condition="Exists('packages\boost_random-vc120.1.63.0.0\build\native\boost_random-vc120.targets')" />
+    <Import Project="packages\boost_regex-vc120.1.63.0.0\build\native\boost_regex-vc120.targets" Condition="Exists('packages\boost_regex-vc120.1.63.0.0\build\native\boost_regex-vc120.targets')" />
+    <Import Project="packages\boost_serialization-vc120.1.63.0.0\build\native\boost_serialization-vc120.targets" Condition="Exists('packages\boost_serialization-vc120.1.63.0.0\build\native\boost_serialization-vc120.targets')" />
+    <Import Project="packages\boost_signals-vc120.1.63.0.0\build\native\boost_signals-vc120.targets" Condition="Exists('packages\boost_signals-vc120.1.63.0.0\build\native\boost_signals-vc120.targets')" />
+    <Import Project="packages\boost_system-vc120.1.63.0.0\build\native\boost_system-vc120.targets" Condition="Exists('packages\boost_system-vc120.1.63.0.0\build\native\boost_system-vc120.targets')" />
+    <Import Project="packages\boost_thread-vc120.1.63.0.0\build\native\boost_thread-vc120.targets" Condition="Exists('packages\boost_thread-vc120.1.63.0.0\build\native\boost_thread-vc120.targets')" />
+    <Import Project="packages\boost_timer-vc120.1.63.0.0\build\native\boost_timer-vc120.targets" Condition="Exists('packages\boost_timer-vc120.1.63.0.0\build\native\boost_timer-vc120.targets')" />
+    <Import Project="packages\boost_type_erasure-vc120.1.63.0.0\build\native\boost_type_erasure-vc120.targets" Condition="Exists('packages\boost_type_erasure-vc120.1.63.0.0\build\native\boost_type_erasure-vc120.targets')" />
+    <Import Project="packages\boost_unit_test_framework-vc120.1.63.0.0\build\native\boost_unit_test_framework-vc120.targets" Condition="Exists('packages\boost_unit_test_framework-vc120.1.63.0.0\build\native\boost_unit_test_framework-vc120.targets')" />
+    <Import Project="packages\boost_wave-vc120.1.63.0.0\build\native\boost_wave-vc120.targets" Condition="Exists('packages\boost_wave-vc120.1.63.0.0\build\native\boost_wave-vc120.targets')" />
+    <Import Project="packages\boost_wserialization-vc120.1.63.0.0\build\native\boost_wserialization-vc120.targets" Condition="Exists('packages\boost_wserialization-vc120.1.63.0.0\build\native\boost_wserialization-vc120.targets')" />
+    <Import Project="packages\boost_zlib-vc120.1.63.0.0\build\native\boost_zlib-vc120.targets" Condition="Exists('packages\boost_zlib-vc120.1.63.0.0\build\native\boost_zlib-vc120.targets')" />
+    <Import Project="packages\boost_exception-vc120.1.63.0.0\build\native\boost_exception-vc120.targets" Condition="Exists('packages\boost_exception-vc120.1.63.0.0\build\native\boost_exception-vc120.targets')" />
+    <Import Project="packages\boost_test_exec_monitor-vc120.1.63.0.0\build\native\boost_test_exec_monitor-vc120.targets" Condition="Exists('packages\boost_test_exec_monitor-vc120.1.63.0.0\build\native\boost_test_exec_monitor-vc120.targets')" />
+    <Import Project="packages\boost-vc120.1.63.0.0\build\native\boost-vc120.targets" Condition="Exists('packages\boost-vc120.1.63.0.0\build\native\boost-vc120.targets')" />
+    <Import Project="packages\OpenCV.2.4.10\build\native\OpenCV.targets" Condition="Exists('packages\OpenCV.2.4.10\build\native\OpenCV.targets')" />
+    <Import Project="..\GameRecognize\packages\OpenCV.2.4.10\build\native\OpenCV.targets" Condition="Exists('..\GameRecognize\packages\OpenCV.2.4.10\build\native\OpenCV.targets')" />
+    <Import Project="..\PokerSamples\packages\OpenCV.2.4.11\build\native\OpenCV.targets" Condition="Exists('..\PokerSamples\packages\OpenCV.2.4.11\build\native\OpenCV.targets')" />
+    <Import Project="..\PokerSamples\packages\boost.1.66.0.0\build\native\boost.targets" Condition="Exists('..\PokerSamples\packages\boost.1.66.0.0\build\native\boost.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_atomic-vc120.1.66.0.0\build\native\boost_atomic-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_atomic-vc120.1.66.0.0\build\native\boost_atomic-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_bzip2-vc120.1.66.0.0\build\native\boost_bzip2-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_bzip2-vc120.1.66.0.0\build\native\boost_bzip2-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_chrono-vc120.1.66.0.0\build\native\boost_chrono-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_chrono-vc120.1.66.0.0\build\native\boost_chrono-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_container-vc120.1.66.0.0\build\native\boost_container-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_container-vc120.1.66.0.0\build\native\boost_container-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_context-vc120.1.66.0.0\build\native\boost_context-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_context-vc120.1.66.0.0\build\native\boost_context-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_coroutine-vc120.1.66.0.0\build\native\boost_coroutine-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_coroutine-vc120.1.66.0.0\build\native\boost_coroutine-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_date_time-vc120.1.66.0.0\build\native\boost_date_time-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_date_time-vc120.1.66.0.0\build\native\boost_date_time-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_filesystem-vc120.1.66.0.0\build\native\boost_filesystem-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_filesystem-vc120.1.66.0.0\build\native\boost_filesystem-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_graph-vc120.1.66.0.0\build\native\boost_graph-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_graph-vc120.1.66.0.0\build\native\boost_graph-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_iostreams-vc120.1.66.0.0\build\native\boost_iostreams-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_iostreams-vc120.1.66.0.0\build\native\boost_iostreams-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_locale-vc120.1.66.0.0\build\native\boost_locale-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_locale-vc120.1.66.0.0\build\native\boost_locale-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_log-vc120.1.66.0.0\build\native\boost_log-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_log-vc120.1.66.0.0\build\native\boost_log-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_log_setup-vc120.1.66.0.0\build\native\boost_log_setup-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_log_setup-vc120.1.66.0.0\build\native\boost_log_setup-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_math_c99-vc120.1.66.0.0\build\native\boost_math_c99-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_math_c99-vc120.1.66.0.0\build\native\boost_math_c99-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_math_c99f-vc120.1.66.0.0\build\native\boost_math_c99f-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_math_c99f-vc120.1.66.0.0\build\native\boost_math_c99f-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_math_c99l-vc120.1.66.0.0\build\native\boost_math_c99l-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_math_c99l-vc120.1.66.0.0\build\native\boost_math_c99l-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_math_tr1-vc120.1.66.0.0\build\native\boost_math_tr1-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_math_tr1-vc120.1.66.0.0\build\native\boost_math_tr1-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_math_tr1f-vc120.1.66.0.0\build\native\boost_math_tr1f-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_math_tr1f-vc120.1.66.0.0\build\native\boost_math_tr1f-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_math_tr1l-vc120.1.66.0.0\build\native\boost_math_tr1l-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_math_tr1l-vc120.1.66.0.0\build\native\boost_math_tr1l-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_prg_exec_monitor-vc120.1.66.0.0\build\native\boost_prg_exec_monitor-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_prg_exec_monitor-vc120.1.66.0.0\build\native\boost_prg_exec_monitor-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_program_options-vc120.1.66.0.0\build\native\boost_program_options-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_program_options-vc120.1.66.0.0\build\native\boost_program_options-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_python-vc120.1.66.0.0\build\native\boost_python-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_python-vc120.1.66.0.0\build\native\boost_python-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_random-vc120.1.66.0.0\build\native\boost_random-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_random-vc120.1.66.0.0\build\native\boost_random-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_regex-vc120.1.66.0.0\build\native\boost_regex-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_regex-vc120.1.66.0.0\build\native\boost_regex-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_serialization-vc120.1.66.0.0\build\native\boost_serialization-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_serialization-vc120.1.66.0.0\build\native\boost_serialization-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_signals-vc120.1.66.0.0\build\native\boost_signals-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_signals-vc120.1.66.0.0\build\native\boost_signals-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_stacktrace_noop-vc120.1.66.0.0\build\native\boost_stacktrace_noop-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_stacktrace_noop-vc120.1.66.0.0\build\native\boost_stacktrace_noop-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_stacktrace_windbg-vc120.1.66.0.0\build\native\boost_stacktrace_windbg-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_stacktrace_windbg-vc120.1.66.0.0\build\native\boost_stacktrace_windbg-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_system-vc120.1.66.0.0\build\native\boost_system-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_system-vc120.1.66.0.0\build\native\boost_system-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_thread-vc120.1.66.0.0\build\native\boost_thread-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_thread-vc120.1.66.0.0\build\native\boost_thread-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_timer-vc120.1.66.0.0\build\native\boost_timer-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_timer-vc120.1.66.0.0\build\native\boost_timer-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_type_erasure-vc120.1.66.0.0\build\native\boost_type_erasure-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_type_erasure-vc120.1.66.0.0\build\native\boost_type_erasure-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_unit_test_framework-vc120.1.66.0.0\build\native\boost_unit_test_framework-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_unit_test_framework-vc120.1.66.0.0\build\native\boost_unit_test_framework-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_wave-vc120.1.66.0.0\build\native\boost_wave-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_wave-vc120.1.66.0.0\build\native\boost_wave-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_wserialization-vc120.1.66.0.0\build\native\boost_wserialization-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_wserialization-vc120.1.66.0.0\build\native\boost_wserialization-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_zlib-vc120.1.66.0.0\build\native\boost_zlib-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_zlib-vc120.1.66.0.0\build\native\boost_zlib-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_exception-vc120.1.66.0.0\build\native\boost_exception-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_exception-vc120.1.66.0.0\build\native\boost_exception-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost_test_exec_monitor-vc120.1.66.0.0\build\native\boost_test_exec_monitor-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost_test_exec_monitor-vc120.1.66.0.0\build\native\boost_test_exec_monitor-vc120.targets')" />
+    <Import Project="..\PokerSamples\packages\boost-vc120.1.66.0.0\build\native\boost-vc120.targets" Condition="Exists('..\PokerSamples\packages\boost-vc120.1.66.0.0\build\native\boost-vc120.targets')" />
+  </ImportGroup>
+</Project>

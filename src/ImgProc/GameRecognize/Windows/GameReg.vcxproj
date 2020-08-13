@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{52DB999E-1E75-44B5-AC57-726414CAD409}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GameReg</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)..\..\..\..\Modules\opencv-3.4.2\include;$(ProjectDir)..\..\..\..\Modules\boost\Windows\include;$(ProjectDir)..\..\..\..\Modules\protobuf\include;$(ProjectDir)..\src;$(ProjectDir)..\..\..\..\Modules\Json\include;$(ProjectDir)..\..\..\..\;$(ProjectDir)..\..\;$(ProjectDir)..\..\..\..\Modules\darknetV3-win\3rdparty\include;$(ProjectDir)..\src\TaskMgr;$(ProjectDir)..\src\Recognizer;$(ProjectDir)..\src\Protobuf;$(ProjectDir)..\..\Os;$(ProjectDir)..\src\ImgProcess;$(ProjectDir)..\..\..\..\Modules\tbus\tbusdll\busdll;$(ProjectDir)..\..\Common;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\..\..\Modules\opencv-3.4.2\x64\vc15\lib;$(ProjectDir)..\..\..\..\Modules\boost\windows\x64;$(ProjectDir)..\..\..\..\Modules\tbus\tbusdll\x64\Debug;$(ProjectDir)..\..\..\..\Modules\Json\lib\Windows\Debug;$(ProjectDir)..\..\..\..\Modules\darknetV3-win\3rdparty\lib\x64;$(ProjectDir)..\..\..\..\Modules\protobuf\Windows\x64\Debug;$(LibraryPath)</LibraryPath>
+    <OutDir>$(Configuration)</OutDir>
+    <IntDir>$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(Configuration)</OutDir>
+    <IntDir>$(Configuration)</IntDir>
+    <IncludePath>$(ProjectDir)..\..\..\..\Modules\opencv-3.4.2\include;$(ProjectDir)..\..\..\..\Modules\boost\Windows\include;$(ProjectDir)..\..\..\..\Modules\protobuf\include;$(ProjectDir)..\src;$(ProjectDir)..\..\..\..\Modules\Json\include;$(ProjectDir)..\..\..\..\;$(ProjectDir)..\..\;$(ProjectDir)..\..\..\..\Modules\darknetV3-win\3rdparty\include;$(ProjectDir)..\src\TaskMgr;$(ProjectDir)..\src\Recognizer;$(ProjectDir)..\src\Protobuf;$(ProjectDir)..\..\Os;$(ProjectDir)..\src\ImgProcess;$(ProjectDir)..\..\..\..\Modules\tbus\tbusdll\busdll;$(ProjectDir)..\..\Common;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\..\..\Modules\opencv-3.4.2\x64\vc15\lib;$(ProjectDir)..\..\..\..\Modules\boost\windows\x64;$(ProjectDir)..\..\..\..\Modules\tbus\tbusdll\x64\Release;$(ProjectDir)..\..\..\..\Modules\Json\lib\Windows\Release;$(ProjectDir)..\..\..\..\Modules\darknetV3-win\3rdparty\lib\x64;$(ProjectDir)..\..\..\..\Modules\protobuf\Windows\x64\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WINDOWS;_WINDOWS</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>libprotobufd.lib;pthreadVC2.lib;jsoncpp.lib;busdll.lib;opencv_world342d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WINDOWS;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>ws2_32.lib;libprotobuf.lib;busdll.lib;jsoncpp.lib;opencv_world342.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\activations.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\activation_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\avgpool_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\batchnorm_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\blas.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\box.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\classifier.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\col2im.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\connected_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\convolutional_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\cost_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\crnn_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\crop_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\cuda.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\data.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\deconvolutional_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\demo.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\detection_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\dropout_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\gemm.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\getopt.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\gettimeofday.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\gru_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\http_stream.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\im2col.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\image.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\list.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\local_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\matrix.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\maxpool_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\network.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\normalization_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\ObjDet.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\option_list.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\parser.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\region_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\reorg_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\reorg_old_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\rnn_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\route_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\shortcut_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\softmax_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\stb_image.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\stb_image_write.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\tree.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\unistd.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\upsample_layer.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\utils.h" />
+    <ClInclude Include="..\..\..\..\Modules\darknetV3-win\src\yolo_layer.h" />
+    <ClInclude Include="..\..\Common\TqcLog.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CColorBinMatch.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CColorDet.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CColorMatch.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CEdgeMatch.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CGradMatch.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CObjDet.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CORBMatch.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\CYOLOAPI.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\IImgCls.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\IImgProc.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\IImgSeg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\ImgComn.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\ImgProcess\IPixDet.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CBloodLengthReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CDeformBloodReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CDeformObjReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CFixBloodReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CFixObjReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CKingGloryBloodReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CLocationReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CMapDirectionReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CMapReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CMultColorVarReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CNumReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CPixReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CShootGameBloodReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CShootGameHurtReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\CStuckReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\IComnBaseReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\IImgBaseReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\IObjReg.h" />
+    <ClInclude Include="..\..\Comm\ImgReg\Recognizer\IRecognizer.h" />
+    <ClInclude Include="..\..\Comm\Os\TqcOs.h" />
+    <ClInclude Include="..\..\Comm\Utils\GameTime.h" />
+    <ClInclude Include="..\..\Comm\Utils\GameTime_i.h" />
+    <ClInclude Include="..\..\Comm\Utils\IniConfig.h" />
+    <ClInclude Include="..\..\Comm\Utils\JsonConfig.h" />
+    <ClInclude Include="..\..\Comm\Utils\Log.h" />
+    <ClInclude Include="..\..\Comm\Utils\TqcCommon.h" />
+    <ClInclude Include="..\..\Comm\Utils\TqcLock.h" />
+    <ClInclude Include="..\..\Comm\Utils\TqcMemoryPool.h" />
+    <ClInclude Include="..\..\Comm\Utils\TqcString.h" />
+    <ClInclude Include="..\..\Comm\Utils\TqcThreadPool.h" />
+    <ClInclude Include="..\..\Comm\Utils\TqcThreadSafeQueue.h" />
+    <ClInclude Include="..\..\Comm\Utils\TSingleton.h" />
+    <ClInclude Include="..\..\Protobuf\common.pb.h" />
+    <ClInclude Include="..\..\Protobuf\gameregProtoc.pb.h" />
+    <ClInclude Include="..\src\FrameWorkDefine.h" />
+    <ClInclude Include="..\src\GameRegFrameWork.h" />
+    <ClInclude Include="..\src\IniConfClass.h" />
+    <ClInclude Include="..\src\NetWorkManager.h" />
+    <ClInclude Include="..\src\SerializeProtobuf.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskContext.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskDataDeal.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskDefine.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskManager.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskMessage.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskMultiResMgr.h" />
+    <ClInclude Include="..\src\TaskMgr\TaskResult.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\activations.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\activation_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\art.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\avgpool_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\batchnorm_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\blas.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\box.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\captcha.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\cifar.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\classifier.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\coco.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\col2im.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\compare.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\connected_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\convolutional_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\cost_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\cpu_gemm.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\crnn_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\crop_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\cuda.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\darknet.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\data.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\deconvolutional_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\demo.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\detection_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\detector.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\dice.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\dropout_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\gemm.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\getopt.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\gettimeofday.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\go.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\gru_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\http_stream.cpp" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\im2col.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\image.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\list.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\local_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\matrix.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\maxpool_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\network.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\nightmare.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\normalization_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\option_list.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\parser.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\region_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\reorg_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\reorg_old_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\rnn.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\rnn_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\rnn_vid.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\route_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\shortcut_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\softmax_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\super.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\swag.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\tag.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\tree.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\upsample_layer.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\utils.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\voxel.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\writing.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\yolo.c" />
+    <ClCompile Include="..\..\..\..\Modules\darknetV3-win\src\yolo_layer.c" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CColorBinMatch.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CColorDet.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CColorMatch.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CEdgeMatch.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CGradMatch.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CObjDet.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CORBMatch.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\CYOLOAPI.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\ImgProcess\ImgComn.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CBloodLengthReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CDeformBloodReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CDeformObjReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CFixBloodReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CFixObjReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CKingGloryBloodReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CLocationReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CMapDirectionReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CMapReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CMultColorVarReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CNumReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CPixReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CShootGameBloodReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CShootGameHurtReg.cpp" />
+    <ClCompile Include="..\..\Comm\ImgReg\Recognizer\CStuckReg.cpp" />
+    <ClCompile Include="..\..\Comm\Os\Windows\TqcWindowsOS.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\GameTime.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\IniConfig.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\JsonConfig.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\Log.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\TqcCommon.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\TqcLock.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\TqcMemoryPool.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\TqcString.cpp" />
+    <ClCompile Include="..\..\Comm\Utils\TqcThreadPool.cpp" />
+    <ClCompile Include="..\..\Protobuf\common.pb.cc" />
+    <ClCompile Include="..\..\Protobuf\gameregProtoc.pb.cc" />
+    <ClCompile Include="..\src\GameRegFrameWork.cpp" />
+    <ClCompile Include="..\src\IniConfClass.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\NetWorkManager.cpp" />
+    <ClCompile Include="..\src\SerializeProtobuf.cpp" />
+    <ClCompile Include="..\src\TaskMgr\TaskContext.cpp" />
+    <ClCompile Include="..\src\TaskMgr\TaskDataDeal.cpp" />
+    <ClCompile Include="..\src\TaskMgr\TaskManager.cpp" />
+    <ClCompile Include="..\src\TaskMgr\TaskMessage.cpp" />
+    <ClCompile Include="..\src\TaskMgr\TaskMultiResMgr.cpp" />
+    <ClCompile Include="..\src\TaskMgr\TaskResult.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\activation_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\avgpool_layer_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\blas_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\col2im_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\convolutional_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\crop_layer_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\deconvolutional_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\dropout_layer_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\im2col_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\maxpool_layer_kernels.cu" />
+    <None Include="..\..\..\..\Modules\darknetV3-win\src\network_kernels.cu" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

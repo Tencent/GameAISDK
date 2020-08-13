@@ -1,0 +1,22 @@
+<RCC>
+  <qresource prefix="menu">
+    <file>switchimage.jpg</file>
+    <file>Square.jpg</file>
+    <file>Rect.jpg</file>
+    <file>switch.jpg</file>
+    <file>import.jpg</file>
+    <file>set.jpg</file>
+    <file>treeIcon.png</file>
+    <file>image.jpg</file>
+    <file>json.jpg</file>
+    <file>floder.jpg</file>
+    <file>video.jpg</file>
+    <file>开始.png</file>
+    <file>快退.png</file>
+    <file>快进.png</file>
+    <file>暂停.png</file>
+    <file>保存.jpg</file>
+    <file>退出.png</file>
+    <file>graph.jpg</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,213 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import logging
+import time
+import numpy as np
+
+from ActionAPI.ActionAPIMgr import ActionAPIMgr
+
+# 摇杆位置比例
+MOVE_X_RATIO = 0.215
+MOVE_Y_RATIO = 0.73
+
+# 攻击位置比例
+SHOOT_X_RATIO = 0.864
+SHOOT_Y_RATIO = 0.776
+
+# 滑动位置比例
+SWIPE_X_RATIO = 0.6
+SWIPE_Y_RATIO = 0.5
+
+# 普通滑动距离比例
+SWIPE_DIS_RATIO = 0.09
+# 大幅度滑动距离比例
+SWIPE_LARGE_DIS_RATIO = 0.125
+
+
+class XXXWindow(object):
+    def __init__(self):
+        self.jumpBtnX = -1
+        self.jumpBtnY = -1
+
+        self.pickUpBtnX = -1
+        self.pickUpBtnY = -1
+
+    def IsBtnPostionOK(self):
+        btnPosList = [self.jumpBtnX, self.jumpBtnY, self.pickUpBtnX, self.pickUpBtnY]
+        return min(btnPosList) > 0
+
+
+class XXXAction(object):
+    def __init__(self, actionWindow):
+        self.logger = logging.getLogger('agent')
+        self.__actionMgr = ActionAPIMgr()
+        self.__actionWindow = actionWindow
+
+        self.imageWidth = -1
+        self.imageHeight = -1
+        self.walkSpeed = 5
+
+    def Initialize(self):
+        return self.__actionMgr.Initialize()
+
+    def Finish(self):
+        self.__actionMgr.Finish()
+
+    def ResetAction(self, frameIndex):
+        self.__actionMgr.Reset(frameSeq=frameIndex)
+
+    def DoPressUp(self):
+        # self.__actionMgr.Up(0)
+        self.__actionMgr.Moving(-1)
+        self.__actionMgr.Up(1)
+        self.__actionMgr.Up(2)
+
+    def DoActionInit(self):
+        self.__actionMgr.MovingInit(int(self.imageWidth * MOVE_X_RATIO),
+                                    int(self.imageHeight * MOVE_Y_RATIO),
+                                    self.walkSpeed)
+
+    def DoAction(self, action, frameSeq, moveActionDuringTime, turnActionDuringTime, turnLargeActionDuringTime):
+        if action == 'noAction':
+            return
+        elif action == 'moveUp':
+            self.DoActionMoveUp(frameSeq)
+            time.sleep(moveActionDuringTime)
+
+        elif action == 'moveLeft':
+            self.DoActionMoveLeft(frameSeq)
+            time.sleep(moveActionDuringTime)
+
+        elif action == 'moveRight':
+            self.DoActionMoveRight(frameSeq)
+            time.sleep(moveActionDuringTime)
+
+        elif action == 'moveBack':
+            self.DoActionMoveBack(frameSeq)
+            time.sleep(moveActionDuringTime)
+
+        elif action == 'turnLeft':
+            self.DoActionTurnLeft(frameSeq)
+            time.sleep(turnActionDuringTime)
+
+        elif action == 'turnRight':
+            self.DoActionTurnRight(frameSeq)
+            time.sleep(turnActionDuringTime)
+
+        elif action == 'turnLeftLarge':
+            self.DoActionTurnLeftLarge(frameSeq)
+            time.sleep(turnLargeActionDuringTime)
+
+        elif action == 'turnRightLarge':
+            self.DoActionTurnRightLarge(frameSeq)
+            time.sleep(turnLargeActionDuringTime)
+
+        elif action == 'upJump':
+            self.DoActionUpJump(frameSeq)
+
+        else:
+            self.logger.error('no such action {}'.format(action))
+
+    def DoPressUpAll(self, frameSeq):
+        self.__actionMgr.MovingFinish(frameSeq=frameSeq)
+        self.__actionMgr.Up(1)
+        self.__actionMgr.Up(2)
+
+    def DoActionMove(self, angle, frameSeq):
+        self.__actionMgr.Moving(angle, frameSeq=frameSeq)
+
+    def DoActionMoveUp(self, frameSeq=-1):
+        self.__actionMgr.Moving(0, frameSeq=frameSeq)
+
+    def DoActionMoveBack(self, frameSeq=-1):
+        self.__actionMgr.Moving(180, frameSeq=frameSeq)
+
+    def DoActionMoveLeft(self, frameSeq=-1):
+        self.__actionMgr.Moving(270, frameSeq=frameSeq)
+
+    def DoActionMoveRight(self, frameSeq=-1):
+        self.__actionMgr.Moving(90, frameSeq=frameSeq)
+
+    def DoActionJump(self, frameSeq):
+        jumpBtnX = self.__actionWindow.jumpBtnX
+        jumpBtnY = self.__actionWindow.jumpBtnY
+        if jumpBtnX != -1 and jumpBtnY != -1:
+            self.__actionMgr.Click(jumpBtnX, jumpBtnY, contact=2, frameSeq=frameSeq)
+        else:
+            self.logger.debug('Jump button is not detected')
+
+    def DoActionPickup(self, frameSeq):
+        pickUpBtnX = self.__actionWindow.pickUpBtnX
+        pickUpBtnY = self.__actionWindow.pickUpBtnY
+        if pickUpBtnX != -1 and pickUpBtnY != -1:
+            self.__actionMgr.Click(pickUpBtnX, pickUpBtnY, contact=2, frameSeq=frameSeq)
+        else:
+            self.logger.debug('Pickup button is not detected')
+
+    def DoActionShoot(self, frameSeq):
+        self.__actionMgr.Click(int(self.imageWidth * SHOOT_X_RATIO),
+                               int(self.imageHeight * SHOOT_Y_RATIO),
+                               contact=2, frameSeq=frameSeq)
+
+    def DoActionTurnLeft(self, frameSeq):
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO) - int(self.imageWidth * SWIPE_DIS_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               contact=1, frameSeq=frameSeq, durationMS=60, needUp=False)
+
+    def DoActionTurnLeftLarge(self, frameSeq):
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO) - int(self.imageWidth * SWIPE_LARGE_DIS_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               contact=1, frameSeq=frameSeq, durationMS=120, needUp=False)
+
+    def DoActionTurnRight(self, frameSeq):
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO) + int(self.imageWidth * SWIPE_DIS_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               contact=1, frameSeq=frameSeq, durationMS=60, needUp=False)
+
+    def DoActionTurnRightLarge(self, frameSeq):
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO) + int(self.imageWidth * SWIPE_LARGE_DIS_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               contact=1, frameSeq=frameSeq, durationMS=120, needUp=False)
+
+    def DoActionTurnUp(self, frameSeq):
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO) - int(self.imageWidth * SWIPE_DIS_RATIO),
+                               contact=1, frameSeq=frameSeq, durationMS=60, needUp=False)
+
+    def DoActionTurnDown(self, frameSeq):
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO) + int(self.imageWidth * SWIPE_DIS_RATIO),
+                               contact=1, frameSeq=frameSeq, durationMS=60, needUp=False)
+
+    def DoActionUpJump(self, frameSeq):
+        self.DoActionMoveUp(frameSeq)
+        time.sleep(0.2)
+        self.DoActionJump(frameSeq)
+
+    # 瞄准
+    def AimQuick(self, objectCenterLoc, aimLoc, turnActionDuringTime, frameSeq):
+        ratio = 0.25
+        objectRelLoc = [objectCenterLoc[i] - aimLoc[i] for i in range(len(objectCenterLoc))]
+        objectRelLoc = [objectRelLoc[i] for i in range(len(objectRelLoc))]
+        aimMoveDistance = np.linalg.norm([ratio * objectRelLoc[0], ratio * objectRelLoc[1]])
+
+        self.__actionMgr.Swipe(int(self.imageWidth * SWIPE_X_RATIO),
+                               int(self.imageHeight * SWIPE_Y_RATIO),
+                               int(self.imageWidth * SWIPE_X_RATIO + ratio * objectRelLoc[0]),
+                               int(self.imageHeight * SWIPE_Y_RATIO + ratio * objectRelLoc[1]), contact=1,
+                               frameSeq=frameSeq,
+                               durationMS=int(60 * max(aimMoveDistance, 40) * 1.0 / 80), needUp=False)
+        time.sleep(max(aimMoveDistance, 40) * 1.0 / 80 * turnActionDuringTime)

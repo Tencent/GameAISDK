@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import time
+
+from .XXXAction import XXXAction, XXXWindow
+
+from AgentAPI import AgentAPIMgr
+from agentenv.GameEnv import GameEnv
+from util import util
+
+GAMEREG_API_JSON_FILE = util.ConvertToSDKFilePath("cfg/task/gameReg/Task.json")
+GAMEREG_API_REF_FILE = util.ConvertToSDKFilePath("cfg/task/gameReg/Refer.json")
+
+
+class XXXEnv(GameEnv):
+    def __init__(self):
+        GameEnv.__init__(self)
+        self.frameSeq = -1
+        self.__windowXXX = XXXWindow()
+        self.actionXXX = XXXAction(actionWindow=self.__windowXXX)
+        self.__agentAPI = AgentAPIMgr.AgentAPIMgr()
+
+        self.terminal = False
+
+    def Init(self):
+        if not self._InitRegAPI():
+            self.logger.error('Init AgentAPI failed!')
+            return False
+
+        if not self.actionXXX.Initialize():
+            self.logger.error('Init Action failed!')
+            return False
+
+        return True
+
+    def Finish(self):
+        self.actionXXX.Finish()
+        self.__agentAPI.Release()
+
+    def GetActionSpace(self):
+        return 0
+
+    def DoAction(self, action, *args, **kwargs):
+        if action is None:
+            return
+
+        if action['actionType'] == 'click':
+            self.Click(action['point'])
+
+    def GetState(self):
+        while True:
+            gameResult = self.__agentAPI.GetInfo(AgentAPIMgr.GAME_RESULT_INFO)
+            if gameResult is not None:
+                break
+            else:
+                time.sleep(0.001)
+
+        self.frameSeq = gameResult['frameSeq']
+
+        resultDict = gameResult['result']
+
+        return resultDict
+
+    def Reset(self):
+        self.logger.info('Env Reset')
+
+        self.actionXXX.ResetAction(self.frameSeq)
+
+    def IsEpisodeStart(self):
+        self.GetState()
+        return not self.terminal
+
+    def IsEpisodeOver(self):
+        return self.terminal
+
+    def Click(self, point):
+        self.actionXXX.Click(point, frameSeq=self.frameSeq)
+
+    def _InitRegAPI(self):
+        if not self.__agentAPI.Initialize(confFile=GAMEREG_API_JSON_FILE):
+            self.logger.error('init task params failed')
+            return False
+
+        if not self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_GROUP_ID, 1):
+            self.logger.error('send message failed')
+            return False
+
+        return True

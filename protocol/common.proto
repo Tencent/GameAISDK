@@ -1,0 +1,258 @@
+syntax = "proto3";
+
+import "gameregProtoc.proto";
+
+/* message ID */
+enum EMSGIDENUM
+{
+    MSG_NONE                  = 0;
+
+    /* 10000 ~ 19999 for 公用 */
+    MSG_SRC_IMAGE_INFO        = 10000;
+    MSG_SERVICE_REGISTER      = 10001;
+    MSG_TASK_REPORT           = 10002;
+    MSG_SERVICE_STATE         = 10003;
+    MSG_CHANGE_GAME_STATE     = 10004;
+    MSG_PAUSE_AGENT           = 10005;
+    MSG_RESTORE_AGENT         = 10006;
+    MSG_RESTART               = 10007;
+    MSG_NEW_TASK              = 10008;
+    MSG_TEST_ID               = 10009;
+    MSG_GAMEREG_INFO          = 10010;
+
+    /* 40000 ~ 49999 for MC进程和AI进程 */
+//    MSG_GAME_ACTION_RESULT    = 40000; // deprecated
+    MSG_AI_ACTION             = 40001;
+    MSG_AGENT_STATE           = 40002;
+    MSG_RESTART_RESULT        = 40003;
+
+    MSG_UI_GAME_START         = 40004;
+    MSG_UI_GAME_OVER          = 40005;
+    MSG_IM_TRAIN_STATE        = 40006;
+
+    /* 80000 ~ 89999 for MC进程和UI进程 */
+    MSG_UI_STATE_IMG          = 80001;
+    MSG_UI_ACTION             = 80002;
+}
+
+message tagSrcImageInfo
+{
+    fixed64 uFrameSeq    = 1;
+    int32   nWidth       = 2;
+    int32   nHeight      = 3;
+    bytes   byImageData  = 4;
+    fixed64 uDeviceIndex = 5;
+    string  strJsonData  = 6;
+}
+
+enum ESERVICETYPEENUM
+{
+    PB_SERVICE_TYPE_UI  = 0;
+    PB_SERVICE_TYPE_AI  = 1;
+    PB_SERVICE_TYPE_REG = 2;
+    PB_SERVICE_TYPE_MC  = 3;
+}
+
+enum ESERVICEREGISTERENUM
+{
+    PB_SERVICE_REGISTER   = 0;
+    PB_SERVICE_UNREGISTER = 1;
+}
+
+message tagServiceRegister
+{
+    ESERVICEREGISTERENUM eRegisterType = 1;
+    ESERVICETYPEENUM     eServiceType  = 2;
+}
+
+enum ETASKSTATUSENUM
+{
+    PB_TASK_INIT_SUCCESS = 0;
+    PB_TASK_INIT_FAILURE = 1;
+}
+
+message tagTaskReport
+{
+    ETASKSTATUSENUM eTaskStatus = 1;
+}
+
+// *************************************************
+// 游戏状态信息(后由UI识别提供)
+// *************************************************
+enum GAMESTATEENUM
+{
+    PB_STATE_NONE      = 0; // 没识别出UI
+    PB_STATE_UI        = 1; // 识别到普通UI
+    PB_STATE_START     = 2; // 识别到游戏开始UI
+    PB_STATE_OVER      = 3; // 识别到游戏结束UI（无输赢）或游戏结束输了（有输赢）
+    PB_STATE_MATCH_WIN = 4; // 识别到游戏结束赢了（有输赢）
+}
+
+// *************************************************
+// 获取UI状态API UI状态定义
+// *************************************************
+enum EUIAPISTATEENUM
+{
+    PB_UI_STATE_NORMAL                = 0;
+    PB_UI_STATE_STUCK                 = 1;
+}
+
+// *************************************************
+// 获取UI状态API UI动作类型定义
+// *************************************************
+enum EUIAPIACTIONENUM
+{
+    PB_UI_ACTION_NONE                 = 0;
+    PB_UI_ACTION_CLICK                = 1;
+    PB_UI_ACTION_DRAG                 = 2;
+    PB_UI_ACTION_TEXT                 = 3;
+}
+
+enum ESCREENORIENUM
+{
+    PB_SCREEN_ORI_LANDSCAPE           = 0;
+    PB_SCREEN_ORI_PORTRAIT            = 1;
+}
+
+enum EGAMEACTIONENUM
+{
+    PB_GAME_ACTION_NONE               = 0; // 无动作
+    PB_GAME_ACTION_CLICK              = 1; // 点击
+    PB_GAME_ACTION_SWIPE              = 2; // 滑动（按压+移动+松开）
+    PB_GAME_ACTION_MOVE               = 3; // 移动
+    PB_GAME_ACTION_PRESSDOWN          = 4; // 按压
+    PB_GAME_ACTION_PRESSUP            = 5; // 松开
+    PB_GAME_ACTION_LONGCLICK          = 6; // 长按
+    PB_GAME_ACTION_RESET              = 7; // 复位
+    PB_GAME_ACTION_SWIPEDOWN          = 8; // 滑动（按压+移动）
+    PB_GAME_ACTION_SWIPEMOVE          = 9; // 滑动（移动, 带补点）
+}
+
+enum ERESTARTRESULTENUM
+{
+    PB_RESTART_RESULT_SUCCESS         = 0;
+    PB_RESTART_RESULT_FAILURE         = 1;
+}
+
+message tagUIPoint
+{
+    int32                      nX              = 1;
+    int32                      nY              = 2;
+}
+
+message tagUIUnitAction
+{
+    string                     strText         = 1;
+    EUIAPIACTIONENUM           eUIAction       = 2;
+    tagUIPoint                 stClickPoint    = 3;
+    repeated tagUIPoint        stDragPoints    = 4;
+    int32                      nDuringTimeMs   = 5;
+    int32                      nSleepTimeMs    = 6;
+}
+
+message tagUIAction
+{
+    GAMESTATEENUM              eGameState      = 1;
+    tagSrcImageInfo            stSrcImageInfo  = 2;
+    repeated tagUIUnitAction stUIUnitAction    = 3;
+    int32                      nUIID           = 4;
+
+}
+
+message tagUIAPIState
+{
+    EUIAPISTATEENUM            eUIState        = 1;
+    tagSrcImageInfo            stUIImage       = 2;
+    tagUIAction                stUIAction      = 3;
+    GAMESTATEENUM              eGameState      = 4;
+    ESCREENORIENUM             eScreenOri      = 5;
+}
+
+// *************************************************
+// Agent模块发给 Auto协议
+// *************************************************
+message tagGameActionPoint
+{
+    int32                      nX              = 1;
+    int32                      nY              = 2;
+}
+
+message tagGameActionResult
+{
+    EGAMEACTIONENUM             eGameActionType    = 1;
+    repeated tagGameActionPoint stGameActionPoint  = 2;
+    int32                       nContact           = 3;
+    int32                       nDuringTime        = 4; // for Swipe, Swipedown
+    int32                       nWaitTime          = 5; // for Down, Move, Up
+    sfixed64                    nFrameSeq          = 6;
+}
+
+message tagAIAction
+{
+    sfixed64                    nFrameSeq          = 1;
+    bytes                       byAIActionBuff     = 2;
+}
+
+message tagServiceState
+{
+    int32                       nServiceState      = 1;
+}
+
+message tagChangeGameState
+{
+    GAMESTATEENUM               eGameState         = 1;
+}
+
+message tagAgentState
+{
+    int32                       eAgentState        = 1;
+    string                      strAgentState      = 2;
+}
+
+message tagIMTrainState
+{
+    int32                       nProgress          = 1;
+}
+
+message tagRestartResult
+{
+    ERESTARTRESULTENUM          eRestartResult     = 1;
+}
+
+message tagNewTask
+{
+    string                      strTaskID          = 1;
+    int32                       nGameID            = 2;
+    int32                       nSceneID           = 3;
+    string                      strGameVersion     = 4;
+}
+
+message tagTestID
+{
+    string                      strTestID          = 1;
+    int32                       nGameID            = 2;
+    string                      strGameVersion     = 3;
+}
+// *************************************************
+// 总消息结构体
+// *************************************************
+/* top layer message definition*/
+message tagMessage
+{
+    EMSGIDENUM             eMsgID            = 1;
+    tagServiceRegister     stServiceRegister = 2; // MSG_SERVICE_REGISTER
+    tagTaskReport          stTaskReport      = 3; // MSG_TASK_REPORT
+    tagSrcImageInfo        stSrcImageInfo    = 4; // MSG_SRC_IMAGE_INFO
+    tagUIAPIState          stUIAPIState      = 9; // MSG_UI_STATE_IMG
+    tagUIAction            stUIAction        = 10; // MSG_UI_ACTION
+//    tagGameActionResult    stGameAction      = 11; // MSG_GAME_ACTION_RESULT, deprecated
+    tagAIAction            stAIAction        = 12; // MSG_AI_ACTION
+    tagServiceState        stServiceState    = 13; // MSG_SERVICE_STATE
+    tagChangeGameState     stChangeGameState = 14; // MSG_CHANGE_GAME_STATE
+    tagAgentState          stAgentState      = 15; // MSG_AGENT_STATE
+    tagRestartResult       stRestartResult   = 16; // MSG_RESTART_RESULT
+    tagNewTask             stNewTask         = 17; // MSG_NEW_TASK
+    tagTestID              stTestID          = 18; // MSG_TEST_ID
+    tagPBAgentMsg          stPBAgentMsg      = 19; // MSG_GAMEREG_INFO
+    tagIMTrainState        stIMTrainState    = 20; // MSG_IM_TRAIN_STATE
+}

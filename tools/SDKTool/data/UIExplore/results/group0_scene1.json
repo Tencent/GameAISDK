@@ -1,0 +1,196 @@
+{
+    "scene": "",
+    "labels": [
+        {
+            "y": 16,
+            "nextUI": "group3_scene0.jpg",
+            "name": "other",
+            "h": 39,
+            "x": 829,
+            "label": "other",
+            "w": 37,
+            "clickNum": 2
+        },
+        {
+            "y": 19,
+            "nextUI": "",
+            "name": "other",
+            "h": 37,
+            "x": 895,
+            "label": "other",
+            "w": 39,
+            "clickNum": 1
+        },
+        {
+            "y": 646,
+            "nextUI": "",
+            "name": "other",
+            "h": 50,
+            "x": 629,
+            "label": "other",
+            "w": 122,
+            "clickNum": 1
+        },
+        {
+            "y": 649,
+            "nextUI": "",
+            "name": "other",
+            "h": 47,
+            "x": 484,
+            "label": "other",
+            "w": 121,
+            "clickNum": 1
+        },
+        {
+            "y": 642,
+            "nextUI": "",
+            "name": "other",
+            "h": 62,
+            "x": 1006,
+            "label": "other",
+            "w": 256,
+            "clickNum": 1
+        },
+        {
+            "y": 17,
+            "nextUI": "",
+            "name": "other",
+            "h": 31,
+            "x": 757,
+            "label": "other",
+            "w": 43,
+            "clickNum": 0
+        },
+        {
+            "y": 645,
+            "nextUI": "",
+            "name": "other",
+            "h": 52,
+            "x": 341,
+            "label": "other",
+            "w": 126,
+            "clickNum": 1
+        },
+        {
+            "y": 647,
+            "nextUI": "",
+            "name": "other",
+            "h": 48,
+            "x": 772,
+            "label": "other",
+            "w": 125,
+            "clickNum": 0
+        },
+        {
+            "y": 205,
+            "nextUI": "",
+            "name": "other",
+            "h": 87,
+            "x": 19,
+            "label": "other",
+            "w": 200,
+            "clickNum": 0
+        },
+        {
+            "y": 18,
+            "nextUI": "",
+            "name": "other",
+            "h": 41,
+            "x": 1164,
+            "label": "other",
+            "w": 49,
+            "clickNum": 0
+        },
+        {
+            "y": 336,
+            "nextUI": "",
+            "name": "other",
+            "h": 82,
+            "x": 27,
+            "label": "other",
+            "w": 186,
+            "clickNum": 0
+        },
+        {
+            "y": 211,
+            "nextUI": "",
+            "name": "other",
+            "h": 205,
+            "x": 979,
+            "label": "other",
+            "w": 137,
+            "clickNum": 0
+        },
+        {
+            "y": 643,
+            "nextUI": "",
+            "name": "other",
+            "h": 63,
+            "x": 25,
+            "label": "other",
+            "w": 257,
+            "clickNum": 0
+        },
+        {
+            "y": 179,
+            "nextUI": "",
+            "name": "other",
+            "h": 313,
+            "x": 1152,
+            "label": "other",
+            "w": 108,
+            "clickNum": 0
+        },
+        {
+            "y": 14,
+            "nextUI": "",
+            "name": "other",
+            "h": 75,
+            "x": 28,
+            "label": "other",
+            "w": 191,
+            "clickNum": 0
+        },
+        {
+            "y": 449,
+            "nextUI": "",
+            "name": "other",
+            "h": 78,
+            "x": 24,
+            "label": "other",
+            "w": 171,
+            "clickNum": 0
+        },
+        {
+            "y": 100,
+            "nextUI": "",
+            "name": "other",
+            "h": 72,
+            "x": 22,
+            "label": "other",
+            "w": 190,
+            "clickNum": 0
+        },
+        {
+            "y": 564,
+            "nextUI": "",
+            "name": "other",
+            "h": 57,
+            "x": 22,
+            "label": "other",
+            "w": 57,
+            "clickNum": 0
+        },
+        {
+            "y": 563,
+            "nextUI": "",
+            "name": "other",
+            "h": 26,
+            "x": 599,
+            "label": "other",
+            "w": 31,
+            "clickNum": 0
+        }
+    ],
+    "fileName": "group0_scene1.jpg"
+}

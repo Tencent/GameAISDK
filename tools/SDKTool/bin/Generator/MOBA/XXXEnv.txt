@@ -1,0 +1,742 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import time
+
+from AgentAPI import AgentAPIMgr as AgentAPIMgr
+from agentenv.GameEnv import GameEnv
+from mapnav import AStarNav
+from util import util
+from .MOBATools import *
+from .XXXAction import XXXAction, XXXWindow
+
+TASK_VS = 1  # VS界面VS标志识别任务
+TASK_VS_MYSELF = 2  # VS界面自己英雄所在位置识别任务
+TASK_ATTACK = 4  # 攻击按键识别任务
+TASK_JIAYUAN = 5  # 家园卫士buff标志识别任务，用于判定是否在泉水
+TASK_HERO_DEAD = 10  # 自己英雄是否死亡识别任务
+TASK_SCENE_HERO = 11  # 场景英雄血条检测任务
+TASK_SCENE_OBJ = 12  # 场景小兵、塔检测任务
+TASK_BOTTOM_SKILL = 17  # 底部UI（回城、恢复、治疗术）识别任务
+TASK_ATTACK_TYPE = 19  # 攻击目标识别任务
+TASK_GAME_OVER = 20  # 游戏结束识别任务
+TASK_MAP_MY_LOCATION = 33  # 小地图自已英雄位置识别任务
+
+TASK_MR_SKILL1 = 21  # 1技能位置识别任务
+TASK_MR_SKILL2 = 22  # 2技能位置识别任务
+TASK_MR_SKILL3 = 23  # 3技能位置识别任务
+TASK_MR_UPGRADE1 = 24  # 1技能升级位置识别任务
+TASK_MR_UPGRADE2 = 25  # 2技能升级位置识别任务
+TASK_MR_UPGRADE3 = 26  # 3技能升级位置识别任务
+TASK_MR_EQUIPMENT1 = 27  # 装备1购买位置识别任务
+TASK_MR_EQUIPMENT2 = 28  # 装备2购买位置识别任务
+TASK_MR_MAP_LOCATION = 30  # 小地图区域框位置识别任务
+
+MR_TASK = [TASK_MR_SKILL1,
+           TASK_MR_SKILL2,
+           TASK_MR_SKILL3,
+           TASK_MR_UPGRADE1,
+           TASK_MR_UPGRADE2,
+           TASK_MR_UPGRADE3,
+           TASK_MR_EQUIPMENT1,
+           TASK_MR_EQUIPMENT2,
+           TASK_MR_MAP_LOCATION,
+           ]  # MR任务集合，MR用于处理非固定位置的按键识别
+
+ALL_TASK = [TASK_VS,
+            TASK_VS_MYSELF,
+            TASK_ATTACK,
+            TASK_JIAYUAN,
+            TASK_HERO_DEAD,
+            TASK_SCENE_HERO,
+            TASK_SCENE_OBJ,
+            TASK_BOTTOM_SKILL,
+            TASK_ATTACK_TYPE,
+            TASK_GAME_OVER,
+            TASK_MAP_MY_LOCATION,
+            ] + MR_TASK
+
+GAME_STEP_REG_VS_TASK = [TASK_VS]
+GAME_STEP_REG_HERO_TASK = [TASK_VS_MYSELF, TASK_HERO_DEAD, TASK_GAME_OVER]
+GAME_STEP_CHECK_RUN_TASK = [TASK_ATTACK]
+GAME_STEP_RUNNING_TASK = [TASK_ATTACK,
+                          TASK_JIAYUAN,
+                          TASK_HERO_DEAD,
+                          TASK_SCENE_HERO,
+                          TASK_SCENE_OBJ,
+                          TASK_BOTTOM_SKILL,
+                          TASK_ATTACK_TYPE,
+                          TASK_GAME_OVER,
+                          TASK_MAP_MY_LOCATION,
+                          ] + MR_TASK
+
+# 识别任务配置文件
+GAMEREG_API_JSON_FILE = util.ConvertToSDKFilePath("cfg/task/gameReg/task.json")
+GAMEREG_API_REF_FILE = util.ConvertToSDKFilePath("cfg/task/gameReg/task_refer.json")
+
+# 地图文件
+MAP_PATH = util.ConvertToSDKFilePath('data/KingGlory/KingGloryMap_100x100.info')
+MAP_SCALE = 2.29
+MAP_WIDTH = 100
+MAP_HEIGHT = 100
+
+GAME_STEP_REG_VS = 0  # 游戏阶段1，识别VS界面，用于判定游戏开始
+GAME_STEP_REG_HERO = 1  # 游戏阶段2，识别VS界面自己英雄的位置，用于判定自己是红方or蓝方
+GAME_STEP_CHECK_RUN = 2  # 游戏阶段3，识别是否出现攻击目标，用于判定是否可以开始玩
+GAME_STEP_RUNNING = 3  # 游戏阶段4，正常游戏阶段
+
+
+class XXXEnv(GameEnv):
+    def __init__(self):
+        GameEnv.__init__(self)
+        self.frameSeq = -1
+        self.__windowXXX = XXXWindow()
+        self.actionXXX = XXXAction(actionWindow=self.__windowXXX)
+        self.__agentAPI = AgentAPIMgr.AgentAPIMgr()
+
+        self.__imageHeight = IMG_HEIGHT_DEFAULT
+        self.__imageWidth = IMG_WIDTH_DEFAULT
+
+        self.__mapScaleX = MAP_SCALE
+        self.__mapScaleY = MAP_SCALE
+
+        self.gameStep = GAME_STEP_REG_VS
+
+        self.attackTarget = AttackTarget()
+        self.miniMapMyPos = G_HOME_POINT
+
+        # 同屏场景英雄、小兵、塔的队列
+        self.sceneOurHeroList = list()
+        self.sceneOurArmyList = list()
+        self.sceneOurTowerList = list()
+        self.sceneOppHeroList = list()
+        self.sceneOppArmyList = list()
+        self.sceneOppTowerList = list()
+
+        self.miniMapNewRouteFlag = False
+        self.beginTimestamp = time.time()
+        self.selfGroup = GROUP_INVALID
+        self.selfAttr = SelfAttr(scenePoint=(self.__imageWidth / 2, self.__imageHeight / 2))
+        self.lastSelfAttr = self.selfAttr
+        self.uiInfo = UIInfo()
+
+        self.__gameState = GAME_STATE_INVALID
+
+        self.__hasFindVS = False
+        self.__hasFindMyself = False
+        self.__hasCheckRun = False
+        self.__hasOver = False
+
+        self.__routePoints = list()
+        self.__notDeadFrameCount = 0
+        self.__updatedMRTasks = set()
+
+    # 初始化函数，初始化地图模块、识别模块和动作模块
+    def Init(self):
+        if not self._InitMapNav():
+            self.logger.error('Init MapNav failed!')
+            return False
+
+        if not self._InitRegAPI():
+            self.logger.error('Init AgentAPI failed!')
+            return False
+
+        if not self.actionXXX.Initialize():
+            self.logger.error('Init Action failed!')
+            return False
+
+        return True
+
+    # 退出函数，是否申请的资源
+    def Finish(self):
+        self.actionXXX.Finish()
+        self.__agentAPI.Release()
+
+    # 游戏动作个数
+    def GetActionSpace(self):
+        return 9
+
+    # 输出游戏动作
+    def DoAction(self, action, *args, **kwargs):
+        if sum(action) != 1:
+            raise ValueError('Multiple input actions!')
+
+        self.logger.debug('Action: {0}'.format(action))
+
+        if action[0] == 1:
+            self.actionXXX.Move(-1, self.frameSeq)
+            self.actionXXX.DoAttack(self.frameSeq)
+        elif action[1] == 1:
+            self.actionXXX.Move(0, self.frameSeq)
+            self.actionXXX.DoAttack(self.frameSeq)
+        elif action[2] == 1:
+            self.actionXXX.Move(180, self.frameSeq)
+            self.actionXXX.DoAttack(self.frameSeq)
+        elif action[3] == 1:
+            self.actionXXX.Move(270, self.frameSeq)
+            self.actionXXX.DoAttack(self.frameSeq)
+        elif action[4] == 1:
+            self.actionXXX.Move(90, self.frameSeq)
+            self.actionXXX.DoAttack(self.frameSeq)
+        elif action[5] == 1:
+            self.actionXXX.DoSkill1(self.frameSeq)
+        elif action[6] == 1:
+            self.actionXXX.DoSkill2(self.frameSeq)
+        elif action[7] == 1:
+            self.actionXXX.DoSkill3(self.frameSeq)
+        elif action[8] == 1:
+            self.actionXXX.DoAttack(self.frameSeq)
+        else:
+            pass
+
+    # 根据Agent API获取游戏状态信息，并返回状态信息
+    def GetState(self):
+        while True:
+            gameResult = self.__agentAPI.GetInfo(AgentAPIMgr.GAME_RESULT_INFO)
+            if gameResult is not None:
+                break
+            else:
+                time.sleep(0.001)
+
+        self.frameSeq = gameResult['frameSeq']
+
+        self._ClearData()  # 解析识别结果前，清空相关数据
+
+        self._UpdateRegResult(gameResult['result'])  # 解析识别结果
+
+        self._UpdateGameStep()  # 更新游戏阶段
+
+        image = gameResult['image']
+        self.__imageHeight = image.shape[0]
+        self.__imageWidth = image.shape[1]
+        return image
+
+    # 重置游戏状态，通常可以在每局游戏结束或开始时调用
+    def Reset(self):
+        self.logger.info('Env Reset')
+
+        self.gameStep = GAME_STEP_REG_VS
+        self.actionXXX.ResetAction(self.frameSeq)
+
+        self.attackTarget = AttackTarget()
+        self.miniMapMyPos = G_HOME_POINT
+
+        # 清空同屏英雄血条和物体列表
+        self.sceneOurHeroList.clear()
+        self.sceneOurArmyList.clear()
+        self.sceneOurTowerList.clear()
+        self.sceneOppHeroList.clear()
+        self.sceneOppArmyList.clear()
+        self.sceneOppTowerList.clear()
+
+        self.miniMapNewRouteFlag = False
+        self.beginTimestamp = time.time()
+        self.selfGroup = GROUP_INVALID
+        self.selfAttr = SelfAttr(scenePoint=(self.__imageWidth / 2, self.__imageHeight / 2))
+        self.lastSelfAttr = self.selfAttr
+        self.uiInfo = UIInfo()
+
+        self.__gameState = GAME_STATE_INVALID
+
+        self.__hasFindVS = False
+        self.__hasFindMyself = False
+        self.__hasCheckRun = False
+        self.__hasOver = False
+
+        self.__routePoints.clear()
+        self.__notDeadFrameCount = 0
+        self.__updatedMRTasks.clear()
+
+    # 根据识别模块获取的信息，判断游戏对局是否开始
+    def IsEpisodeStart(self):
+        self.GetState()
+        return self.__gameState == GAME_STATE_RUN
+
+    # 根据识别模块获取的信息，判断游戏对局是否结束
+    def IsEpisodeOver(self):
+        return self.__gameState == GAME_STATE_OVER
+
+    def _InitMapNav(self):
+        self.__mapData = LoadMap(MAP_PATH)
+        if self.__mapData is None:
+            self.logger.error("load map data failed")
+            return False
+
+        self.__mapNav = AStarNav.AStarNavigation(self.__mapData)
+        return True
+
+    def _InitRegAPI(self):
+        if not self.__agentAPI.Initialize(confFile=GAMEREG_API_JSON_FILE,
+                                          referFile=GAMEREG_API_REF_FILE):
+            self.logger.error('init task params failed')
+            return False
+
+        if not self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_GROUP_ID, 1):
+            self.logger.error('send message failed')
+            return False
+
+        # 设置第一阶段识别任务
+        if not self.ChangeGameStep(gameStep=GAME_STEP_REG_VS, gameStepTask=GAME_STEP_REG_VS_TASK):
+            return False
+
+        return True
+
+    def _UpdateRegResult(self, resultDic):
+        for taskID, value in resultDic.items():
+            if value is None:
+                continue
+
+            if self.gameStep == GAME_STEP_REG_VS:
+                if taskID == TASK_VS:
+                    for result in value:
+                        flag = result['flag']
+                        if flag:
+                            self.__hasFindVS = True
+
+            elif self.gameStep == GAME_STEP_REG_HERO:
+                if taskID == TASK_VS_MYSELF and (not self.__hasFindMyself):
+                    myselfInfo = GetMyselfIndex(value)
+                    if myselfInfo is not None:
+                        self.__hasFindMyself = True
+                        index, x, y, w, h = myselfInfo
+                        self.logger.info('My hero pos is {0} ({1}, {2}, {3}, {4}) in VS'.format(index, x, y, w, h))
+                        if index in [0, 1, 2, 3, 4]:
+                            self.selfGroup = GROUP_BLUE
+                            self.logger.info('GROUP_BLUE')
+                        else:
+                            self.selfGroup = GROUP_RED
+                            self.logger.info('GROUP_RED')
+
+            elif self.gameStep == GAME_STEP_CHECK_RUN:
+                if taskID == TASK_ATTACK:
+                    for result in value:
+                        flag = result['flag']
+                        if flag:
+                            self.__hasCheckRun = True
+
+            elif self.gameStep == GAME_STEP_RUNNING:
+                if taskID == TASK_SCENE_HERO:
+                    for result in value:
+                        if result is None:
+                            continue
+
+                        for item in result['bloods']:
+                            classinfo = item['classID']
+                            heroInfo = dict()
+                            heroInfo["pos"] = [int(item['x'] + item['w'] / 2),
+                                               int(item['y'] + item['h'] / 2)]
+                            heroInfo["level"] = int(item['level'])
+                            heroInfo["blood"] = int(item['percent'])
+
+                            if classinfo == SCENE_BLOOD_SELF:
+                                self.selfAttr.level = heroInfo["level"]
+                                self.selfAttr.blood = heroInfo["blood"]
+                                self.actionXXX.SetClickEnable(True)
+                            elif classinfo == SCENE_BLOOD_OUR:
+                                self.sceneOurHeroList.append(heroInfo)
+                            elif classinfo == SCENE_BLOOD_OPP:
+                                self.sceneOppHeroList.append(heroInfo)
+
+                    if self.selfAttr.level < 0:
+                        self.selfAttr.level = self.lastSelfAttr.level
+
+                    if self.selfAttr.blood < 0:
+                        self.selfAttr.blood = self.lastSelfAttr.blood
+
+                elif taskID == TASK_SCENE_OBJ:
+                    for result in value:
+                        for item in result['boxes']:
+                            classinfo = item['classID']
+                            info = dict()
+                            info["pos"] = [int(item['x'] + item['w'] / 2),
+                                           int(item['y'] + item['h'] / 2)]
+                            if classinfo == SCENE_CLASS_RSOLDIER:
+                                if self.selfGroup == GROUP_RED:
+                                    self.sceneOurArmyList.append(info)
+                                else:
+                                    self.sceneOppArmyList.append(info)
+
+                            elif classinfo == SCENE_CLASS_BSOLDIER:
+                                if self.selfGroup == GROUP_BLUE:
+                                    self.sceneOurArmyList.append(info)
+                                else:
+                                    self.sceneOppArmyList.append(info)
+
+                            elif classinfo == SCENE_CLASS_RTOWER:
+                                if self.selfGroup == GROUP_RED:
+                                    self.sceneOurTowerList.append(info)
+                                else:
+                                    self.sceneOppTowerList.append(info)
+
+                            elif classinfo == SCENE_CLASS_BTOWER:
+                                if self.selfGroup == GROUP_BLUE:
+                                    self.sceneOurTowerList.append(info)
+                                else:
+                                    self.sceneOppTowerList.append(info)
+
+                elif taskID == TASK_BOTTOM_SKILL:
+                    index = 0
+                    for result in value:
+                        if result['flag']:
+                            point = GetBoxPoint(result)
+                            if index == 0:
+                                self.uiInfo.backHomeEnable = 1
+                                self.__windowXXX.bottom1Btn = point
+                            elif index == 1:
+                                self.uiInfo.recoverBloodEnable = 1
+                                self.__windowXXX.bottom2Btn = point
+                            elif index == 2:
+                                self.uiInfo.playerMagic = 1
+                                self.__windowXXX.bottom3Btn = point
+                            self.actionXXX.SetClickEnable(True)
+                        else:
+                            point = GetROIPoint(result)
+                            if index == 0:
+                                self.uiInfo.backHomeEnable = 0
+                                self.__windowXXX.bottom1Btn = point
+                            elif index == 1:
+                                self.uiInfo.recoverBloodEnable = 0
+                            elif index == 2:
+                                self.uiInfo.playerMagic = 0
+                        index += 1
+
+                elif taskID == TASK_ATTACK_TYPE:
+                    if not value[1]['flag']:
+                        self.attackTarget.type = ATTACK_TYPE_INVALID
+                        self.logger.debug('No Attack target')
+                    else:
+                        if value[0]['flag']:
+                            classID = value[0]['boxes'][0]['classID']
+                            if classID < ATTACK_HERO_ID_MAX:
+                                self.attackTarget.type = ATTACK_TYPE_HERO
+                                self.logger.info('Attack target is HERO')
+                            elif classID in [ATTACK_TOWER_ID, ATTACK_BASE_ID]:
+                                self.attackTarget.type = ATTACK_TYPE_TOWER
+                                self.logger.info('Attack target is TOWER')
+                            elif classID == ATTACK_MONSTER_ID:
+                                self.attackTarget.type = ATTACK_TYPE_MONSTER
+                                self.logger.info('Attack target is MONSTER')
+                            elif classID == ATTACK_SOLDIER_ID:
+                                self.attackTarget.type = ATTACK_TYPE_SOLDIER
+                                self.logger.info('Attack target is SOLDIER')
+                            else:
+                                self.attackTarget.type = ATTACK_TYPE_INVALID
+                                self.logger.debug('Attack target is Invalid')
+                        else:
+                            self.attackTarget.type = ATTACK_TYPE_HERO
+                            self.logger.info('Attack target is HERO')
+
+                elif taskID == TASK_HERO_DEAD:
+                    self.selfAttr.isDead = self.lastSelfAttr.isDead
+                    heroDead = False
+                    for result in value:
+                        flag = result['flag']
+                        if flag:
+                            heroDead = True
+
+                    if heroDead:
+                        self.selfAttr.isDead = True
+                        self.__notDeadFrameCount = 0
+                    else:
+                        self.__notDeadFrameCount += 1
+                        if self.__notDeadFrameCount > 10:
+                            self.selfAttr.isDead = False
+                            self.__notDeadFrameCount = 0
+
+                elif taskID == TASK_GAME_OVER:
+                    for result in value:
+                        flag = result['flag']
+                        if flag:
+                            self.__hasOver = True
+                            break
+
+                elif taskID == TASK_ATTACK:
+                    for result in value:
+                        if result['flag']:
+                            self.__windowXXX.attackBtn = GetBoxPoint(result)
+                            self.actionXXX.SetClickEnable(True)
+                        else:
+                            self.__windowXXX.attackBtn = GetROIPoint(result)
+
+                elif taskID == TASK_JIAYUAN:
+                    for result in value:
+                        if result['flag']:
+                            self.uiInfo.homeFlagEnable = 1
+                        else:
+                            self.uiInfo.homeFlagEnable = 0
+
+                elif taskID == TASK_MR_SKILL1:
+                    for result in value:
+                        self.__windowXXX.skill1Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_SKILL2:
+                    for result in value:
+                        self.__windowXXX.skill2Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_SKILL3:
+                    for result in value:
+                        self.__windowXXX.skill3Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_UPGRADE1:
+                    for result in value:
+                        self.__windowXXX.upgradeSkill1Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_UPGRADE2:
+                    for result in value:
+                        self.__windowXXX.upgradeSkill2Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_UPGRADE3:
+                    for result in value:
+                        self.__windowXXX.upgradeSkill3Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_EQUIPMENT1:
+                    for result in value:
+                        self.__windowXXX.buyEqpt1Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_EQUIPMENT2:
+                    for result in value:
+                        self.__windowXXX.buyEqpt2Btn = GetROIPoint(result)
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MR_MAP_LOCATION:
+                    for result in value:
+                        x = result['ROI']['x']
+                        y = result['ROI']['y']
+                        w = result['ROI']['w']
+                        h = result['ROI']['h']
+                        scaleX = w / MAP_WIDTH
+                        scaleY = h / MAP_HEIGHT
+                        self.__mapScaleX = min(scaleX, scaleY)
+                        self.__mapScaleY = min(scaleX, scaleY)
+                        self.logger.info('TASK_MR_MAP_LOCATION: {} {} {} {}'.format(x, y, w, h))
+                        self.logger.info(
+                            'Update map param: {} {}'.format(self.__mapScaleX, self.__mapScaleY))
+                        self.__updatedMRTasks.add(taskID)
+
+                elif taskID == TASK_MAP_MY_LOCATION:
+                    resultPix = value[0]['points']
+                    miniMapMyPosPix = GetTargetCenter(resultPix, imgWidth=self.__imageWidth,
+                                                      imgHeight=self.__imageHeight, kenerSize=12)
+                    if miniMapMyPosPix is not None:
+                        posX, posY = self._UpdateHeroPos(miniMapMyPosPix[0], miniMapMyPosPix[1])
+                        if posX is not None:
+                            self.miniMapMyPos = np.array((posX, posY))
+                    elif self.uiInfo.homeFlagEnable:
+                        self.miniMapMyPos = G_HOME_POINT
+                    self.logger.debug('My miniMap Pos({})'.format(self.miniMapMyPos))
+
+    def _UpdateGameStep(self):
+        if self.gameStep == GAME_STEP_REG_VS:
+            if self.__hasFindVS:
+                self.__gameState = GAME_STATE_RUN
+                self.logger.info('REG_VS -> REG_HERO')
+                if not self.ChangeGameStep(gameStep=GAME_STEP_REG_HERO,
+                                           gameStepTask=GAME_STEP_REG_HERO_TASK):
+                    return False
+
+        elif self.gameStep == GAME_STEP_REG_HERO:
+            if self.__hasFindMyself:
+                self.logger.info('REG_HERO -> CHECK_RUN')
+                if not self.ChangeGameStep(gameStep=GAME_STEP_CHECK_RUN,
+                                           gameStepTask=GAME_STEP_CHECK_RUN_TASK):
+                    return False
+
+        elif self.gameStep == GAME_STEP_CHECK_RUN:
+            if self.__hasCheckRun:
+                self.logger.info('CHECK_RUN -> RUNNING')
+                if not self.ChangeGameStep(gameStep=GAME_STEP_RUNNING,
+                                           gameStepTask=GAME_STEP_RUNNING_TASK):
+                    return False
+
+                self.__windowXXX.movingCenter = (200, self.__imageHeight - 150)
+                self.__windowXXX.movingRange = 95
+                self.beginTimestamp = time.time()
+                self.actionXXX.MoveInit(self.frameSeq)
+
+        elif self.gameStep == GAME_STEP_RUNNING:
+            if len(self.__updatedMRTasks) > 0:
+                if self.SendUpdateTask(disableTask=self.__updatedMRTasks, enableTask=[]):
+                    self.__updatedMRTasks.clear()
+
+            if self.__hasOver:
+                self.logger.info('RUNNING -> REG_VS')
+                self.__gameState = GAME_STATE_OVER
+
+                if not self.ChangeGameStep(gameStep=GAME_STEP_REG_VS,
+                                           gameStepTask=GAME_STEP_REG_VS_TASK):
+                    return False
+
+                self.actionXXX.Move(-1, self.frameSeq)
+                self.actionXXX.MoveFinish(self.frameSeq)
+                return True
+            else:
+                if self.lastSelfAttr.isDead:
+                    if self.selfAttr.isDead:  # dead as before, just return
+                        return True
+                    else:
+                        self.logger.info('Happy to reborn!')
+                        self.actionXXX.MoveInit(self.frameSeq)
+                else:
+                    if self.selfAttr.isDead:
+                        self.logger.info('I am Dead!')
+                        self.actionXXX.Move(-1, self.frameSeq)
+                        self.actionXXX.MoveFinish(self.frameSeq)
+                        return True
+
+        return True
+
+    def _ClearData(self):
+        self.sceneOurHeroList.clear()
+        self.sceneOurArmyList.clear()
+        self.sceneOurTowerList.clear()
+        self.sceneOppHeroList.clear()
+        self.sceneOppArmyList.clear()
+        self.sceneOppTowerList.clear()
+
+        self.lastSelfAttr = self.selfAttr
+        self.selfAttr = SelfAttr(scenePoint=(self.__imageWidth / 2, self.__imageHeight / 2))
+        self.attackTarget = AttackTarget()
+
+        self.actionXXX.SetClickEnable(False)
+
+    def _UpdateHeroPos(self, x, y):
+        mapX = int(x / self.__mapScaleX)
+        mapY = int(y / self.__mapScaleY)
+
+        mapX = max(0, min(mapX, MAP_WIDTH - 1))
+        mapY = max(0, min(mapY, MAP_HEIGHT - 1))
+
+        value = self.__mapData[mapY, mapX]
+
+        if value in [MAP_OBSTACLE, MAP_OUR_TOWER_OBSTACLE, MAP_OPP_TOWER_OBSTACLE]:
+            for radius in range(MAP_MAX_SEARCH_RADIUS):
+                rowsBegin = max(mapY - radius, 0)
+                rowsEnd = min(mapY + radius, MAP_HEIGHT - 1)
+                colsBegin = max(mapX - radius, 0)
+                colsEnd = min(mapX + radius, MAP_WIDTH - 1)
+                # UP
+                j = rowsBegin
+                for i in range(colsBegin, colsEnd):
+                    classInfo = self.__mapData[j, i]
+                    if classInfo in [MAP_OBSTACLE, MAP_OUR_TOWER_OBSTACLE, MAP_OPP_TOWER_OBSTACLE]:
+                        continue
+                    else:
+                        return int(i), int(j)
+
+                # RIGHT
+                i = colsEnd
+                for j in range(rowsBegin, rowsEnd):
+                    classInfo = self.__mapData[j, i]
+                    if classInfo in [MAP_OBSTACLE, MAP_OUR_TOWER_OBSTACLE, MAP_OPP_TOWER_OBSTACLE]:
+                        continue
+                    else:
+                        return int(i), int(j)
+
+                # DOWN
+                j = rowsEnd
+                for i in range(colsBegin, colsEnd):
+                    classInfo = self.__mapData[j, i]
+                    if classInfo in [MAP_OBSTACLE, MAP_OUR_TOWER_OBSTACLE, MAP_OPP_TOWER_OBSTACLE]:
+                        continue
+                    else:
+                        return int(i), int(j)
+
+                # LEFT
+                i = colsBegin
+                for j in range(rowsBegin, rowsEnd):
+                    classInfo = self.__mapData[j, i]
+                    if classInfo in [MAP_OBSTACLE, MAP_OUR_TOWER_OBSTACLE, MAP_OPP_TOWER_OBSTACLE]:
+                        continue
+                    else:
+                        return int(i), int(j)
+
+            return None, None
+
+        else:
+            return mapX, mapY
+
+    def MiniMapMoving(self, tPos, tRange=0):
+        startX, startY = self.miniMapMyPos[0], self.miniMapMyPos[1]
+        endX, endY = tPos[0], tPos[1]
+        rangeT = int(tRange)
+
+        # 如果设置了新寻路标志or路径队列为空，则调用寻路获取新的路径队列
+        if self.miniMapNewRouteFlag or len(self.__routePoints) == 0:
+            startP = np.array([startX, startY])
+            endP = np.array([endX, endY])
+            dis = GetDisWith2Point(startP, endP)
+            if dis > rangeT:
+                self.logger.info(
+                    'New Find path ({0}, {1}) -> ({2}, {3}) | {4} -> {5}'.format(startY, startX,
+                                                                                 endY, endX,
+                                                                                 self.miniMapMyPos,
+                                                                                 tPos))
+                self.__routePoints = self.__mapNav.FindPath(startY, startX, endY, endX)
+                if len(self.__routePoints) == 0:
+                    self.logger.error(
+                        'Find no path ({0}, {1}) -> ({2}, {3}) | {4} -> {5}'.format(startY, startX,
+                                                                                    endY, endX,
+                                                                                    self.miniMapMyPos,
+                                                                                    tPos))
+                else:
+                    self.miniMapNewRouteFlag = False
+            else:
+                self.miniMapNewRouteFlag = False
+        elif len(self.__routePoints) > 0:
+            startP = np.array([startX, startY])
+            endP = np.array([self.__routePoints[-1][1], self.__routePoints[-1][0]])
+            dis = GetDisWith2Point(startP, endP)
+            if dis > 2 * rangeT:  # 路径中下一个点太远（超过冗余范围的2倍），则可能发生走偏了，需重新寻路
+                self.logger.debug('{0} -> {1} with dis={2}'.format(startP, endP, dis))
+                self.logger.debug(
+                    'Re Find path ({0}, {1}) -> ({2}, {3}) | {4} -> {5}'.format(startY, startX,
+                                                                                endY, endX,
+                                                                                self.miniMapMyPos,
+                                                                                tPos))
+                self.__routePoints = self.__mapNav.FindPath(startY, startX, endY, endX)
+                if len(self.__routePoints) == 0:
+                    self.logger.error(
+                        'Find no path ({0}, {1}) -> ({2}, {3}) | {4} -> {5}'.format(startY,
+                                                                                    startX,
+                                                                                    endY, endX,
+                                                                                    self.miniMapMyPos,
+                                                                                    tPos))
+
+        if len(self.__routePoints) > 0:
+            startP = np.array([startX, startY])
+            for point in self.__routePoints[::-1]:
+                endP = np.array([point[1], point[0]])
+                dis = GetDisWith2Point(startP, endP)
+                if dis > rangeT:  # 点刚好超过冗余范围，去到该点
+                    angle = GetDirectionWith2Point(startP, endP)
+                    self.actionXXX.Move(angle, self.frameSeq)
+                    break
+                else:  # 点在冗余范围内，则直接丢弃，遍历下一个点
+                    self.__routePoints.pop()
+                    continue
+            return True
+        else:
+            self.logger.debug('Route is empty, standby')
+            self.actionXXX.Move(-1, self.frameSeq)
+            return False
+
+    def ChangeGameStep(self, gameStep, gameStepTask):
+        if not self.SendUpdateTask(ALL_TASK, gameStepTask):
+            return False
+        self.gameStep = gameStep
+        return True
+
+    def SendUpdateTask(self, disableTask, enableTask):
+        taskFlagDict = UpdateTaskFlag(disableTask, enableTask)
+        ret = self.__agentAPI.SendCmd(AgentAPIMgr.MSG_SEND_TASK_FLAG, taskFlagDict)
+        if not ret:
+            self.logger.error('AgentAPI MSG_SEND_TASK_FLAG failed')
+            return False
+        return True

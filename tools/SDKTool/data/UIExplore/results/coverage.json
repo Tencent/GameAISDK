@@ -1,0 +1,2498 @@
+{
+    "coverList": [
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "litangliebiao_jingdian.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tiaoxuanqinglv.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "qinglvjiehunshuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "litangdating.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tiaoxuanqinglv_qinmidubuzu.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "litangliebiao_suoyou.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "litangliebiao.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "ziyouxunlian_jingsu.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gerenshengxia_juqingmoshi.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaojingtong_putong.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingsushipin_Achezhuanye.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaojingtong_kunnan.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiazhaokaoshi_putongjiaozhao.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingsushipin_Dche.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jijiaojiaoxue_daoju.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiqiaojiaoxue_daojujiangtang.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "luxiangtiaozhan.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaojingtong_jiandan.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "ziyouxunlian_daoju.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "luxiangtiaozhan_tishi.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiqiaojiaoxue_jingsu.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingsushipin_Achejinjie.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingsushipin_Bche.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongayaoshangdian_youhuizhigou.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaoleideng.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chewangguilai.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhouzhouhaoli.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tongbantuijian.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingcaixinwanfa.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaoshangdian_youhuilibao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huiguitequan.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chedui_tuijianliebiao.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chedui_chuangjianchedui.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheduitubiao.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheduiguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.05555555555555555,
+            "fileName": "shizhuang_xiezi.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 4,
+            "coverage": 0.2222222222222222,
+            "fileName": "shizhuang_beishi.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 5,
+            "coverage": 0.3125,
+            "fileName": "daoqi_taozhuang.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 5,
+            "coverage": 0.38461538461538464,
+            "fileName": "beibao_chongwu2.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 8,
+            "coverage": 0.47058823529411764,
+            "fileName": "gongneng_beijing.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 10,
+            "coverage": 0.5882352941176471,
+            "fileName": "gongneng_taiyin.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 10,
+            "coverage": 0.5882352941176471,
+            "fileName": "gongeng_quanbu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.05555555555555555,
+            "fileName": "shizhuang_quanbu.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 9,
+            "coverage": 0.5294117647058824,
+            "fileName": "gongneng_piaoyan.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.23076923076923078,
+            "fileName": "shizhuang.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 6,
+            "coverage": 0.375,
+            "fileName": "daoqi_quanbu.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 9,
+            "coverage": 0.5294117647058824,
+            "fileName": "gongneng_jiezhi.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.16666666666666666,
+            "fileName": "shizhuang_shangzhuang.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 8,
+            "coverage": 0.47058823529411764,
+            "fileName": "gongneng_daojusaipifu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.23076923076923078,
+            "fileName": "shizhuang3.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 10,
+            "coverage": 0.5882352941176471,
+            "fileName": "gongneng_gongneng.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 5,
+            "coverage": 0.2777777777777778,
+            "fileName": "shizhuang_toushi.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.16666666666666666,
+            "fileName": "shizhuang_xiazhuang.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 9,
+            "coverage": 0.5294117647058824,
+            "fileName": "gongneng_dongzuo.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 5,
+            "coverage": 0.38461538461538464,
+            "fileName": "beibao_chongwu.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 5,
+            "coverage": 0.38461538461538464,
+            "fileName": "boabao2.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.16666666666666666,
+            "fileName": "shizhuang_taozhuang.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 6,
+            "coverage": 0.4,
+            "fileName": "beibao_daoqi_quanbu.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 5,
+            "coverage": 0.2777777777777778,
+            "fileName": "shizhuang_shouchi.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beibaoshuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.05555555555555555,
+            "fileName": "shizhuang_toufa.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 4,
+            "coverage": 0.2857142857142857,
+            "fileName": "libao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiangliyulan.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "haoqichengjiu.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chengjiu.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chengjiuguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saishichengjiu.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiashitianfu.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tianfushuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuang_zongbang2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujian_nvsheng_quanqu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuang_zhoubang_quanqu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujian_nvsheng_quanqu2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang_huanbanbipin2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheduipaihang_duanweibang.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duanweipaihang_quanqu.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang_haoyoubipin.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mingshipaihang3.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiuxianpaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujianpaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiuxianpaihang_naolidaren.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang_saidaozhiwang.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuang_zhoubang_quanqu2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiuxian_nihuawocai.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuiji_zhouzhuiji_haoyou.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "bianjingzhanzheng.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiuxianpaihang_naolidaren2.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaopaihang_haoyou.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujian_nansheng_haoyou.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuiji_zhoutaosheng_quanqu.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "meilipaihang_zongbang.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shouzanpaihang3.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "bianjingpaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shouzanpaihang.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_quanqu2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuijipaihang_haoyou.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shouzanpaihang2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujian_nansheng_quanqu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "meilipaihang_zhoubang2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiuxian_nihuawocai2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "bianjing_zongrongyu].jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "meilipaihang_zongbang2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mingshipaihang2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidoapaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujian_nvsheng_haoyou.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "enaipaihangshuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_haoyou.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "bianjing_zongrongyu.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "enaipaihang.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang_saidaozhiwang2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaopaihang_quanqu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huanbanguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "meilipaihang_zhoubang.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuijiguizeshuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuijipaihang_quanqu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuang_zongbang3.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheduipaihang_huoyuebang2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang_haoyoubipin1.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "bianjing_zhouduojin.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuang_zongbang.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaopaihang_huanbanbipin.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_quanqu.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mingshipaihang.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shouzanpaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuangpaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tujian_nansheng_quanqu2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheduipaihang_huoyuebang.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheduissaipaihangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaopaihang_quanqu2.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gaizhuang_zhoubang_haoyou.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duanweipaihang_haoyou.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuiji_zhouzhuiji_quanqu.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuiji_zhoutaosheng_haoyou.jpg",
+            "sampleNum": 17
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "M2MOTUO.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_cheliang_quanbu.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_xiezi.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_beishi.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_xiazhuang.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "Bche.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "Cche.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_chongwu.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "m1MOTUO.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_quanbu.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "Dche.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "Sche.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_Xzuzhuangche.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_cheliang.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_toufa.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "Ache.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_taozhuang.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "beizhan_shizhuang_shangzhuang.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "qqyinyue.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "regejingxuan.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shoucangjia.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shoucangjia2.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "baishishoutu_bukebaishi.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mingshitequan.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "baishishoutu_kebaishi.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "baishishoutu.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "baishishoutu_keshoutu.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shitudating.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "renwu_rongyaoxunzhang.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "renwu_richangrenwu.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaohuigui_rongyaoleideng.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "renwu_zhuxianrenwu.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaohuigui_huiguitequan.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaohuigui_chewangguilai.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaohuigui_zhouzhouhaoli.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaoxunzhang_paihang.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaohuigui_tongbantuijian.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaoxunzhang_renwu.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaoxunzhang_jiangli.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "renwu_rongyaohuigui.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaopaihangshuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_quanbu.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_Bche.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_Sche.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_M1motuo.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_quanbu.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheku_zuzhuangche.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_L1ban.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.08333333333333333,
+            "fileName": "huaban_L0ban.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_Dche.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_Ache.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_M2motuo.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saiche_Cche.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_L2ban.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cehku_saiche.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youxidating_shejiao.jpg",
+            "sampleNum": 25
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youxidating.jpg",
+            "sampleNum": 23
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shequ2.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youxidating_shouji.jpg",
+            "sampleNum": 25
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwumijing3.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwumijingshuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "nengliangbujiguze.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "libao_cichenglibao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jifenduihuanguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "libaoguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xinshouyingdao2.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xuyuanchiguze.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gongfang.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xuyuanchi_shuijing.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xuyuanjilu.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "rongyaoxunzhang4.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwumijing4.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwumijing5.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duihuan_cheduiduihuan.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwumijing2.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duihuan_paiweiduihuan.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gongfang2.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gongfangguize.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "buji.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duihuan_suipianduihuan.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mofayichushuoming.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duihuan_jifenduihuan2.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwumijing1.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "libao_zuanshilibao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xuyuanchi_xingcheng.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mofayichu.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duihuan_jifenduihuan.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.08333333333333333,
+            "fileName": "zizuhuangguan_tequan.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.1,
+            "fileName": "guizutequan.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.1111111111111111,
+            "fileName": "chongzhifuli.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.09090909090909091,
+            "fileName": "guzutequan3.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.07142857142857142,
+            "fileName": "zizhunhuangguan_fuli.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.1,
+            "fileName": "chongzhi.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "caozuo.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "wodeshipin.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "qinglihuancun.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shezhibaocun.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shipin.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shengyin.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiazai.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "erjimima.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "caozuo_yaoganmoshi.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "caozuo_shuangceanjian.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "wodeshipin2.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jichushezhi.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chazhao_fujinderen.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "haoyouliebiao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shejiaozhongxin_zhaoshifu.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shejiaozhongxin_zhaoqinglv_siliao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chazhao_yiqiwanguo.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shejiao_zhaotudi_siliao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhaoshifu_bukebaishi.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shejiaozhongxin_zhaoqinglv.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shenqingliebiao.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shejiao_zhaotudi.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youjian.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chazhao_chazhaowanjia.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "haoyouliebiao_heimingdan.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhaoshifu_baishi.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhaoqinglv_siliao.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youjian2.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shejiaozhongxin_zhaoshifu2.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "haoyouliebiao_lingquliwu.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tehuiguafen.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tehuikuanghuan.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xianshibaoxiang.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "heianmingyun.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "fengbaotidao.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhoumoyinhang.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "Sliansaidaka.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhanguan_feiche.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youxishuju.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chengjiu_suoyouchengjiu.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chengjiu_saijichengjiu.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chengjiu_haoqichengjiu.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "youxi_paiweishuju.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zhuye.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tuijain2.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "duizhanshuju.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "mingpian.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiangce.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tishi_jixingbuhe.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tuijian.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chengjiu_bisaichengjiu.jpg",
+            "sampleNum": 12
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_quanbu.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 4,
+            "coverage": 0.2,
+            "fileName": "zengsong_shangzhuang.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_yangcheng.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng3.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gongeng_jiezhi.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_quanbu.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shizhuang_biaoqing.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_yinqing.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huangguan.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_chongwu.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng_libao.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_shizhuang.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_Bche.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "qiehuanxingbie.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_daoju.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gongeng_quanbu.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_fuqi.jpg",
+            "sampleNum": 23
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_chelun.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "cheku.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng_saiche.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_gongneng2.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_toufa.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_chetou.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsongzhongxin_tuijian.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsongzhongxin_saiche.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng0.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 2,
+            "coverage": 0.1,
+            "fileName": "zengsong_taiying.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu_chongwu.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shizhuangquanbu.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xinshouyindao.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_zhuqi.jpg",
+            "sampleNum": 23
+        },
+        {
+            "coverNum": 4,
+            "coverage": 0.19047619047619047,
+            "fileName": "shizhuang_shangzhuang.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.15,
+            "fileName": "zengsong_xiazhuang.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_gongneng.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.15,
+            "fileName": "zengsong_taozhuang2.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 2,
+            "coverage": 0.1,
+            "fileName": "zengsong_piaoyan.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng_Bche.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huaban_L1ban.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 1,
+            "coverage": 0.047619047619047616,
+            "fileName": "gongeng_gongeng.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_M1.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "gongeng_piaoyan.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_jiezhi.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu_quanbu.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_huangguan.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_taozhuang.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 2,
+            "coverage": 0.09523809523809523,
+            "fileName": "gongeng_taiying.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_chongwu2.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shizhuang_xiazhuang.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_jiashichang.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_pengyanse.jpg",
+            "sampleNum": 23
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng4.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng_Cche.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_baobao.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "baobao.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_chewei.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 3,
+            "coverage": 0.15,
+            "fileName": "zengsong_biaoqing.jpg",
+            "sampleNum": 20
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zuzhuang_lunguse.jpg",
+            "sampleNum": 23
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shizhuang_taozhuang.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "zengsong_huaban.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng2.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shangcheng_M1.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "shizhuang_toufa.jpg",
+            "sampleNum": 21
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dianjinsaishi2.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "richanghuodong5.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dianjinsaishi4.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dianjinsaishi3.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "richanghuodong3.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xianshihuodong1.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dianjinsaishi5.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dianjinsaishi1.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xianshihuodong3.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "richanghuodong1.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xianshihuodong2.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jinxuantuijian1.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jinxuantuijian2.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jinxuantuijian3.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jinxuantuijian5.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "richanghuodong4.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "7tianqiandao.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "richanghuodong2.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jinxuantuijian4.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiequchewang_dingwei.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiequchewang.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "paiwei_zuduijingsu.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaozhiwang_tiaozhan.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "bianjinzhanzheng.jpg",
+            "sampleNum": 9
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "paiweisai.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "paiweisai2.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "paiwei_gerenjingsu.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "paiwei_zuduidaoju.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "saidaozhiwang.jpg",
+            "sampleNum": 11
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "paiwei_chaonengjingsu.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiequchewang3.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jiequchewang2.jpg",
+            "sampleNum": 10
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu3.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu8.jpg",
+            "sampleNum": 7
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu_dianjishangchang.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu_youti.jpg",
+            "sampleNum": 14
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu4.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu2.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu9.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu5.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu6.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "huoqutujing2.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chongwu7.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingdian_chuji.jpg",
+            "sampleNum": 19
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingdian_huaijiu.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xuanzhemoshi.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tishi_kaoqujiazhao.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "quanchengzhuiji_pipeifangjian.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jisuhuaban_pipeifangjian.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "taotaisai_jiayufangjian.jpg",
+            "sampleNum": 1
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "48rentaotaisai.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiehoumoshi.jpg",
+            "sampleNum": 15
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "taotaisai_lijipipei.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jisuhuaban.jpg",
+            "sampleNum": 16
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "quanchengzhuiji.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jisuhuaban_ziyoukaihei.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tishi_tuichuxiehoumoshi.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiehou_moshijieshao.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chaonengjingsusai.jpg",
+            "sampleNum": 13
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiehoujingsusai.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "chaonengjingsu_pipeifangjian.jpg",
+            "sampleNum": 6
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "taotaisai_chuangjianfangjian.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "jingdian_xinshou.jpg",
+            "sampleNum": 18
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "fangjian_kaishi.jpg",
+            "sampleNum": 8
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "xiehoumoushi_xuanzemoshi.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "tishi_tuichutaotaisai.jpg",
+            "sampleNum": 2
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "start.jpg",
+            "sampleNum": 7
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "fuzhuangtujian_nvsheng.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "fuzhuangtujian.jpg",
+            "sampleNum": 3
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "fuzhuangtujian_nansheng.jpg",
+            "sampleNum": 5
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dapeidasai.jpg",
+            "sampleNum": 4
+        },
+        {
+            "coverNum": 0,
+            "coverage": 0.0,
+            "fileName": "dapeidasai2.jpg",
+            "sampleNum": 4
+        }
+    ],
+    "button": {
+        "coverage": 0.034,
+        "coverNum": 172,
+        "sampleNum": 5073
+    },
+    "scene": {
+        "coverage": 0.101,
+        "coverNum": 42,
+        "sampleNum": 414
+    }
+}

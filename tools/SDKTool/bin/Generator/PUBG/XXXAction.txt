@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+#coding: utf-8
+
+import time
+from .XXXActionConfig import *
+from ActionAPI.ActionAPIMgr import ActionAPIMgr
+
+class XXXWindow(object):
+    def __init__(self):
+        self.imgHeight = -1
+        self.imgWidth = -1
+
+        self.minimapX = -1
+        self.minimapY = -1
+        self.minimapW = -1
+        self.minimapH = -1
+
+        self.bigmapX = -1
+        self.bigmapY = -1
+        self.bigmapW = -1
+        self.bigmapH = -1
+
+        self.attackBtnX = -1
+        self.attackBtnY = -1
+
+        self.jumpBtnX = -1
+        self.jumpBtnY = -1
+
+        self.leaveBtnX = -1
+        self.leaveBtnY = -1
+
+        self.floatBtnX = -1
+        self.floatBtnY = -1
+
+        self.openMapX = -1
+        self.openMapY = -1
+
+        self.closeMapX = -1
+        self.closeMapY = -1
+
+    def IsBtnPosOK(self):
+        btnList = [self.attackBtnX, self.attackBtnY,
+                    self.jumpBtnX, self.jumpBtnY,
+                    self.leaveBtnX, self.leaveBtnY,
+                    self.floatBtnX, self.floatBtnY,
+                    self.openMapX, self.openMapY,
+                    self.closeMapX, self.closeMapY]
+        return min(btnList)
+
+    def IsMinimapPosOK(self):
+        return (self.minimapX >= 0 and self.minimapY >= 0 and self.minimapW > 0 and self.minimapH > 0)
+
+    def IsBigmapPosOK(self):
+        return (self.bigmapX >= 0 and self.bigmapY >= 0 and self.bigmapW > 0 and self.bigmapH > 0)
+
+    def IsWindowOK(self):
+        return (self.imgHeight > 0 and self.imgWidth > 0)
+
+class XXXAction(object):
+    def __init__(self, actionWindow):
+        self.__action = ActionAPIMgr()
+        self.__window = actionWindow
+        self.__moveEnable = False
+        self.__fastMove = True
+
+    def Initialize(self):
+        return self.__action.Initialize()
+
+    def Finish(self):
+        self.__action.Finish()
+
+    def ResetAction(self, frameIndex = -1):
+        self.__action.Reset(frameSeq = frameIndex)
+
+    def MoveInit(self, moveRadius, contact = 0, frameIndex = -1):
+        self.__moveEnable = True
+        if self.__window.IsWindowOK() is True:
+            moveCenterX = int((720/self.__window.imgHeight) * MOVE_CENTER_X)
+            moveCenterY = int((MOVE_CENTER_Y/720) * self.__window.imgHeight)
+            self.__action.MovingInit(moveCenterX, moveCenterY, moveRadius, contact, frameSeq = frameIndex, waitTime=400)
+        else:
+            self.__action.MovingInit(MOVE_CENTER_X, MOVE_CENTER_Y, moveRadius, contact, frameSeq = frameIndex, waitTime=400)
+
+    def MoveFinish(self, frameIndex = -1):
+        if self.__moveEnable is True:
+            self.__action.MovingFinish(frameSeq = frameIndex)
+        self.__moveEnable = False
+
+    def Move(self, dirAngle, frameIndex = -1, fastMove = True):
+        if self.__fastMove != fastMove:
+            self.MoveFinish(frameIndex)
+
+        self.__fastMove = fastMove
+
+        if self.__moveEnable is not True:
+            radius = (MOVE_RADIUS if self.__fastMove else SLOW_MOVE_RADIUS)
+            self.MoveInit(radius, 0, frameIndex)
+
+        self.__action.Moving(dirAngle, frameSeq = frameIndex)
+
+    def DoSelfAction(self, action, frameIndex = -1):
+        actionPointDict = {}
+        actionPointDict[ACTION_ATTACK] = [self.__window.attackBtnX, self.__window.attackBtnY, 40]
+        actionPointDict[ACTION_JUMP] = [self.__window.jumpBtnX, self.__window.jumpBtnY, 40]
+        actionPointDict[ACTION_LEAVE] = [self.__window.leaveBtnX, self.__window.leaveBtnY, 40]
+        actionPointDict[ACTION_FLOAT] = [self.__window.floatBtnX, self.__window.floatBtnY, 150]
+        actionPointDict[ACTION_OPEN_MAP] = [self.__window.openMapX, self.__window.openMapY, 40]
+        actionPointDict[ACTION_CLOSE_MAP] = [self.__window.closeMapX, self.__window.closeMapY, 40]
+
+        actionParam = actionPointDict.get(action)
+        if actionParam is not None:
+            self.__action.Click(actionParam[0], actionParam[1], 1, frameSeq = frameIndex, durationMS = actionParam[2])
+
+    def DoViewAction(self, action, swapX = 0, swapY = 0, frameIndex = -1):
+        actionPointDict = {}
+
+        if action == ACTION_SWAP_LEFT and swapX > 0:
+            actionPointDict[ACTION_SWAP_LEFT] = ((H_SWAP_END_X, H_SWAP_END_Y), (H_SWAP_END_X - swapX, H_SWAP_END_Y), 120)
+        elif action == ACTION_SWAP_RIGHT and swapX > 0:
+            actionPointDict[ACTION_SWAP_RIGHT] = ((H_SWAP_BEGIN_X, H_SWAP_BEGIN_Y), (H_SWAP_BEGIN_X + swapX, H_SWAP_BEGIN_Y), 120)
+        elif action == ACTION_SWAP_UP and swapY > 0:
+            actionPointDict[ACTION_SWAP_UP] = ((V_SWAP_END_X, V_SWAP_END_Y), (V_SWAP_END_X, V_SWAP_END_Y - swapY), 120)
+        elif action == ACTION_SWAP_DOWN and swapY > 0:
+            actionPointDict[ACTION_SWAP_DOWN] = ((V_SWAP_BEGIN_X, V_SWAP_BEGIN_Y), (V_SWAP_BEGIN_X, V_SWAP_BEGIN_Y + swapY), 120)
+
+        actionPoints = actionPointDict.get(action)
+        if actionPoints is not None:
+            self.__action.Swipe(actionPoints[0][0], actionPoints[0][1], actionPoints[1][0], actionPoints[1][1], contact=2, frameSeq=frameIndex, durationMS=actionPoints[2], needUp=True)
+            time.sleep(actionPoints[2]/1000)

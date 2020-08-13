@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from .AbstractHandler import AbstractHandler, LOG
+from XXX.Tools import *
+
+TASK_ID_POPUP_CLOSE_BTN = 300  # 识别弹窗关闭按键
+
+
+class PopupHandler(AbstractHandler):
+    '''
+    弹窗Handler，输出关闭弹窗的动作
+    '''
+    def __init__(self, *args, **kwargs):
+        super(PopupHandler, self).__init__(args, kwargs)
+
+    def Initialize(self, *args, **kwargs):
+        return True
+
+    def Finish(self, *args, **kwargs):
+        return True
+
+    def Update(self, resultDict):
+        point = None
+        taskDescList = [
+                        {'taskID': TASK_ID_POPUP_CLOSE_BTN, 'randomChoice': False, 'pointOffset': None}
+                       ]
+        point = GetFirstMatchTaskPoint(resultDict, taskDescList)
+
+        if point is not None:
+            self.action = {
+                "actionType": 'click',
+                "point": point
+            }
+        else:
+            self.action = None
+        return

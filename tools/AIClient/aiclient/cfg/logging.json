@@ -1,0 +1,95 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "[%(asctime)s][%(threadName)s][%(filename)s:%(lineno)d][%(levelname)s] : %(message)s"
+        }
+    },
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "stream": "ext://sys.stdout"
+        },
+        "main_thread_file_handler": {
+            "class": "logging.FileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "log/main_thread.log",
+            "encoding": "utf8",
+            "mode": "w"
+        },
+        "network_io_file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "log/network_io.log",
+            "maxBytes": 2048000,
+            "backupCount": 20,
+            "encoding": "utf8",
+            "mode": "w"
+        },
+        "device_driver_file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "log/device_driver.log",
+            "maxBytes": 2048000,
+            "backupCount": 20,
+            "encoding": "utf8",
+            "mode": "w"
+        },
+        "monitor_file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "log/monitor.log",
+            "maxBytes": 2048000,
+            "backupCount": 20,
+            "encoding": "utf8",
+            "mode": "w"
+        },
+        "root_file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "log/running.log",
+            "maxBytes": 2048000,
+            "backupCount": 20,
+            "encoding": "utf8",
+            "mode": "w"
+        }
+    },
+
+    "loggers": {
+        "main_thread": {
+            "level": "DEBUG",
+            "handlers": ["console", "main_thread_file_handler"],
+            "propagate": "no"
+        },
+        "network_io": {
+            "level": "DEBUG",
+            "handlers": ["console", "network_io_file_handler"],
+            "propagate": "no"
+        },
+        "device_driver": {
+            "level": "DEBUG",
+            "handlers": ["console", "device_driver_file_handler"],
+            "propagate": "no"
+        },
+        "monitor": {
+            "level": "DEBUG",
+            "handlers": ["console", "monitor_file_handler"],
+            "propagate": "no"
+        }
+    },
+
+    "root": {
+        "level": "DEBUG",
+        "handlers": ["root_file_handler"],
+        "propagate": "no"
+    }
+}

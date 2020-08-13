@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from .AbstractHandler import AbstractHandler, LOG
+from XXX.Tools import *
+
+TASK_ID_SKIP = 1  # 识别跳过按键
+TASK_ID_TASK_PANEL = 2  # 识别任务面板
+TASK_ID_CONVERSATION = 3  # 识别对话框
+TASK_ID_USE = 4  # 识别使用按键
+TASK_ID_TASK_CONFIRM = 5  # 识别任务确认按键
+TASK_ID_CONVERSATION_CHOOSE = 6  # 识别对话选择按键
+
+TASK_ID_TASK_PANEL_OFFSET = np.array([0, 50])  # 任务面板第一个相对于识别位置的偏移量
+
+
+class TaskHandler(AbstractHandler):
+    '''
+    剧情任务Handler，输出剧情自动接任务，对话，选择等的动作
+    '''
+    def __init__(self, *args, **kwargs):
+        super(TaskHandler, self).__init__(args, kwargs)
+
+    def Initialize(self, *args, **kwargs):
+        return True
+
+    def Finish(self, *args, **kwargs):
+        return True
+
+    def Update(self, resultDict, *args, **kwargs):
+        point = None
+        taskDescList = [
+                        {'taskID': TASK_ID_SKIP, 'randomChoice': False, 'pointOffset': None},
+                        {'taskID': TASK_ID_CONVERSATION_CHOOSE, 'randomChoice': False, 'pointOffset': None},
+                        {'taskID': TASK_ID_CONVERSATION, 'randomChoice': False, 'pointOffset': None},
+                        {'taskID': TASK_ID_USE, 'randomChoice': False, 'pointOffset': None},
+                        {'taskID': TASK_ID_TASK_PANEL, 'randomChoice': False, 'pointOffset': TASK_ID_TASK_PANEL_OFFSET},
+                        {'taskID': TASK_ID_TASK_CONFIRM, 'randomChoice': False, 'pointOffset': None}
+                       ]
+        point = GetFirstMatchTaskPoint(resultDict, taskDescList)
+
+        if point is not None:
+            self.action = {
+                "actionType": 'click',
+                "point": point
+            }
+        else:
+            self.action = None
+        return
