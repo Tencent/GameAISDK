@@ -84,7 +84,7 @@ DQN算法支持离散型的动作类型，即每个动作id对应一个动作输
             "startRectx":1597,
             "startRecty":770,
             "width":322,
-            "height":305 
+            "height":305, 
             "contact": 0, 
             "type": 3, 
             "id": 1,
@@ -95,7 +95,7 @@ DQN算法支持离散型的动作类型，即每个动作id对应一个动作输
             "startRectx":4,
             "startRecty":737,
             "width":331,
-            "height":341
+            "height":341,
             "contact": 0, 
             "type": 3, 
             "id": 2,
