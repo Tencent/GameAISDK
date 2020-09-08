@@ -161,7 +161,7 @@ Windows:
 
   准备工作就绪后，运行SDK，看看我们的AI是怎么玩新游戏的吧。具体内容请见Ubuntu环境: [运行](doc/project/ProjectLocalRunLinux.md), Windows环境: [运行](doc/project/ProjectLocalRunWin.md)。
   
-  如果需要运行多套sdk,可参照 [SDK并发执行配置更改](doc/opt/Run_Mutli_SDK.md)说明去做更改。
+  如果需要运行多套sdk,可参考 [SDK并发执行配置更改](doc/opt/Run_Mutli_SDK.md)说明去做更改。
 
 # 5 二次开发
 
