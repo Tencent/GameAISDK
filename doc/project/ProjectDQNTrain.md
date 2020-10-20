@@ -81,26 +81,30 @@ DQN算法支持离散型的动作类型，即每个动作id对应一个动作输
             "name": "None"
         },
         {
-            "startRectx":1597,
-            "startRecty":770,
-            "width":322,
-            "height":305, 
+            "startRectx":501,
+            "startRecty":228,
+            "x":501,
+            "y":228,
+            "width":139,
+            "height":132, 
             "contact": 0, 
             "type": 3, 
             "id": 1,
             "name": "jump",
-			"durationMS": 50
+            "durationMS": 50
         },
-        {
-            "startRectx":4,
-            "startRecty":737,
-            "width":331,
-            "height":341,
+        { 
+            "startRectx":1,
+            "startRecty":222,
+            "width":129,
+            "height":138,
+            "x": 1,  
+            "y": 222, 
             "contact": 0, 
             "type": 3, 
             "id": 2,
             "name": "slip",
-			"durationMS": 50
+	        "durationMS": 50
         }
     ]
 
