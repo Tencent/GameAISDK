@@ -1,45 +1,40 @@
 {
-
     "screenHeight": 360,
     "screenWidth": 640,
     "actions": [
-        {
-            "startRectx": 120, 
-            "startRecty": 132, 
-            "width": 240,  
-            "height": 428,
-            "contact": -1,			
-            "type": 0, 
-            "id": 0,
-            "name": "None"
-        },
-        {
-            "startRectx":501,
-            "startRecty":228,
-            "x":501,
-            "y":228,
-            "width":139,
-            "height":132, 
+     {
+            
+            "width": 142,
             "contact": 0, 
+            "y": 304,
+            "x": 580,
+            "height": 131,
             "type": 3, 
             "id": 1,
-            "name": "jump",
             "durationMS": 50
-        },
-        { 
-            "startRectx":1,
-            "startRecty":222,
-            "width":129,
-            "height":138,
-            "x": 1,  
-            "y": 222, 
+        }, 
+        {
+           
+            
+            "width": 129,
             "contact": 0, 
+            "y": 302,
+            "x": 55,
+            "height": 138,
             "type": 3, 
-            "id": 2,
-            "name": "slip",
-	    "durationMS": 50
+            "id": 0,
+            "durationMS": 50
+        }, 
+        
+        {
+           
+            "width": 12,
+            "contact": -1, 
+            "y": 236,
+            "x": 405,
+            "height": 8,
+            "type": 0, 
+            "id": 2
         }
     ]
-
 }
-
