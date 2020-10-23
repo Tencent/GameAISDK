@@ -324,11 +324,11 @@ int CLocationRegTmplMatch::SetROI(const cv::Rect &oRect, int nImgWidth, int nImg
     if (nImgWidth > nImgHeight)
     {
         ResizeRect(oRect, static_cast<float>(nImgWidth) / IMAGE_LONG_SIDE,
-                   static_cast<float>(nImgHeight) / IMAGE_SHORT_SIDE, oROI);
+                   static_cast<float>(nImgWidth) / IMAGE_LONG_SIDE, oROI);
     }
     else
     {
-        ResizeRect(oRect, static_cast<float>(nImgWidth) / IMAGE_SHORT_SIDE,
+        ResizeRect(oRect, static_cast<float>(nImgHeight) / IMAGE_LONG_SIDE,
                    static_cast<float>(nImgHeight) / IMAGE_LONG_SIDE, oROI);
     }
 
@@ -662,13 +662,21 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
     stTmpl.fThreshold = fThreshold;
     stTmpl.oTmplImg = oResizeTmplImg(oResizeSrcRect);
 
+	// it should recalculate position in source image according to template position
+	cv::Rect oRealLocation;
+	oRealLocation.x = static_cast<int>(oResizeSrcImg.cols * oResizeSrcRect.x / oResizeTmplImg.cols);
+	oRealLocation.y = static_cast<int>(oResizeSrcImg.rows * oResizeSrcRect.y / oResizeTmplImg.rows);
+	oRealLocation.width = static_cast<int>(oResizeSrcImg.cols * oResizeSrcRect.width / oResizeTmplImg.cols);
+	oRealLocation.height = static_cast<int>(oResizeSrcImg.rows * oResizeSrcRect.height / oResizeTmplImg.rows);
+
     tagLocationRegParam stParam;
     stParam.strAlgorithm = "Detect";
     stParam.fMinScale = 0.8f;
     stParam.fMaxScale = 1.2f;
     stParam.nScaleLevel = 9;
     stParam.nMatchCount = 1;
-    stParam.oLocation = oResizeSrcRect;
+    //stParam.oLocation = oResizeSrcRect;
+	stParam.oLocation = oRealLocation;
     stParam.fExpandWidth = fExpandWidth;
     stParam.fExpandHeight = fExpandHeight;
     stParam.oVecTmpls.push_back(stTmpl);
