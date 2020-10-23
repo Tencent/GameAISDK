@@ -146,7 +146,7 @@ adb工具下载链接如下所示：https://developer.android.com/studio/release
 
 ![img](../img/ENV/adb.png)
 
-目前phone client 支持常见机型的 android8, android9版本。安装好adb之后，可以先验证下adb有没有安装成功。验证步骤如下：打开手机调试模式(以机型为VIVO X9 plus的手机为例, 进入“手机设置”-> "系统" ->"开发人员选项"，打开“开发人员选项”->"USB"调试->"USB调试（安全设置)" ->"显示点按操作反馈")，然后通过USB线连接手机，在终端输入命令:adb devices, 如果输出结果是已授权的手机设备序列号，则adb安装成功。
+目前phone client 支持包括android10/11在内的android各机型。安装好adb之后，可以先验证下adb有没有安装成功。验证步骤如下：打开手机调试模式(以机型为VIVO X9 plus的手机为例, 进入“手机设置”-> "系统" ->"开发人员选项"，打开“开发人员选项”->"USB"调试->"USB调试（安全设置)" ->"显示点按操作反馈")，然后通过USB线连接手机，在终端输入命令:adb devices, 如果输出结果是已授权的手机设备序列号，则adb安装成功。
 
 ## 7 安装python3虚拟环境及python3依赖
 
