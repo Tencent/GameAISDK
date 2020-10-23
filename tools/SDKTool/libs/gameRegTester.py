@@ -83,15 +83,15 @@ class GameRegTester():
 
         self.mode = self.config.get("debug", "mode")
         if self.mode == "phone":
-            self.phoneTool = self.config.get("phone", "common_tool")
-            if self.phoneTool == '0':
-                self.phoneInstance = IDeviceAPI('Android')
-            elif self.phoneTool == '1':
-                self.phoneInstance = IDeviceAPI('Android', 'PlatformWeTest')
-            else:
-                self.__logger.error("wrong common tool type: {}".format(self.phoneTool))
-                return
-
+            # self.phoneTool = self.config.get("phone", "common_tool")
+            # if self.phoneTool == '0':
+            #     self.phoneInstance = IDeviceAPI('Android')
+            # elif self.phoneTool == '1':
+            #     self.phoneInstance = IDeviceAPI('Android', 'PlatformWeTest')
+            # else:
+            #     self.__logger.error("wrong common tool type: {}".format(self.phoneTool))
+            #     return
+            self.phoneInstance = IDeviceAPI('Android', 'PlatformWeTest')
             logPath = self.config.get("phone", "log_path")
             serial = self.config.get("phone", "serial")
             if serial == "":

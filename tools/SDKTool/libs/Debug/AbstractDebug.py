@@ -76,14 +76,15 @@ class AbstractDebug(object):
             video_url = self.config.get("configure", "videoPath")
             self._set_video(url=video_url, video_type=AbstractDebug.VIDEO_TYPE_OFFLINE, auto_play=False)
         if self.mode == "phone":
-            self.phoneTool = self.config.get("phone", "common_tool")
-            if self.phoneTool == '0':
-                self.phoneInstance = IDeviceAPI('Android')
-            elif self.phoneTool == '1':
-                self.phoneInstance = IDeviceAPI('Android', 'PlatformWeTest')
-            else:
-                self.logger.error("wrong common tool type: {}".format(self.phoneTool))
-                return
+            # self.phoneTool = self.config.get("phone", "common_tool")
+            # if self.phoneTool == '0':
+            #     self.phoneInstance = IDeviceAPI('Android')
+            # elif self.phoneTool == '1':
+            #     self.phoneInstance = IDeviceAPI('Android', 'PlatformWeTest')
+            # else:
+            #     self.logger.error("wrong common tool type: {}".format(self.phoneTool))
+            #     return
+            self.phoneInstance = IDeviceAPI('Android', 'PlatformWeTest')
 
             logPath = self.config.get("phone", "log_path")
             serial = self.config.get("phone", "serial")
@@ -124,7 +125,7 @@ class AbstractDebug(object):
         elif os.path.isfile(imgPath):
             self.__imageList.append(imgPath)
         else:
-            self.logger.error("{} is not a file or dir", imgPath)
+            self.logger.error("{} is not a file or dir".format(imgPath))
 
     @abstractmethod
     def initialize(self):
@@ -156,22 +157,27 @@ class AbstractDebug(object):
             self.logger.error('log level is not correct, using info level')
             return LOG_INFO
 
+
     def _show_result(self):
-        '''展示图像结果，与timer绑定，定时刷新'''
+        """展示图像结果，与timer绑定，定时刷新
+
+        """
         frame = self.recv_result()
         if frame is None:
             self.logger.debug("frame is None")
             return
 
-        height, width = frame.shape[:2]
         if frame.ndim == 3:
+            height, width, depth = frame.shape
             rgb = cvtColor(frame, COLOR_BGR2RGB)
         elif frame.ndim == 2:
+            height, width = frame.shape
+            depth = 1
             rgb = cvtColor(frame, COLOR_GRAY2BGR)
         if rgb is None:
             return
 
-        temp_image = QImage(rgb.flatten(), width, height, QImage.Format_RGB888)
+        temp_image = QImage(rgb.data, width, height, width*depth, QImage.Format_RGB888)
         temp_pixmap = QPixmap.fromImage(temp_image)
         self.ui.mainWindow.image = temp_image
         self.ui.mainWindow.canvas.loadPixmap(temp_pixmap)
