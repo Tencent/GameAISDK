@@ -69,8 +69,12 @@ int CBloodLengthRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagBloodLengthRegR
 
     // obtain roi region of image
     cv::Rect oROI;
-    ResizeRect(m_oROI, static_cast<float>(oSrcImg.cols) / IMAGE_WIDTH,
-        static_cast<float>(oSrcImg.rows) / IMAGE_HEIGHT, oROI);
+	int longEdge = oSrcImg.rows;
+	if (oSrcImg.cols > oSrcImg.rows) {
+		longEdge = oSrcImg.cols;
+	}
+    ResizeRect(m_oROI, static_cast<float>(longEdge) / IMAGE_WIDTH,
+        static_cast<float>(longEdge) / IMAGE_WIDTH, oROI);
     ExpandRect(oROI, static_cast<int>(oSrcImg.cols * m_fExpandWidth),
         static_cast<int>(oSrcImg.rows * m_fExpandHeight), oROI);
     oData.m_oROI = oROI;

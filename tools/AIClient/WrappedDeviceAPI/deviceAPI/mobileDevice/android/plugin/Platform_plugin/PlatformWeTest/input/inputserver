@@ -1,0 +1,15 @@
+export run_base=/data/local/tmp
+
+# if not running as root, trick dalvik into using an alternative dex cache
+if [ ${USER_ID} -ne 0 ]; then
+  tmp_cache=${run_base}/wetest/dalvik-cache
+
+  if [ ! -d ${tmp_cache} ]; then
+    mkdir -p ${tmp_cache}
+  fi
+
+  export ANDROID_DATA=${run_base}/wetest
+fi
+
+export CLASSPATH=$run_base/wetest/inputserver.jar
+exec app_process $run_base/wetest com.tencent.wetest.inputserver.InputMain "$@"

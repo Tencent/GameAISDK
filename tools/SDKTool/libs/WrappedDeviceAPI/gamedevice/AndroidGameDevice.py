@@ -36,6 +36,7 @@ class AndroidGameDevice(AbstractGameDevice):
             self.__logger = logging.getLogger(deviceSerial)
         self.__logger.info('Android deviceID is {0}'.format(deviceSerial))
         self.__platformWrapper = PlatformWrapper(self.__moduleName)
+        kwargs['standalone'] = 0 if os.environ.get("PLATFORM_IP") else 1
         if not self.__platformWrapper.Initialize(deviceSerial, isPortrait, long_edge, kwargs):
             self.__logger.error('action init failed')
             return False
