@@ -66,45 +66,46 @@ DQN算法支持离散型的动作类型，即每个动作id对应一个动作输
 
 ```
 {
-
     "screenHeight": 360,
     "screenWidth": 640,
     "actions": [
-        {
-            "startRectx": 120, 
-            "startRecty": 132, 
-            "width": 240,  
-            "height": 428,
-            "contact": -1,			
-            "type": 0, 
-            "id": 0,
-            "name": "None"
-        },
-        {
-            "startRectx":1597,
-            "startRecty":770,
-            "width":322,
-            "height":305, 
+     {
+            
+            "width": 142,
             "contact": 0, 
+            "y": 304,
+            "x": 580,
+            "height": 131,
             "type": 3, 
             "id": 1,
-            "name": "jump",
-			"durationMS": 50
-        },
+            "durationMS": 50
+        }, 
         {
-            "startRectx":4,
-            "startRecty":737,
-            "width":331,
-            "height":341,
+           
+            
+            "width": 129,
             "contact": 0, 
+            "y": 302,
+            "x": 55,
+            "height": 138,
             "type": 3, 
-            "id": 2,
-            "name": "slip",
-			"durationMS": 50
+            "id": 0,
+            "durationMS": 50
+        }, 
+        
+        {
+           
+            "width": 12,
+            "contact": -1, 
+            "y": 236,
+            "x": 405,
+            "height": 8,
+            "type": 0, 
+            "id": 2
         }
     ]
-
 }
+
 ```
 
 上述json文件共定义了三个动作：

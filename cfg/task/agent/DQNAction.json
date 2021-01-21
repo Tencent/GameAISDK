@@ -2,36 +2,32 @@
     "screenHeight": 360,
     "screenWidth": 640,
     "actions": [
-        {
-            "startRectx": 44,
-            "startRecty": 262,
-            "imgpath": "12.png", 
-            "width": 52,
+     {
+            
+            "width": 142,
             "contact": 0, 
-            "y": 285,
-            "x": 70,
-            "height": 46,
-            "type": 3, 
-            "id": 0,
-            "durationMS": 50
-        }, 
-        {
-            "startRectx": 130,
-            "startRecty": 250,
-            "imgpath": "13.png", 
-            "width": 45,
-            "contact": 0, 
-            "y": 278,
-            "x": 152,
-            "height": 55,
+            "y": 304,
+            "x": 580,
+            "height": 131,
             "type": 3, 
             "id": 1,
             "durationMS": 50
         }, 
         {
-            "startRectx": 400,
-            "startRecty": 233,
-            "imgpath": "15.png", 
+           
+            
+            "width": 129,
+            "contact": 0, 
+            "y": 302,
+            "x": 55,
+            "height": 138,
+            "type": 3, 
+            "id": 0,
+            "durationMS": 50
+        }, 
+        
+        {
+           
             "width": 12,
             "contact": -1, 
             "y": 236,

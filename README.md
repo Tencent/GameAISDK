@@ -187,7 +187,9 @@ Windows:
 
  欢迎加入QQ群 1095989343 进行交流。
 
-
+ # 8. 官网
+ 
+- 更多资讯，请访问AITest: https://aitest.qq.com/
 
  # 关于WeTest
 
