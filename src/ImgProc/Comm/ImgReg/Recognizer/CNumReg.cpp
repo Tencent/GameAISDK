@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/ImgReg/Recognizer/CNumReg.h"
 
@@ -10,20 +13,17 @@
 //          CNumRegTmplMatch Class Functions
 // **************************************************************************************
 
-CNumRegTmplMatch::CNumRegTmplMatch()
-{
-    m_nTaskID = -1; // task ID
-    m_oROI = cv::Rect(-1, -1, -1, -1); // detection ROI
+CNumRegTmplMatch::CNumRegTmplMatch() {
+    m_nTaskID = -1;  // task ID
+    m_oROI = cv::Rect(-1, -1, -1, -1);  // detection ROI
 }
 
-CNumRegTmplMatch::~CNumRegTmplMatch()
-{}
+CNumRegTmplMatch::~CNumRegTmplMatch() {
+}
 
-int CNumRegTmplMatch::Initialize(const int nTaskID, const tagNumRegElement &stElement)
-{
+int CNumRegTmplMatch::Initialize(const int nTaskID, const tagNumRegElement &stElement) {
     // check task ID
-    if (nTaskID < 0)
-    {
+    if (nTaskID < 0) {
         LOGE("CNumRegTmplMatch -- task ID %d is invalid, please check", nTaskID);
         return -1;
     }
@@ -43,9 +43,9 @@ int CNumRegTmplMatch::Initialize(const int nTaskID, const tagNumRegElement &stEl
 
     // initialize method
     int nState = m_oMatchMethod.Initialize(&oParam);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CNumRegTmplMatch -- CColorMatch initialization failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CNumRegTmplMatch -- CColorMatch initialization failed, please check",
+            m_nTaskID);
         return nState;
     }
 
@@ -55,11 +55,9 @@ int CNumRegTmplMatch::Initialize(const int nTaskID, const tagNumRegElement &stEl
     return 1;
 }
 
-int CNumRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagNumRegResult &stResult)
-{
+int CNumRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagNumRegResult &stResult) {
     // check source image
-    if (oSrcImg.empty())
-    {
+    if (oSrcImg.empty()) {
         LOGE("task ID %d: CNumRegTmplMatch -- source image is invalid, please check", m_nTaskID);
         return -1;
     }
@@ -71,14 +69,12 @@ int CNumRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagNumRegResult &stResult)
 
     // run ObjDet
     int nState = m_oMatchMethod.Predict(&oData, &oResult);
-    if (1 != nState)
-    {
+    if (1 != nState) {
         LOGE("task ID %d: CNumRegTmplMatch -- CColorMatch predict failed, please check", m_nTaskID);
         return nState;
     }
 
-    if (oResult.m_oVecBBoxes.empty())
-    {
+    if (oResult.m_oVecBBoxes.empty()) {
         stResult.nState = 0;
         stResult.fNum = 0.0f;
         stResult.oROI = m_oROI;
@@ -90,27 +86,39 @@ int CNumRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagNumRegResult &stResult)
     MergeBBox(oResult.m_oVecBBoxes, oVecBBoxes, 0.25);
     sort(oVecBBoxes.begin(), oVecBBoxes.end(), AscendBBoxX);
 
-    // compute number
-    float fNum = 0.0;
-    for (int i = 0; i < static_cast<int>(oVecBBoxes.size()); i++)
-    {
-        fNum = fNum * 10 + oVecBBoxes[i].nClassID;
+    // find decimal point location
+    int nLoc = static_cast<int>(oVecBBoxes.size());
+    for (int i = 0; i < static_cast<int>(oVecBBoxes.size()); i++) {
+        if (0 == strcmp(oVecBBoxes[i].szTmplName, ".") || -1 == oVecBBoxes[i].nClassID) {
+            nLoc = i;
+            break;
+        }
+    }
+
+    // computer integer number
+    float fInteger = 0.0f;
+    for (int i = 0; i < nLoc; i++) {
+        fInteger = fInteger * 10.0f + static_cast<float>(oVecBBoxes[i].nClassID);
+    }
+
+    // computer decimal number
+    float fDecimal = 0.0f;
+    for (int i = static_cast<int>(oVecBBoxes.size()) - 1; i > nLoc; i--) {
+        fDecimal = fDecimal * 0.1f + static_cast<float>(oVecBBoxes[i].nClassID) * 0.1f;
     }
 
     // set result
     stResult.nState = 1;
-    stResult.fNum   = fNum;
+    stResult.fNum = fInteger + fDecimal;
     stResult.oROI = m_oROI;
 
     return 1;
 }
 
-int CNumRegTmplMatch::Release()
-{
+int CNumRegTmplMatch::Release() {
     // release method
     int nState = m_oMatchMethod.Release();
-    if (1 != nState)
-    {
+    if (1 != nState) {
         LOGE("task ID %d: CNumRegTmplMatch -- CColorMatch release failed, please check", m_nTaskID);
         return nState;
     }
@@ -122,46 +130,39 @@ int CNumRegTmplMatch::Release()
 //          CNumReg Class Functions
 // **************************************************************************************
 
-CNumReg::CNumReg()
-{
-    m_oVecParams.clear(); // clear vector of parameters
-    m_oVecMethods.clear(); // clear vector of methods
+CNumReg::CNumReg() {
+    m_oVecParams.clear();   // clear vector of parameters
+    m_oVecMethods.clear();  // clear vector of methods
 }
 
-CNumReg::~CNumReg()
-{}
+CNumReg::~CNumReg() {
+}
 
-int CNumReg::Initialize(IRegParam *pParam)
-{
+int CNumReg::Initialize(IRegParam *pParam) {
     // check parameters
-    if (NULL == pParam)
-    {
+    if (NULL == pParam) {
         LOGE("CNumReg -- IRegParam pointer is NULL, please check");
         return -1;
     }
 
     CNumRegParam *pP = dynamic_cast<CNumRegParam*>(pParam);
 
-    if (NULL == pP)
-    {
+    if (NULL == pP) {
         LOGE("CNumReg -- CNumRegParam pointer is NULL, please check");
         return -1;
     }
 
-    if (pP->m_nTaskID < 0)
-    {
+    if (pP->m_nTaskID < 0) {
         LOGE("CNumReg -- task ID %d is invalid, please check", pP->m_nTaskID);
         return -1;
     }
 
-    if (pP->m_oVecElements.empty())
-    {
+    if (pP->m_oVecElements.empty()) {
         LOGE("task ID %d: CNumReg -- param vector is empty, please check", pP->m_nTaskID);
         return -1;
     }
 
-    if (static_cast<int>(pP->m_oVecElements.size()) > MAX_ELEMENT_SIZE)
-    {
+    if (static_cast<int>(pP->m_oVecElements.size()) > MAX_ELEMENT_SIZE) {
         LOGE("task ID %d: CNumReg -- element number is more than max element size %d",
             pParam->m_nTaskID, MAX_ELEMENT_SIZE);
         return -1;
@@ -172,23 +173,19 @@ int CNumReg::Initialize(IRegParam *pParam)
     m_oVecParams = pP->m_oVecElements;
 
     // initialize methods
-    for (int i = 0; i < static_cast<int>(m_oVecParams.size()); i++)
-    {
-        if ("TemplateMatch" == m_oVecParams[i].oAlgorithm)
-        {
+    for (int i = 0; i < static_cast<int>(m_oVecParams.size()); i++) {
+        if ("TemplateMatch" == m_oVecParams[i].oAlgorithm) {
             CNumRegTmplMatch oMethod;
 
             int nState = oMethod.Initialize(m_nTaskID, m_oVecParams[i]);
-            if (1 != nState)
-            {
-                LOGE("task ID %d: CNumReg -- CNumRegTmplMatch initialization failed, please check", m_nTaskID);
+            if (1 != nState) {
+                LOGE("task ID %d: CNumReg -- CNumRegTmplMatch initialization failed, please check",
+                    m_nTaskID);
                 return nState;
             }
 
             m_oVecMethods.push_back(oMethod);
-        }
-        else
-        {
+        } else {
             LOGE("task ID %d: CNumReg -- algorithm %s is invalid, please check",
                 m_nTaskID, m_oVecParams[i].oAlgorithm.c_str());
             return -1;
@@ -199,42 +196,36 @@ int CNumReg::Initialize(IRegParam *pParam)
     return 1;
 }
 
-int CNumReg::Predict(const tagRegData &stData, IRegResult *pResult)
-{
+int CNumReg::Predict(const tagRegData &stData, IRegResult *pResult) {
     // check parameters
-    if (NULL == pResult)
-    {
+    if (NULL == pResult) {
         LOGE("task ID %d: CNumReg -- IRegResult pointer is NULL, please check", m_nTaskID);
         return -1;
     }
 
     CNumRegResult *pR = dynamic_cast<CNumRegResult*>(pResult);
-    if (NULL == pR)
-    {
+    if (NULL == pR) {
         LOGE("task ID %d: CNumReg -- CNumRegResult pointer is NULL, please check", m_nTaskID);
         return -1;
     }
 
-    if (stData.oSrcImg.empty())
-    {
+    if (stData.oSrcImg.empty()) {
         LOGE("task ID %d: CNumReg -- source image is invalid, please check", m_nTaskID);
         return -1;
     }
 
-    if (stData.nFrameIdx < 0)
-    {
-        LOGE("task ID %d: CNumReg -- frame index %d is invalid, please check", m_nTaskID, stData.nFrameIdx);
+    if (stData.nFrameIdx < 0) {
+        LOGE("task ID %d: CNumReg -- frame index %d is invalid, please check",
+            m_nTaskID, stData.nFrameIdx);
         return -1;
     }
 
     tagNumRegResult szResults[MAX_ELEMENT_SIZE];
 
     // run methods
-    for (int i = 0; i < static_cast<int>(m_oVecMethods.size()); i++)
-    {
+    for (int i = 0; i < static_cast<int>(m_oVecMethods.size()); i++) {
         int nState = m_oVecMethods[i].Predict(stData.oSrcImg, szResults[i]);
-        if (1 != nState)
-        {
+        if (1 != nState) {
             LOGE("task ID %d: CNumReg -- CNumRegTmplMatch predict failed, please check", m_nTaskID);
             return nState;
         }
@@ -248,21 +239,18 @@ int CNumReg::Predict(const tagRegData &stData, IRegResult *pResult)
     return 1;
 }
 
-int CNumReg::Release()
-{
+int CNumReg::Release() {
     // release methods
-    for (int i = 0; i < static_cast<int>(m_oVecMethods.size()); i++)
-    {
+    for (int i = 0; i < static_cast<int>(m_oVecMethods.size()); i++) {
         int nState = m_oVecMethods[i].Release();
-        if (1 != nState)
-        {
+        if (1 != nState) {
             LOGE("task ID %d: CNumReg -- CNumRegTmplMatch release failed, please check", m_nTaskID);
             return nState;
         }
     }
 
-    m_oVecParams.clear(); // clear vector of parameters
-    m_oVecMethods.clear(); // clear vector of methods
+    m_oVecParams.clear();  // clear vector of parameters
+    m_oVecMethods.clear();  // clear vector of methods
 
     LOGD("task ID %d: CNumReg -- CNumReg release successful", m_nTaskID);
     return 1;

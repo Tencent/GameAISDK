@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef KING_GLORY_BLOOD_REG_H_
-#define KING_GLORY_BLOOD_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CKINGGLORYBLOODREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CKINGGLORYBLOODREG_H_
 
 #include <string>
 #include <vector>
@@ -19,8 +22,7 @@
 //          CKingGloryBloodReg Structure Define
 // **************************************************************************************
 
-struct tagKingGloryBloodRegParam
-{
+struct tagKingGloryBloodRegParam {
     int                  nBloodLength;
     int                  nFilterSize;
     int                  nMaxPointNum;
@@ -36,37 +38,34 @@ struct tagKingGloryBloodRegParam
     std::string          strMaskPath;
     std::vector<tagTmpl> oVecTmpls;
 
-    tagKingGloryBloodRegParam()
-    {
-        nBloodLength  = 100;
-        nMaxPointNum  = 512;
-        nFilterSize   = 1;
-        nScaleLevel   = 1;
-        fMinScale     = 1.0;
-        fMaxScale     = 1.0;
-        fThreshold    = 0.50f;
-        oROI          = cv::Rect(-1, -1, -1, -1);
-        strCondition  = "";
-        strCfgPath    = "";
+    tagKingGloryBloodRegParam() {
+        nBloodLength = 100;
+        nMaxPointNum = 512;
+        nFilterSize = 1;
+        nScaleLevel = 1;
+        fMinScale = 1.0;
+        fMaxScale = 1.0;
+        fThreshold = 0.50f;
+        oROI = cv::Rect(-1, -1, -1, -1);
+        strCondition = "";
+        strCfgPath = "";
         strWeightPath = "";
-        strNamePath   = "";
-        strMaskPath   = "";
+        strNamePath = "";
+        strMaskPath = "";
         oVecTmpls.clear();
     }
 };
 
-struct tagKingGloryBloodRegResult
-{
+struct tagKingGloryBloodRegResult {
     int      nState;
     int      nBloodNum;
     cv::Rect oROI;
     tagBlood szBloods[MAX_BLOOD_SIZE];
 
-    tagKingGloryBloodRegResult()
-    {
-        nState    = 0;
+    tagKingGloryBloodRegResult() {
+        nState = 0;
         nBloodNum = 0;
-        oROI      = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -74,9 +73,8 @@ struct tagKingGloryBloodRegResult
 //          CKingGloryBloodRegColorDet Class Define
 // **************************************************************************************
 
-class CKingGloryBloodRegColorDet
-{
-public:
+class CKingGloryBloodRegColorDet {
+  public:
     CKingGloryBloodRegColorDet();
     ~CKingGloryBloodRegColorDet();
 
@@ -84,12 +82,12 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagKingGloryBloodRegResult &stResult);
     int Release();
 
-private:
+  private:
     int FillYOLOAPIParam(const tagKingGloryBloodRegParam &stParam, CYOLOAPIParam &oParam);
     int FillColorDetParam(const tagKingGloryBloodRegParam &stParam, CColorDetParam &oParam);
     int FillColorMatchParam(const tagKingGloryBloodRegParam &stParam, CColorMatchParam &oParam);
 
-private:
+  private:
     int      m_nTaskID;
     int      m_nBloodLength;
     cv::Rect m_oROI;
@@ -105,17 +103,15 @@ private:
 //          CKingGloryBloodRegParam Class Define
 // **************************************************************************************
 
-class CKingGloryBloodRegParam : public IComnBaseRegParam
-{
-public:
-    CKingGloryBloodRegParam()
-    {
+class CKingGloryBloodRegParam : public IComnBaseRegParam {
+  public:
+    CKingGloryBloodRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CKingGloryBloodRegParam() {}
 
-public:
+  public:
     std::vector<tagKingGloryBloodRegParam> m_oVecElements;
 };
 
@@ -123,33 +119,28 @@ public:
 //          CKingGloryBloodRegResult Class Define
 // **************************************************************************************
 
-class CKingGloryBloodRegResult : public IComnBaseRegResult
-{
-public:
-    CKingGloryBloodRegResult()
-    {
+class CKingGloryBloodRegResult : public IComnBaseRegResult {
+  public:
+    CKingGloryBloodRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CKingGloryBloodRegResult() {}
 
-    void SetResult(tagKingGloryBloodRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagKingGloryBloodRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagKingGloryBloodRegResult* GetResult(int *pResultNum)
-    {
+    tagKingGloryBloodRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                        m_nResultNum;
     tagKingGloryBloodRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -158,9 +149,8 @@ private:
 //          CKingGloryBloodReg Class Define
 // **************************************************************************************
 
-class CKingGloryBloodReg : public IComnBaseReg
-{
-public:
+class CKingGloryBloodReg : public IComnBaseReg {
+  public:
     CKingGloryBloodReg();
     ~CKingGloryBloodReg();
 
@@ -169,9 +159,9 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
-    std::vector<tagKingGloryBloodRegParam>  m_oVecParams; // vector of parameters
-    std::vector<CKingGloryBloodRegColorDet> m_oVecMethods; // vector of methods
+  private:
+    std::vector<tagKingGloryBloodRegParam>  m_oVecParams;  // vector of parameters
+    std::vector<CKingGloryBloodRegColorDet> m_oVecMethods;  // vector of methods
 };
 
-#endif /* KING_GLORY_BLOOD_REG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CKINGGLORYBLOODREG_H_

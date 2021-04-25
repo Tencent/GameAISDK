@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -17,18 +20,15 @@ sys.path.insert(0, 'pyManageCenter')
 sys.path.append('pyManageCenter/protocol')
 
 from ManageCenter import ManageCenter
-
-DEFAULT_TASK_CFG_PATH = '/cfg/task/mc/MCTask.json'
-DEFAULT_PLATFORM_CFG_PATH = '../cfg/platform/MC.ini'
-DEFAULT_LOG_CFG_FILE = '../cfg/platform/MCLog.ini'
+from util.config_path_mgr import SYS_CONFIG_DIR, DEFAULT_USER_CONFIG_DIR
 
 os.makedirs('../log/ManageCenter', exist_ok=True)
-logging.config.fileConfig(DEFAULT_LOG_CFG_FILE)
-LOG = logging.getLogger('ManageCenter')
 
-ai_sdk_path = os.getenv('AI_SDK_PATH', '..')
-TASK_CFG_PATH = ai_sdk_path + DEFAULT_TASK_CFG_PATH
-LOG.info('Task Cfg Path: {}'.format(TASK_CFG_PATH))
+MC_TASK_CFG_FILE = 'cfg/task/mc/MCTask.json'
+MC_CFG_FILE = 'cfg/platform/MC.ini'
+MC_LOG_CFG_FILE = 'cfg/platform/MCLog.ini'
+
+LOG = None
 
 
 def main():
@@ -36,14 +36,26 @@ def main():
     ManageCenter main entry
     :return:
     """
+    global LOG
     try:
         parser = argparse.ArgumentParser(description='')
+        parser.add_argument('--cfgpath', type=str, default='', help='config path')
         parser.add_argument('--runType', type=str, default='AI',
                             help='The run type of services, ex. AI or UI or UI+AI, default is AI')
         args = parser.parse_args()
+        os.environ['AI_SDK_PROJECT_PATH'] = os.path.dirname(args.cfgpath) if args.cfgpath else DEFAULT_USER_CONFIG_DIR
 
-        manage_center = ManageCenter(taskCfgPath=TASK_CFG_PATH,
-                                     platformCfgPath=DEFAULT_PLATFORM_CFG_PATH)
+        task_cfg_path = os.path.join(os.environ.get('AI_SDK_PROJECT_PATH'), MC_TASK_CFG_FILE)
+        platform_cfg_path = os.path.join(SYS_CONFIG_DIR, MC_CFG_FILE)
+        log_cfg_path = os.path.join(SYS_CONFIG_DIR, MC_LOG_CFG_FILE)
+
+        logging.config.fileConfig(log_cfg_path)
+        LOG = logging.getLogger('ManageCenter')
+
+        LOG.info('Task Cfg Path: {}'.format(task_cfg_path))
+
+        manage_center = ManageCenter(taskCfgPath=task_cfg_path,
+                                     platformCfgPath=platform_cfg_path)
 
         def SigHandle(sigNum, frame):
             """

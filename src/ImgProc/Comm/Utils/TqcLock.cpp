@@ -1,25 +1,25 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/Utils/TqcLock.h"
 
-CLock::CLock()
-{
+CLock::CLock() {
     Init();
 }
-CLock::~CLock()
-{
+CLock::~CLock() {
     UnInit();
 }
 
 //
 // Lock the conflict code.
 //
-bool CLock::Lock()
-{
+bool CLock::Lock() {
 #ifdef WINDOWS
     EnterCriticalSection(&m_sect);
 #else
@@ -32,8 +32,7 @@ bool CLock::Lock()
 //
 // Release lock.
 //
-bool CLock::UnLock()
-{
+bool CLock::UnLock() {
 #ifdef WINDOWS
     LeaveCriticalSection(&m_sect);
 #else
@@ -47,11 +46,9 @@ bool CLock::UnLock()
 //
 // Create lock.
 //
-bool CLock::Init()
-{
+bool CLock::Init() {
 #ifdef WINDOWS
-    if (!::InitializeCriticalSectionAndSpinCount(&m_sect, 0))
-    {
+    if (!::InitializeCriticalSectionAndSpinCount(&m_sect, 0)) {
         return false;
     }
 
@@ -66,8 +63,7 @@ bool CLock::Init()
     return true;
 }
 
-bool CLock::UnInit()
-{
+bool CLock::UnInit() {
 #ifdef WINDOWS
     ::DeleteCriticalSection(&m_sect);
 #else

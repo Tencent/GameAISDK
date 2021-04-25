@@ -1,22 +1,18 @@
 # 场景配置
 
-
-
-[TOC]
-
 # 1  配置准备
 
-## 1.1  图片资源准备
+## 1.1  手机准备
 
-​       使用1280x720比例的分辨率的手机，将需要配置的图片截下来，可以手机截屏，但是不能有游戏外的页面，也可以使用AISDK，以及phone_aiclient拉起游戏（将phone_aiclient中phone.ini的show_raw_screen参数置为1，显示出手机画面），截下要配置的游戏画面，下图为天天酷跑的配置图片。
+将手机连接上点击，打开开发者选项，并且在命令窗口下使用adb devices命令能获取手机序列号，如下图1所示：
 
-![ ](../img/2019-07-0217-15-35img.png)
+![img](../img/New_SDKTool/ProjecttaskConf/adbDevices.png)
 
-​                                                                                             图1
+图1 获取手机devices
 
 ## 1.2  工具准备
 
-​      需要准备SDKTool工具，具体环境及操作可以参考SDKTool部署说明.md、UI配置文件说明。
+需要准备SDKTool工具，具体环境及操作可以参考SDKTool部署说明.md、UI配置文件说明。
 
 # 2  配置步骤
 
@@ -28,133 +24,66 @@
 python main.py
 ```
 
-打开了SDKTool页面以后，新建项目流程演示（使用1280×720分辨率图片配置），见下图2、3、4、5、6所示：
+打开了SDKTool页面以后，新建项目流程演示，见下图2、3、4所示：
 
-![](../img/wpsEB8F.jpg)
+![img](../img/New_SDKTool/ProjecttaskConf/newProject.png)
 
-​                                                                                     图2 屏幕右击
 
-![ ](../img/wpsB0A3.jpg)
+![img](../img/New_SDKTool/ProjecttaskConf/inputPjName.png)
 
-​                                                                                      图3 新建项目
 
-![](../img/2019-07-0214-55-02img.png)
+![img](../img/New_SDKTool/ProjecttaskConf/pjConfig.png)
 
-​                                                                                     图4 输入工程名
+图4 连接手机
 
-![2019-07-02 17-26-49img](../img/2019-07-0217-26-49img.png)
-
-​                                                                                    图5 选择图片文件夹
-
-![2019-07-02 17-24-24img](../img/2019-07-0217-24-24img.png)
-
-​                                                                                   图6 生成工程树状图
-
-选择装有图片的文件夹时，会把所选择文件夹下所有图片或子文件另存到SDKTools/project/test1（工程名）/v1.0（版本号）/data/下。生成json文件保存在SDKTools/project/test1（工程名）/v1.0（版本号）/jsonFile/下。
+新建完项目后，需要选择运行方式AI 、UI+AI，运行的媒介。双击设备序列号，停顿几秒后中间画布会显示手机画面，表示连接成功。
 
 ## 2.2  添加场景
 
-点击添加场景会让你输入一个场景名，输入好之后，就会生成一个场景名为你刚刚输入值的scene，默认会生成三项groupID：1；name：你输入的scene名；一个task。尽量使用1280×720分辨率的图片进行配置。如图7、8、9所示：
+点击菜单栏上的“Scene》New"新建一个场景，如下图5、图6所示：
 
-![img](../img/wps1AA2.tmp.jpg)
+![img](../img/New_SDKTool/ProjecttaskConf/newScene.png)
 
-​                                                                                        图7 添加场景
+图5 新建场景
 
-![](../img/wps1AA3.tmp.jpg)
+![img](../img/New_SDKTool/ProjecttaskConf/sceneTree.png)
 
-​                                                                                        图8 输入场景名
-
-![](../img/wps1AA4.tmp.jpg)
-
-​                                                                             图9 生成场景文件演示
+ 图6 新建好的场景                                                                        
 
 ## 2.3 添加task
 
-scene里面主要就是配置每个task，每个task就是一项单独的识别任务。你可以先修改默认生成的task，在配置之前先选择type，我这里选择的是fix object（固定物体检测），双击task--description后面对应的value，输入描述内容“zan_ting”，双击element，选择图片，在图片上框选出搜索模板的区域，该区域不能小于模板的区域，结果如图10
+scene里面主要就是配置每个task，每个task就是一项单独的识别任务。右击”tasks“选择”add task“，然后输入task的名字，在配置之前先选择type，我这里选择的是fix object（固定物体检测），双击task--description后面对应的value，输入描述内容“zan_ting”，双击element，在图片上框选出搜索模板的区域，该区域不能小于模板的区域，结果如下图7所示：
 
-![](../img/2019-07-0218-32-49img.png)
+![img](../img/New_SDKTool/ProjecttaskConf/configTask1.png)
 
-​                                                                                           图10
+图7 搜索区域
 
-还需要添加一个模板，双击template，选择图片，在图片上框选出匹配模板区域，结果如图11
+​                                                                                          
 
-![2019-07-02 18-45-46img](../img/2019-07-0218-45-46img.png)
+还需要添加一个模板，双击template，在图片上框选出匹配模板区域，结果如下图8所示：
 
-​                                                                                             图11
 
-点击SDKTool界面左上角第二个图标进行保存，图片放在SDKTools/project/test1（工程名）/v1.0（版本号）/data/下。生成json文件保存在SDKTools/project/test1（工程名）/v1.0（版本号）/jsonFile/下。
 
-![2019-07-02 18-51-57img](../img/2019-07-0218-51-57img.png)
+![img](../img/New_SDKTool/ProjecttaskConf/configTask2.png)
 
-​                                                                                            图12
+  图8 模板                                                                                           
 
-## 2.3  配置文件调整
+点击SDKTool界面工具栏上的第二个图标，保存图标进行保存，图片放在SDKTools/project/test（工程名）/data/test（工程名）/下。生成json文件保存在SDKTools/project/test（工程名）/cfg/task/gameReg/下，如下图9所示：
 
-将SDKTools/project/test1（工程名）/v1.0（版本号）/jsonFile/task.json文件移动到需要加载的配置文件
+![img](../img/New_SDKTool/ProjecttaskConf/savePj.png)
 
-TTKP（天天酷跑配置文件名称）/cfg/task/gameReg目录下，并重命名为Task.json。
 
-将SDKTools/project/test1（工程名）/v1.0（版本号）/data/下的图片移动到TTKP（天天酷跑配置文件名称）/data/下（图片存放路径可以自己决定放在data下的某个位置，只需要将Task.json文件中图片加载路径修改为存放图片的路径）。
+图9 保存配置文件                 
 
-调整和替换好的Task.json具体内容如下：
+配置好的Task.json文件如下所示：
+                                            
+## 2.4 测试配置
 
-```
-{
-    "allTask":[
-        {
-            "groupID":1,
-            "name":"cjzc",
-            "task":[
-                {
-                    "taskID":1,
-                    "taskName":"",
-                    "type":"fix object",
-                    "description":"",
-                    "skipFrame":1,
-                    "elements":[
-                        {
-                            "elementID":1,
-                            "elementName":"",
-                            "ROI":{
-                                "x":1170,
-                                "y":16,
-                                "w":76,
-                                "h":75
-                            },
-                            "algorithm":"ColorMatch",
-                            "minScale":1.0,
-                            "maxScale":1.0,
-                            "scaleLevel":1,
-                            "maxBBoxNum":1,
-                            "templates":[
-                                {
-                                    "templateID":"1",
-                                    "templateName":"",
-                                    "path":"/data/zan_ting.png",
-                                    "name":"",
-                                    "location":{
-                                        "x":1186,
-                                        "y":31,
-                                        "w":40,
-                                        "h":49
-                                    },
-                                    "threshold":0.7,
-                                    "classID":0
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
+点击菜单栏的“Debug》GameReg》Start”,开始调试，窗口画面中会显示识别结果，如下图10所示：
 
-在运行游戏时，将AISDK/cfg/platform/GameReg.ini中ResultShow的参数修改为True，则能看到task任务结果。
+![img](../img/New_SDKTool/ProjecttaskConf/debugSuccess.png)
 
-结果展示如图13
+​                                                                                            
 
-![ ](../img/clip_image010.png)
+图10 调试结果
 
-​                                                                                            图13

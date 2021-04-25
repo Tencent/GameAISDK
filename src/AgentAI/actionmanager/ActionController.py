@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -10,16 +13,23 @@ import logging
 import os
 
 from .MobileActionMgrExt import MobileActionMgrExt
+from .PCActionMgrExt import PCActionMgrExt
 
 LOG = logging.getLogger('agent')
 
 
-ACTION_TYPE_NONE = 0
-ACTION_TYPE_PRESS_DOWN = 1
-ACTION_TYPE_PRESS_UP = 2
-ACTION_TYPE_CLICK = 3
-ACTION_TYPE_SWIPE_ONCE = 4
-ACTION_TYPE_SWIPE_ALONG = 5
+ACTION_TYPE_NONE = 'none'
+ACTION_TYPE_PRESS_DOWN = 'down'
+ACTION_TYPE_PRESS_UP = 'up'
+ACTION_TYPE_CLICK = 'click'
+ACTION_TYPE_SWIPE_ONCE = 'swipe'
+ACTION_TYPE_KEY = 'key'
+
+
+class DeviceType(object):
+    ANDROID = "Android"
+    IOS = "IOS"
+    WINDOWS = "Windows"
 
 
 class ActionController(object):
@@ -27,12 +37,20 @@ class ActionController(object):
     ActionController implement for GIE, based on MobileActionMgrExt
     """
     def __init__(self):
-        self.__actionMgr = MobileActionMgrExt()
-        self.__actionsDict = {}
+        device_type = os.environ.get('AISDK_DEVICE_TYPE', DeviceType.ANDROID)
+        if device_type == DeviceType.WINDOWS:
+            self.__actionMgr = PCActionMgrExt()
+        else:
+            self.__actionMgr = MobileActionMgrExt()
+        self.__actionsDict = dict()
         self.__actionsNum = 0
         self.__pressDownLastPx = -1
         self.__pressDownLastPy = -1
         self.__pressDownLastContact = -1
+        self.__width = -1
+        self.__height = -1
+        self.__real_width = -1
+        self.__real_height = -1
 
     def Initialize(self, cfgFilePath):
         """
@@ -67,12 +85,11 @@ class ActionController(object):
         """
         Do the specific action corresponding to the actionID
         :param actionID: actionID enum:
-                            ACTION_TYPE_NONE = 0
-                            ACTION_TYPE_PRESS_DOWN = 1
-                            ACTION_TYPE_PRESS_UP = 2
-                            ACTION_TYPE_CLICK = 3
-                            ACTION_TYPE_SWIPE_ONCE = 4
-                            ACTION_TYPE_SWIPE_ALONG = 5
+                            ACTION_TYPE_NONE = none
+                            ACTION_TYPE_PRESS_DOWN = down
+                            ACTION_TYPE_PRESS_UP = up
+                            ACTION_TYPE_CLICK = click
+                            ACTION_TYPE_SWIPE_ONCE = swipe
         :param frameSeq: the frame sequence, default is -1
         :return:
         """
@@ -81,39 +98,89 @@ class ActionController(object):
 
         actionContext = self.__actionsDict.get(actionID)
         actionType = actionContext.get('type')
+        LOG.debug("the actionID is {0} and type is {1}".format(actionID, actionType))
+
+        if self.__real_height < 0 or self.__real_width < 0:
+            LOG.warning("the real width or height invalid, width:{}, height:{}".format(self.__real_width,
+                                                                                       self.__real_height))
+            return
+
         if actionType == ACTION_TYPE_NONE:
             self.DoNothing(frameSeq=frameSeq)
+
         elif actionType == ACTION_TYPE_PRESS_DOWN:
-            px = actionContext.get('x')
-            py = actionContext.get('y')
             contact = actionContext.get('contact')
+
+
+            px = self.__get_real_x(actionContext)
+            py = self.__get_real_y(actionContext)
+            LOG.debug("press down px:{0}, py:{1},contact:{2}, frameSeq:{3}".format(px, py, contact, frameSeq))
             self.PressDown(px, py, contact=contact, frameSeq=frameSeq)
+
         elif actionType == ACTION_TYPE_PRESS_UP:
-            px = actionContext.get('x')
-            py = actionContext.get('y')
+            px = self.__get_real_x(actionContext)
+            py = self.__get_real_y(actionContext)
             contact = actionContext.get('contact')
+            LOG.debug("press up px:{0}, py:{1},contact:{2}, frameSeq:{3}".format(px, py, contact, frameSeq))
             self.PressUp(px, py, contact=contact, frameSeq=frameSeq)
+
         elif actionType == ACTION_TYPE_CLICK:
-            px = actionContext.get('x')
-            py = actionContext.get('y')
             contact = actionContext.get('contact')
-            durationMS = actionContext.get('durationMS')
-            if durationMS is not None:
-                self.Click(px, py, contact=contact, frameSeq=frameSeq, durationMS=durationMS)
+            if 'updateBtn' in self.__actionsDict[actionID] and self.__actionsDict[actionID]['updateBtn'] is True:
+                px = self.__actionsDict[actionID]['updateBtnX']
+                py = self.__actionsDict[actionID]['updateBtnY']
+                real_px = int(float(px) * float(self.__real_width) / float(self.__width))
+                real_py = int(float(py) * float(self.__real_height) / float(self.__height))
+                LOG.debug("press down real_px:{0}, real_py:{1}, contact:{2}".format(px, py, contact))
+                self.PressDown(real_px, real_py, contact=contact, frameSeq=frameSeq)
+                return
+            px = self.__get_real_x(actionContext)
+            py = self.__get_real_y(actionContext)
+
+            duration_ms = actionContext.get('durationMS')
+            if duration_ms is not None:
+                LOG.debug("click px:{0}, py:{1},contact:{2}, frameSeq:{3}, durationMS:{4}".format(px, py, contact,
+                                                                                                  frameSeq,
+                                                                                                  duration_ms))
+                self.Click(px, py, contact=contact, frameSeq=frameSeq, durationMS=duration_ms)
             else:
+                LOG.debug("click px:{0}, py:{1},contact:{2}, frameSeq:{3}".format(px, py, contact, frameSeq))
                 self.Click(px, py, contact=contact, frameSeq=frameSeq)
-        elif actionType == ACTION_TYPE_SWIPE_ONCE:
-            sx = actionContext.get('startX')
-            sy = actionContext.get('startY')
-            ex = actionContext.get('endX')
-            ey = actionContext.get('endY')
+
+        elif actionType == ACTION_TYPE_KEY:
+            px = self.__get_real_x(actionContext)
+            py = self.__get_real_y(actionContext)
             contact = actionContext.get('contact')
-            durationMS = actionContext.get('durationMS')
-            if durationMS is not None:
-                self.SwipeOnce(sx, sy, ex, ey, contact=contact, frameSeq=frameSeq,
-                               durationMS=durationMS)
+            alphabet = actionContext.get('actionRegion').get('alphabet')
+            action_type = actionContext.get('actionRegion').get('actionType')
+            action_text = actionContext.get('actionRegion').get('text')
+            LOG.debug("key action px:{0}, py:{1},contact:{2}, frameSeq:{3}, alphabet:{4}, action_type:{5}".format(
+                px, py, contact, frameSeq, alphabet, action_type))
+
+            self.SimulatorKeyAction(px, py, contact=contact, alphabet=alphabet, action_type=action_type,
+                                    action_text=action_text)
+
+        elif actionType == ACTION_TYPE_SWIPE_ONCE:
+            sx = actionContext.get('actionRegion').get('region').get('startX')
+            sy = actionContext.get('actionRegion').get('region').get('startY')
+            ex = actionContext.get('actionRegion').get('region').get('endX')
+            ey = actionContext.get('actionRegion').get('region').get('endY')
+            contact = actionContext.get('contact')
+            duration_ms = actionContext.get('durationMS')
+            if duration_ms is not None:
+                self.SwipeOnce(sx, sy, ex, ey, contact=contact, frameSeq=frameSeq, durationMS=duration_ms)
             else:
                 self.SwipeOnce(sx, sy, ex, ey, contact=contact, frameSeq=frameSeq)
+
+    def __get_real_x(self, action_context):
+        px = action_context.get('actionRegion').get('region').get('x')
+        real_px = int(float(px) * float(self.__real_width) / float(self.__width))
+        return real_px
+
+    def __get_real_y(self, action_context):
+        py = action_context.get('actionRegion').get('region').get('y')
+        real_py = int(float(py) * float(self.__real_height) / float(self.__height))
+        return real_py
 
     def GetActionNum(self):
         """
@@ -122,13 +189,18 @@ class ActionController(object):
         """
         return self.__actionsNum
 
-    def DoNothing(self, frameSeq=-1):
+    @staticmethod
+    def DoNothing(frameSeq=-1):
         """
         Do nothing
         :param frameSeq: the frame sequence, default is -1
         :return:
         """
         LOG.debug('DoNothing on frameSeq[{0}]'.format(frameSeq))
+
+    def SetSolution(self, width, height):
+        self.__real_height = height
+        self.__real_width = width
 
     def PressDown(self, px, py, contact=0, forced=False, frameSeq=-1):
         """
@@ -176,6 +248,11 @@ class ActionController(object):
         self._ClearPressDown(contact)
         LOG.debug('Click ({0}, {1}) on frameSeq[{2}]'.format(px, py, frameSeq))
 
+    def SimulatorKeyAction(self, px, py, contact=0, frameSeq=-1, alphabet="", action_type="", action_text=""):
+        self.__actionMgr.SimulatorKeyAction(px, py, contact, frameSeq, alphabet, action_type, action_text)
+        LOG.debug('SimulatorKeyAction ({0}, {1}) on frameSeq[{2}]'.format(px, py, frameSeq))
+
+
     def SwipeOnce(self, sx, sy, ex, ey, contact=0, frameSeq=-1, durationMS=50, needUp=True):
         """
         Swipe from start point(sx, sy) to end point(ex, ey) on contact. The process
@@ -201,8 +278,14 @@ class ActionController(object):
         with open(actionCfgFile) as fileData:
             data = json.load(fileData)
             self.__actionsNum = len(data['actions'])
+            self.__width = data['screenWidth']
+            self.__height = data['screenHeight']
+
             for item in data['actions']:
                 self.__actionsDict[item['id']] = item
+
+            LOG.info("the actionDict is %s, width: %d, height: %d", str(self.__actionsDict),
+                     self.__width, self.__height)
 
     def _ClearPressDown(self, contact):
         if self.__pressDownLastContact == contact:
@@ -215,3 +298,6 @@ class ActionController(object):
                 and self.__pressDownLastContact == contact:
             return True
         return False
+
+    def get_action_dict(self):
+        return self.__actionsDict

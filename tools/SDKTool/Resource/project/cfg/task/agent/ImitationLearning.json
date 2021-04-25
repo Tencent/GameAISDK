@@ -1,0 +1,31 @@
+{
+    "roiRegion": {
+        "path": "",
+        "region": {
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720
+        }
+    },
+    "action": {
+        "actionPerSecond": 5,
+        "actionTimeMs": 85
+    },
+    "network": {
+        "inputWidth": 640,
+        "inputHeight": 360,
+        "dataDir": "output",
+        "validDataRatio": 0.1,
+        "isSmallNet": true,
+        "useResNet": true,
+        "actionAheadNum": 1,
+        "useClassBalance": 1,
+        "classImageTimes": 1,
+        "useLstm": false,
+        "trainIter": 20,
+        "timeStep": 5,
+        "isMax": false,
+        "randomRatio": 0.0
+    }
+}

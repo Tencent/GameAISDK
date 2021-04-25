@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef POP_UI_REG_H_
-#define POP_UI_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_UI_UIREG_POPUIREG_H_
+#define GAME_AI_SDK_IMGPROC_UI_UIREG_POPUIREG_H_
 
 #include <vector>
 
@@ -17,80 +20,77 @@
 #include "UI/Src/UIReg/UIReg.h"
 
 
-struct tagPOPUIParam
-{
+struct tagPOPUIParam {
     int      nID;
     cv::Mat  oTemplImg;
     cv::Rect oSrcRect;
     float    fThreshold;
 
-    tagPOPUIParam()
-    {
-        nID        = 0;
+    tagPOPUIParam() {
+        nID = 0;
         fThreshold = GAME_TEMPLATE_THRESHOLD;
     }
 };
 
 
-class CPOPUIReg : public TSingleton<CPOPUIReg>, public CUIReg
-{
-public:
+class CPOPUIReg : public TSingleton<CPOPUIReg>, public CUIReg {
+  public:
     CPOPUIReg();
     ~CPOPUIReg();
 
     /*!
-     * @brief 初始化
-     * @param[in] pUICfg: 配置项
-     * @return true表示成功，false表示失败
-     */
+      * @brief 初始化
+      * @param[in] pUICfg: 配置项
+      * @return true表示成功，false表示失败
+    */
     virtual bool Initialize(CUICfg *pUIReg);
 
     /*!
-     * @brief　检测处理输入图像数据
-     * @param[in] stFrameCtx: 输入帧信息
-     * @param[out] stUIRegRst:　输出结果
-     * @return -1 表示失败，否则返回匹配到的UI的ID
-     */
+      * @brief　检测处理输入图像数据
+      * @param[in] stFrameCtx: 输入帧信息
+      * @param[out] stUIRegRst:　输出结果
+      * @return -1 表示失败，否则返回匹配到的UI的ID
+    */
     virtual int Predict(const tagFrameContext &stFrameCtx, tagUIRegResult &stUIRegRst);
 
     bool IsDevPOPUI();
 
     bool IsGamePOPUI();
 
-private:
+  private:
     /*!
-     * @brief 游戏弹框UI的识别参数
-     * @param[in] pUICfg: 配置项
-     * @return true表示成功，false表示失败
-     */
+      * @brief 游戏弹框UI的识别参数
+      * @param[in] pUICfg: 配置项
+      * @return true表示成功，false表示失败
+    */
     bool FillGamePOPUIRegParam(CUICfg *pUICfg);
 
     /*!
-     * @brief 设备弹框UI的识别参数
-     * @param[in] pUICfg: 配置项
-     * @return true表示成功，false表示失败
-     */
+      * @brief 设备弹框UI的识别参数
+      * @param[in] pUICfg: 配置项
+      * @return true表示成功，false表示失败
+    */
     bool FillDevPOPUIRegParam(CUICfg *pUICfg);
 
     bool FillPOPUIParam(const UIStateArray &oVecCfg, std::vector<tagPOPUIParam> *pstVecParam);
 
     /*!
-     * @brief　检测处理输入图像数据
-     * @param[in] frame
-     * @param[in] stParam
-     * @param[out] dstRect
-     * @return -1 表示失败，否则返回匹配到的UI的ID
-     */
+      * @brief　检测处理输入图像数据
+      * @param[in] frame
+      * @param[in] stParam
+      * @param[out] dstRect
+      * @return -1 表示失败，否则返回匹配到的UI的ID
+    */
     int  Predict(const cv::Mat &frame, std::vector<tagPOPUIParam> &stParam, cv::Rect &dstRect);
 
     /*!
-     * @brief　判断前后帧是否相同
-     * @param[in] frame
-     * @return true表示成功，false表示失败
-     */
+      * @brief　判断前后帧是否相同
+      * @param[in] frame
+      * @return true表示成功，false表示失败
+    */
     bool IsFrameSame(const cv::Mat &frame);
 
-private:
+  private:
     std::vector<tagPOPUIParam> m_stGameParam;
     std::vector<tagPOPUIParam> m_stDevParam;
 
@@ -103,4 +103,4 @@ private:
     bool m_bDevPOPUI;
 };
 
-#endif // POP_UI_REG_H_
+#endif  // GAME_AI_SDK_IMGPROC_UI_UIREG_POPUIREG_H_

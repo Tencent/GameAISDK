@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
-import configparser
 import json
 import logging
-import os
 
 import msgpack
 import msgpack_numpy as mn
+from connect.BusConnect import BusConnect
 
 from protocol import common_pb2
-from connect.BusConnect import BusConnect
 
 MSG_ID_AI_ACTION = 2000
 
@@ -73,7 +74,9 @@ class ActionMgr(object):
             actionStr = json.dumps(actionData)
             LOG_REGACTION.debug('{}||action||{}'.format(frameSeq, actionStr))
 
-        ret = self.__connect.SendMsg(msg)
+        self.__connect.SendMsg(msg, BusConnect.PEER_NODE_SDKTOOL)
+
+        ret = self.__connect.SendMsg(msg, BusConnect.PEER_NODE_MC)
         if ret != 0:
             LOG.warning('TBus Send To MC return code[{0}]'.format(ret))
             return False

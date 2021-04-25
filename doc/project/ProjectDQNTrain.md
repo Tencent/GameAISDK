@@ -8,145 +8,96 @@ DQN是一种强化学习算法，从随机的模型开始训练，训练过程�
 
 下面以<天天酷跑>游戏为例，说明如何使用内置的DQN算法训练游戏AI.
 
- 
+### 场景识别配置
 
-- 选择DQN AI算法
+* 场景识别配置文件路径为cfg/task/gameReg/Task.json，DQN算法中需要配置4个识别任务：
 
-通过配置cfg/task/agent/AgentAI.ini文件内容如下，可以加载运行内置的DQN算法：
+1.识别游戏开始，当检测到该任务为True时，开始AI模型训练；
 
-```
-[AGENT_ENV]
-UsePluginEnv = 0
-EnvPackage = agentenv
-EnvModule = DQNEnv
-EnvClass = DQNEnv
+![img](../img/New_SDKTool/ProjectDQN/DQNstarttask.png)
 
-[AI_MODEL]
-UsePluginAIModel = 0
-AIModelPackage = dqn
-AIModelModule = DQNAIModel
-AIModelClass = DQNAIModel
+2.识别游戏胜利，本游戏中不存在游戏胜利的情况，配置与失败相同；
 
-[RUN_FUNCTION]
-UseDefaultRunFunc = 1
-;RunFuncPackage = MyPackage
-;RunFuncModule = MyModule
-;RunFuncName = MyRunFunc
-```
+![img](../img/New_SDKTool/ProjectDQN/DQNwintask.png)
 
-1. UsePluginEnv = 0 表示使用平台内置的Env插件
-2. EnvPackage = agentenv 表示使用的Env插件的Package名（Python中Package名通常即为目录名）为agentenv 
-3. EnvModule = DQNEnv 表示使用的Env插件的Module名（Python中Module名通常即为文件名）为DQNEnv
-4. EnvClass = DQNEnv 表示使用的Env插件的Class名为DQNEnv
-5. UsePluginAIModel = 0 表示使用平台内置的AI模型插件
-6. AIModelPackage = dqn 表示使用的AI模型插件的Package名为dqn
-7. AIModelModule = DQNAIModel 表示使用的AI模型插件的Module名为DQNAIModel
-8. AIModelClass = DQNAIModel 表示使用的AI模型插件的Class名为DQNAIModel
+3.识别游戏失败，当检测到该任务为True时，停止AI模型训练；
 
- 
+![img](../img/New_SDKTool/ProjectDQN/DQNlosetask.png)
 
-- 场景识别配置
+4.识别游戏画面上方的数字，根据跟数字来计算强化学习中的reward；
 
-场景识别配置文件路径为cfg/task/gameReg/Task.json，DQN算法中需要配置4个识别任务，：
+![img](../img/New_SDKTool/ProjectDQN/DQNnumbertask.png)
 
-1. taskID为1的识别任务，配置为识别游戏开始，当检测到该任务为True时，开始AI模型训练；
-2. taskID为2的识别任务，配置为识别游戏胜利，本游戏中不存在游戏胜利的情况，所以不需要配置该任务；
-3. taskID为3的识别任务，配置为识别游戏失败，当检测到该任务为True时，停止AI模型训练；
-4.  taskID为4的识别任务，配置为识别游戏画面上方的数字，根据跟数字来计算强化学习中的reward；
 
-![img](../img/ENV/wps1.jpg) 
 
- 
+### 选择算法
+在AI-Algorithm中选择DQN
 
- 
+![img](../img/New_SDKTool/ProjectDQN/DQNAlgorithm.png)
 
-- 配置游戏动作
+### 设置配置图片的大小
 
-DQN算法支持离散型的动作类型，即每个动作id对应一个动作输出。通过修改cfg/task/agent/DQNAction.json文件来定义游戏内的动作，<天天酷跑>需定义的动作如下所示：
+![img](../img/New_SDKTool/ProjectDQN/action_resolution.png)
 
-```
-{
-    "screenHeight": 360,
-    "screenWidth": 640,
-    "actions": [
-     {
-            
-            "width": 142,
-            "contact": 0, 
-            "y": 304,
-            "x": 580,
-            "height": 131,
-            "type": 3, 
-            "id": 1,
-            "durationMS": 50
-        }, 
-        {
-           
-            
-            "width": 129,
-            "contact": 0, 
-            "y": 302,
-            "x": 55,
-            "height": 138,
-            "type": 3, 
-            "id": 0,
-            "durationMS": 50
-        }, 
-        
-        {
-           
-            "width": 12,
-            "contact": -1, 
-            "y": 236,
-            "x": 405,
-            "height": 8,
-            "type": 0, 
-            "id": 2
-        }
-    ]
-}
+### 配置游戏动作
+- TTKP需要配置三个动作，滑，跳和一个None。
 
-```
+1.id为0的None动作类型，即游戏中不做任何动作
 
-上述json文件共定义了三个动作：
+![img](../img/New_SDKTool/ProjectDQN/action_none.png)
 
-1.  id为0的None动作类型，即游戏中不做任何动作
-2.  id为1的click动作类型，即游戏中的跳跃动作
-3.  id为2的click动作类型，即游戏中的滑动的动作
+2.id为1的click动作类型，即游戏中的滑行动作
 
- 
+![img](../img/New_SDKTool/ProjectDQN/action_slip.png)
 
--  配置DQN算法参数
+3.id为2的click动作类型，即游戏中的跳跃动作
 
-DQN算法包含一些训练参数，如学习率、replay memory大小、初始随机动作概率等，大部分情况下可以使用默认参数。通过修改cfg/task/agent/DQNLearn.ini文件可以修改算法参数：
+![img](../img/New_SDKTool/ProjectDQN/action_jump.png)
 
-```
-[DQN]
-QNetworkType = 2
-InputImgWidth = 176
-InputImgHeight = 108
-StateRecentFrame = 4
-TerminalDelayFrame = 6
-RewardDiscount = 0.99
-LearnRate = 0.000005
-EndLearnRate = 0.000001
-FramePerAction = 1
-ObserveFrame = 10000
-ExploreFrame = 1000000
-InitialEpsilon = 0.01
-FinalEpsilon = 0.001
-QNetworkUpdateStep = 12000
-MemorySize = 240000
-ShowImgState = 0
-MiniBatchSize = 32
-TrainWithDoubleQ = 1
-GPUMemoryFraction = 0.6
-GPUMemoryGrowth = 0
-CheckPointPath = data/trained-networks/
-TrainFrameRate = 10
-;RunType 0 for train, 1 for test
-RunType = 1
-```
+
+
+### 配置begin和over
+
+* begin：添加作为游戏开始scene
+
+![img](../img/New_SDKTool/ProjectDQN/gamestate_begin.png)
+
+* over：添加作为游戏结束的scene
+
+![img](../img/New_SDKTool/ProjectDQN/gamestate_over.png)
+
+### 配置Reward奖励和DQN算法参数
+
+* 训练时传送的图像
+
+![img](../img/New_SDKTool/ProjectDQN/DQNroiRegion.png)
+
+* 配置taskID
+
+![img](../img/New_SDKTool/ProjectDQN/parameter_taskID.png)
+
+* 配置Reward奖励和DQN算法参数
+
+强化学习训练过程中，根据环境反馈的reward进行模型训练。好的动作得到正的reward，差的动作得到负的reward。<天天酷跑>游戏中，可以根据游戏画面上方的距离数字作为游戏得分，并根据得分计算reward。得分增加表示agent一直在前进，给予正的reward；得分停止不变时表示agent死亡，给予负的reward。
+
+其它游戏的reward计算方法，要根据实际情况来设置，总体的原则是好的动作给予正的reward，坏的动作给予负的reward。<天天酷跑>游戏中，可以设置如下所示：
+
+![img](../img/New_SDKTool/ProjectDQN/DQNparameter.png)
+
+配置Reward奖励：
+
+1.  StartX、StartY、Width、Height表示训练时输入给DQN训练算法的图像区域，本例中图像区域为整个游戏画面；
+2.  InitScore 表示游戏开始时的初始得分；
+3.  MaxScoreRepeatedTimes = 4、RewardOverRepeatedTimes = -0.5 表示当同一个得分数字重复超过4个连续帧时，给予的reward。本游戏中得分数字重复不变时，表示agent死亡，所以给予-0.5的reward；
+4.  WinReward 表示检测到游戏胜利时，给予的reward值，由于本游戏中不存在游戏胜利结束的情况，可以设置为0；
+5.  LoseReward 表示检测到游戏失败时，给予-0.5的reward；
+6.  MaxRunningReward、MinRunningReward 表示游戏过程中给予的最大、最小reward值；
+7.  ScorePerSection = 2.0、RewardPerPostiveSection = 0.1、RewardPerNegtiveSection = 0.0  表示2.0作为一个得分区间，当得分每增加一个区间给予RewardPerPostiveSection（本例为0.1） 的reward，当得分每减少一个区间给予RewardPerNegtiveSection（本例为0）的reward。
+8. 由于本游戏中不存在得分减少的情况，设置RewardPerNegtiveSection为0；
+
+配置DQN算法参数：
+
+DQN算法包含一些训练参数，如学习率、replay memory大小、初始随机动作概率等，大部分情况下可以使用默认参数。
 
 1.  QNetworkType参数表示DQN神经网络结构，1表示Nature结构的神经网络，Nature结构的神经网络直接输出每个动作的价值；2表示Dueling结构的神经网络，Dueling将网络输出的价值分为状态价值和动作优势两部分；
 2.  InputImgWidth和InputImgHeight表示训练输入图像的宽和高；
@@ -167,45 +118,13 @@ RunType = 1
 17. TrainFrameRate 表示训练模型的FPS帧率；
 18. RunType 表示DQN算法运行方式，0表示训练模型，1表示测试训练模型；
 
- 
 
-- 配置Reward奖励
 
-强化学习训练过程中，根据环境反馈的reward进行模型训练。好的动作得到正的reward，差的动作得到负的reward。<天天酷跑>游戏中，可以根据游戏画面上方的距离数字作为游戏得分，并根据得分计算reward。得分增加表示agent一直在前进，给予正的reward；得分停止不变时表示agent死亡，给予负的reward。
-
-其它游戏的reward计算方法，要根据实际情况来设置，总体的原则是好的动作给予正的reward，坏的动作给予负的reward。简单的reward计算，通过修改cfg/task/agent/DQNEnv.ini 可以来修改reward计算规则。<天天酷跑>游戏中，可以设置如下所示：
-
-```
-[IMAGE_ROI]
-StartX = 0
-StartY = 0
-Width = 640
-Height = 360
-
-[REWARD_RULE]
-InitScore = 0.0
-MaxScoreRepeatedTimes = 4
-RewardOverRepeatedTimes = -0.5
-WinReward = 0.0
-LoseReward = -0.5
-MaxRunningReward = 0.5
-MinRunningReward = -0.5
-RewardPerPostiveSection = 0.1
-RewardPerNegtiveSection = 0.0
-ScorePerSection = 2.0
-```
-
-1.  StartX、StartY、Width、Height表示训练时输入给DQN训练算法的图像区域，本例中图像区域为整个游戏画面；
-2.  InitScore 表示游戏开始时的初始得分；
-3.  MaxScoreRepeatedTimes = 4、RewardOverRepeatedTimes = -0.5 表示当同一个得分数字重复超过4个连续帧时，给予的reward。本游戏中得分数字重复不变时，表示agent死亡，所以给予-0.5的reward；
-4.  WinReward 表示检测到游戏胜利时，给予的reward值，由于本游戏中不存在游戏胜利结束的情况，可以设置为0；
-5.  LoseReward 表示检测到游戏失败时，给予-0.5的reward；
-6.  MaxRunningReward、MinRunningReward 表示游戏过程中给予的最大、最小reward值；
-7.  ScorePerSection = 2.0、RewardPerPostiveSection = 0.1、RewardPerNegtiveSection = 0.0  表示2.0作为一个得分区间，当得分每增加一个区间给予RewardPerPostiveSection（本例为0.1） 的reward，当得分每减少一个区间给予RewardPerNegtiveSection（本例为0）的reward。
-8. 由于本游戏中不存在得分减少的情况，设置RewardPerNegtiveSection为0；
-
- 
 
 -  AI模型训练
 
-完成上述配置后，拉起运行AI SDK平台，重复进入游戏场景，在agent与游戏环境不断交互中进行DQN AI模型训练
+完成上述配置后，点击菜单栏”Run》Test",窗口左侧出现Run树状结构。
+
+![img](../img/New_SDKTool/ProjectDQN/runTest.png)
+
+双击Start Test开始训练

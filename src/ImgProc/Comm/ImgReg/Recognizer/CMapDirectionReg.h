@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef MAP_DIRECTION_REG_H_
-#define MAP_DIRECTION_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMAPDIRECTIONREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMAPDIRECTIONREG_H_
 
 #include <string>
 #include <vector>
@@ -17,8 +20,7 @@
 //          CMapDirectionReg Structure Define
 // **************************************************************************************
 
-struct tagMapDirectionRegParam
-{
+struct tagMapDirectionRegParam {
     int         nFilterSize;
     int         nMaxPointNum;
     int         nDilateSize;
@@ -30,33 +32,30 @@ struct tagMapDirectionRegParam
     std::string strMapMaskPath;
     cv::Rect    oROI;
 
-    tagMapDirectionRegParam()
-    {
-        nMaxPointNum        = 512;
-        nFilterSize         = 1;
-        nDilateSize         = 5;
-        nErodeSize          = 2;
-        nRegionSize         = 10;
-        oROI                = cv::Rect(-1, -1, -1, -1);
-        strCondition        = "";
-        strMyLocCondition   = "";
+    tagMapDirectionRegParam() {
+        nMaxPointNum = 512;
+        nFilterSize = 1;
+        nDilateSize = 5;
+        nErodeSize = 2;
+        nRegionSize = 10;
+        oROI = cv::Rect(-1, -1, -1, -1);
+        strCondition = "";
+        strMyLocCondition = "";
         strViewLocCondition = "";
-        strMapMaskPath      = "";
+        strMapMaskPath = "";
     }
 };
 
-struct tagMapDirectionRegResult
-{
+struct tagMapDirectionRegResult {
     int       nState;
     cv::Point oMyLocPoint;
     cv::Point oViewLocPoint;
     cv::Point oViewAnglePoint;
     cv::Rect  oROI;
 
-    tagMapDirectionRegResult()
-    {
+    tagMapDirectionRegResult() {
         nState = 0;
-        oROI   = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -64,9 +63,8 @@ struct tagMapDirectionRegResult
 //          CMapDirectionRegColorDet Class Define
 // **************************************************************************************
 
-class CMapDirectionRegColorDet
-{
-public:
+class CMapDirectionRegColorDet {
+  public:
     CMapDirectionRegColorDet();
     ~CMapDirectionRegColorDet();
 
@@ -74,10 +72,10 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagMapDirectionRegResult &stResult);
     int Release();
 
-private:
+  private:
     int FillColorDetParam(const tagMapDirectionRegParam &stParam, CColorDetParam &oParam);
 
-private:
+  private:
     int      m_nTaskID;
     int      m_nErodeSize;
     int      m_nDilateSize;
@@ -94,17 +92,15 @@ private:
 //          CMapDirectionRegParam Class Define
 // **************************************************************************************
 
-class CMapDirectionRegParam : public IComnBaseRegParam
-{
-public:
-    CMapDirectionRegParam()
-    {
+class CMapDirectionRegParam : public IComnBaseRegParam {
+  public:
+    CMapDirectionRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CMapDirectionRegParam() {}
 
-public:
+  public:
     std::vector<tagMapDirectionRegParam> m_oVecElements;
 };
 
@@ -112,33 +108,28 @@ public:
 //          CMapDirectionRegResult Class Define
 // **************************************************************************************
 
-class CMapDirectionRegResult : public IComnBaseRegResult
-{
-public:
-    CMapDirectionRegResult()
-    {
+class CMapDirectionRegResult : public IComnBaseRegResult {
+  public:
+    CMapDirectionRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CMapDirectionRegResult() {}
 
-    void SetResult(tagMapDirectionRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagMapDirectionRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagMapDirectionRegResult* GetResult(int *pResultNum)
-    {
+    tagMapDirectionRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                      m_nResultNum;
     tagMapDirectionRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -147,9 +138,8 @@ private:
 //          CMapDirectionReg Class Define
 // **************************************************************************************
 
-class CMapDirectionReg : public IComnBaseReg
-{
-public:
+class CMapDirectionReg : public IComnBaseReg {
+  public:
     CMapDirectionReg();
     ~CMapDirectionReg();
 
@@ -158,9 +148,9 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
+  private:
     std::vector<tagMapDirectionRegParam>  m_oVecParams;
     std::vector<CMapDirectionRegColorDet> m_oVecMethods;
 };
 
-#endif /* __MAP_DIRECTION_REG_H */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMAPDIRECTIONREG_H_

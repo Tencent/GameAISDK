@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef DEFORM_OBJ_REG_H_
-#define DEFORM_OBJ_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CDEFORMOBJREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CDEFORMOBJREG_H_
 
 #include <string>
 #include <vector>
@@ -17,8 +20,7 @@
 //          CDeformObjReg Structure Define
 // **************************************************************************************
 
-struct tagDeformObjRegElement
-{
+struct tagDeformObjRegElement {
     int         nMaskValue;
     float       fThreshold;
     cv::Rect    oROI;
@@ -27,27 +29,24 @@ struct tagDeformObjRegElement
     std::string strNamePath;
     std::string strMaskPath;
 
-    tagDeformObjRegElement()
-    {
-        nMaskValue    = 127;
-        fThreshold    = 0.50f;
-        oROI          = cv::Rect(-1, -1, -1, -1);
-        strCfgPath    = "";
+    tagDeformObjRegElement() {
+        nMaskValue = 127;
+        fThreshold = 0.50f;
+        oROI = cv::Rect(-1, -1, -1, -1);
+        strCfgPath = "";
         strWeightPath = "";
-        strNamePath   = "";
-        strMaskPath   = "";
+        strNamePath = "";
+        strMaskPath = "";
     }
 };
 
-struct tagDeformObjRegResult
-{
+struct tagDeformObjRegResult {
     int     nState;
     int     nBBoxNum;
     tagBBox szBBoxes[MAX_BBOX_SIZE];
 
-    tagDeformObjRegResult()
-    {
-        nState   = 0;
+    tagDeformObjRegResult() {
+        nState = 0;
         nBBoxNum = 0;
     }
 };
@@ -56,17 +55,15 @@ struct tagDeformObjRegResult
 //          CDeformObjRegParam Class Define
 // **************************************************************************************
 
-class CDeformObjRegParam : public IObjRegParam
-{
-public:
-    CDeformObjRegParam()
-    {
+class CDeformObjRegParam : public IObjRegParam {
+  public:
+    CDeformObjRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CDeformObjRegParam() {}
 
-public:
+  public:
     std::vector<tagDeformObjRegElement> m_oVecElements;
 };
 
@@ -74,33 +71,28 @@ public:
 //          CDeformObjRegResult Class Define
 // **************************************************************************************
 
-class CDeformObjRegResult : public IObjRegResult
-{
-public:
-    CDeformObjRegResult()
-    {
+class CDeformObjRegResult : public IObjRegResult {
+  public:
+    CDeformObjRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CDeformObjRegResult() {}
 
-    void SetResult(tagDeformObjRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagDeformObjRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagDeformObjRegResult* GetResult(int *pResultNum)
-    {
+    tagDeformObjRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                   m_nResultNum;
     tagDeformObjRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -109,9 +101,8 @@ private:
 //          CDeformObjReg Class Define
 // **************************************************************************************
 
-class CDeformObjReg : public IObjReg
-{
-public:
+class CDeformObjReg : public IObjReg {
+  public:
     CDeformObjReg();
     ~CDeformObjReg();
 
@@ -120,12 +111,12 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
+  private:
     int FillYOLOAPIParam(const tagDeformObjRegElement &stParam, CYOLOAPIParam &oParam);
 
-private:
-    std::vector<tagDeformObjRegElement> m_oVecParams; // vector of parameters
-    std::vector<CYOLOAPI>               m_oVecYOLOAPIs; // vector of methods
+  private:
+    std::vector<tagDeformObjRegElement> m_oVecParams;  // vector of parameters
+    std::vector<CYOLOAPI>               m_oVecYOLOAPIs;  // vector of methods
 };
 
-#endif /* DEFORM_OBJ_REG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CDEFORMOBJREG_H_

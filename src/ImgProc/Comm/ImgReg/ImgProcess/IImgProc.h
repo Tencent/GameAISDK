@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef IMG_PROC_H_
-#define IMG_PROC_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGPROC_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGPROC_H_
 
 #include "Comm/ImgReg/ImgProcess/ImgComn.h"
 
@@ -13,46 +16,41 @@
 //          Parameter Class Define
 // **************************************************************************************
 
-class IImgProcParam
-{
-public:
-    IImgProcParam()
-    {
+class IImgProcParam {
+  public:
+    IImgProcParam() {
         m_nTaskID = -1;
         m_oROI = cv::Rect(-1, -1, -1, -1);
     }
     virtual ~IImgProcParam() {}
 
-public:
-    int m_nTaskID; // task ID
-    cv::Rect m_oROI; // detection ROI
+  public:
+    int m_nTaskID;  // task ID
+    cv::Rect m_oROI;  // detection ROI
 };
 
 // **************************************************************************************
 //          Data Class Define
 // **************************************************************************************
 
-class IImgProcData
-{
-public:
-    IImgProcData()
-    {
+class IImgProcData {
+  public:
+    IImgProcData() {
         m_oROI = cv::Rect(-1, -1, -1, -1);
     }
     virtual ~IImgProcData() {}
 
-public:
-    cv::Rect m_oROI; // detection ROI
-    cv::Mat m_oSrcImg; // source image
+  public:
+    cv::Rect m_oROI;  // detection ROI
+    cv::Mat m_oSrcImg;  // source image
 };
 
 // **************************************************************************************
 //          Result Class Define
 // **************************************************************************************
 
-class IImgProcResult
-{
-public:
+class IImgProcResult {
+  public:
     IImgProcResult() {}
     virtual ~IImgProcResult() {}
 };
@@ -61,11 +59,9 @@ public:
 //          IImgProc Class
 // **************************************************************************************
 
-class IImgProc
-{
-public:
-    IImgProc()
-    {
+class IImgProc {
+  public:
+    IImgProc() {
         m_nTaskID = -1;
         m_oROI = cv::Rect(-1, -1, -1, -1);
     }
@@ -78,22 +74,21 @@ public:
 
     virtual int Release() = 0;
 
-protected:
-    int m_nTaskID; // task ID
-    cv::Rect m_oROI; // detection ROI
+  protected:
+    int m_nTaskID;  // task ID
+    cv::Rect m_oROI;  // detection ROI
 };
 
 // **************************************************************************************
 //          IImgProcFactory Class
 // **************************************************************************************
 
-class IImgProcFactory
-{
-public:
+class IImgProcFactory {
+  public:
     IImgProcFactory() {}
     virtual ~IImgProcFactory() {}
 
     virtual IImgProc* CreateImgProc() = 0;
 };
 
-#endif /* IMG_PROC_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGPROC_H_

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -30,8 +33,8 @@ class HTTPThread(threading.Thread):
         self.__url = 'http://%s:%d/ai_sdk/state_notify' % (self.__ip, self.__port)
         self.__HTTPHeader = {'Content-Type': 'application/json', 'STAFFNAME': self.__staffName}
 
-        LOG.info('ASM HTTP URL [{}]'.format(self.__url))
-        LOG.info('ASM HTTP Header [{}]'.format(self.__HTTPHeader))
+        LOG.info('ASM HTTP URL [%s]', self.__url)
+        LOG.info('ASM HTTP Header [%s]', self.__HTTPHeader)
 
     def run(self):
         while True:
@@ -45,17 +48,16 @@ class HTTPThread(threading.Thread):
     def _Post(self, msgData):
         try:
             ret = self._PostJsonData(msgData)
-        except Exception as e:
-            LOG.warning('Send POST to ASM failed err[{}], if you run AI SDK locally, please ignore'.format(e))
+        except ResourceWarning as e:
+            LOG.warning('Send POST to ASM failed err[%s], if you run AI SDK locally, please ignore', e)
             return False
 
         if ret['error'] < 0:
-            LOG.error('POST return err[{}/{}]'.format(ret['error'], ret['errstr']))
+            LOG.error('POST return err[%s/%s]', ret['error'], ret['errstr'])
             return False
-        else:
-            if 'msg_id' in ret['data']:
-                self.__recvQueue.put_nowait(ret['data'])
-            return True
+        if 'msg_id' in ret['data']:
+            self.__recvQueue.put_nowait(ret['data'])
+        return True
 
     def _PostJsonData(self, data):
         jsonData = json.dumps(data)
@@ -77,6 +79,7 @@ class HTTPClient(object):
     def __init__(self):
         self.__sendQueue = queue.Queue()
         self.__recvQueue = queue.Queue()
+        self.__HTTPthread = None
 
     def Initialize(self, cfg):
         """
@@ -94,7 +97,7 @@ class HTTPClient(object):
         Finish this module
         :return:
         """
-        pass
+        return True
 
     def Send(self, msgBuff):
         """

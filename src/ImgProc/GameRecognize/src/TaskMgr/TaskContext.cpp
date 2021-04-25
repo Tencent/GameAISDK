@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include <iostream>
 
@@ -11,60 +14,50 @@
 
 // extern LockFree::LockFreeQueue<CTaskResult> g_oTaskResultQueue;
 extern ThreadSafeQueue<CTaskResult> g_oTaskResultQueue;
-TaskContext::TaskContext()
-{
-    m_eTaskType              = TYPE_GAME;
-    m_nLevel                 = -1;
-    m_nOverload              = -1;
+TaskContext::TaskContext() {
+    m_eTaskType = TYPE_GAME;
+    m_nLevel = -1;
+    m_nOverload = -1;
     m_stState.eTaskExecState = TASK_STATE_RUNNING;
-    m_stState.bState         = true;
-    m_pRecognizer            = NULL;
-    m_bSendResult            = false;
+    m_stState.bState = true;
+    m_pRecognizer = NULL;
+    m_bSendResult = false;
 }
 
-TaskContext::~TaskContext()
-{}
+TaskContext::~TaskContext() {
+}
 
-CTaskParam* TaskContext::GetParams()
-{
+CTaskParam* TaskContext::GetParams() {
     return &m_stParms;
 }
 
-IRecognizer*  TaskContext::GetRecognizer()
-{
+IRecognizer*  TaskContext::GetRecognizer() {
     return m_pRecognizer;
 }
 
-tagTaskState TaskContext::GetState()
-{
+tagTaskState TaskContext::GetState() {
     return m_stState;
 }
 
-int TaskContext::GetLevel()
-{
+int TaskContext::GetLevel() {
     return m_nLevel;
 }
 
-int TaskContext::GetOverload()
-{
+int TaskContext::GetOverload() {
     return m_nOverload;
 }
 
-void TaskContext::SetTaskType(ETaskType eTaskType)
-{
+void TaskContext::SetTaskType(ETaskType eTaskType) {
     m_eTaskType = eTaskType;
 }
 
-ETaskType TaskContext::GetTaskType()
-{
+ETaskType TaskContext::GetTaskType() {
     return m_eTaskType;
 }
 
-bool TaskContext::CreateRecognizer(int nTaskID)
-{
-    switch (m_stParms.GetType())
-    {
-    // 创建fixobj识别器对象
+bool TaskContext::CreateRecognizer(int nTaskID) {
+    switch (m_stParms.GetType()) {
+        // 创建fixobj识别器对象
     case TYPE_FIXOBJREG:
     {
         m_pRecognizer = new CFixObjReg();
@@ -184,111 +177,91 @@ bool TaskContext::CreateRecognizer(int nTaskID)
     }
 
     // 初始化识别器
-    if (m_pRecognizer != NULL)
-    {
+    if (m_pRecognizer != NULL) {
         IRegParam *pRegParam = m_stParms.GetInstance(m_stParms.GetType());
         pRegParam->m_nTaskID = nTaskID;
         int nRst = m_pRecognizer->Initialize(pRegParam);
-        if (1 == nRst)
-        {
+        if (1 == nRst) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
-    }
-    else
-    {
+    } else {
         LOGE("new type %d failed", m_stParms.GetType());
         return false;
     }
 }
 
-void TaskContext::Release()
-{
+void TaskContext::Release() {
     // 释放资源
     ReleaseRecognizer();
     m_stParms.Release();
 }
 
-void TaskContext::ReleaseRecognizer()
-{
-    if (m_pRecognizer != NULL)
-    {
+void TaskContext::ReleaseRecognizer() {
+    if (m_pRecognizer != NULL) {
         m_pRecognizer->Release();
         delete m_pRecognizer;
         m_pRecognizer = NULL;
-    }
-    else
-    {
+    } else {
         LOGW("recognizer is NULL");
     }
 }
 
-void TaskContext::SetStateFirst(ETaskExecState eState)
-{
+void TaskContext::SetStateFirst(ETaskExecState eState) {
     m_stState.eTaskExecState = eState;
 }
 
-void TaskContext::SetStateSecond(bool bState)
-{
+void TaskContext::SetStateSecond(bool bState) {
     m_stState.bState = bState;
 }
 
-void TaskContext::SetLevel(int nLevel)
-{
+void TaskContext::SetLevel(int nLevel) {
     m_nLevel = nLevel;
 }
 
-void TaskContext::SetOverload(int nOverLoad)
-{
+void TaskContext::SetOverload(int nOverLoad) {
     m_nOverload = nOverLoad;
 }
 
-void TaskContext::SetParam(const CTaskParam &stParms)
-{
+void TaskContext::SetParam(const CTaskParam &stParms) {
     m_stParms = stParms;
 }
 
-bool TaskContext::Process(tagRuntimeVar stRuntimeVar)
-{
-//    LOGI("exec process............... %d", stRuntimeVar.nFrameSeq);
-    if (m_pRecognizer != NULL)
-    {
+bool TaskContext::Process(tagRuntimeVar stRuntimeVar) {
+    //    LOGI("exec process............... %d", stRuntimeVar.nFrameSeq);
+    if (m_pRecognizer != NULL) {
         // 设置参数
         tagRegData stRegData;
         stRegData.nFrameIdx = stRuntimeVar.nFrameSeq;
-        stRegData.oSrcImg   = stRuntimeVar.oSrcImage;
+        stRegData.oSrcImg = stRuntimeVar.oSrcImage;
 
         CTaskResult oTaskResult;
         oTaskResult.SetTaskID(stRuntimeVar.nTaskID);
         IRegResult *pRegResult = oTaskResult.GetInstance(m_stParms.GetType());
-//        printf("address:%p\n", pRegResult);
-        if (pRegResult == NULL)
-        {
-            LOGW("get instance failed, FrameIdx: %d, taskID: %d", stRuntimeVar.nFrameSeq, stRuntimeVar.nTaskID);
+        //        printf("address:%p\n", pRegResult);
+        if (pRegResult == NULL) {
+            LOGW("get instance failed, FrameIdx: %d, taskID: %d",
+                stRuntimeVar.nFrameSeq, stRuntimeVar.nTaskID);
             return false;
         }
 
         // 识别器执行检测
         int nRst = m_pRecognizer->Predict(stRegData, pRegResult);
-        if (-1 == nRst)
-        {
+        if (-1 == nRst) {
             pRegResult->m_nFrameIdx = stRuntimeVar.nFrameSeq;
-            LOGE("predict failed, FrameIdx: %d, taskID: %d", stRuntimeVar.nFrameSeq, stRuntimeVar.nTaskID);
+            LOGE("predict failed, FrameIdx: %d, taskID: %d",
+                stRuntimeVar.nFrameSeq, stRuntimeVar.nTaskID);
             // return false;
         }
 
         // 将结果push到线程安全队列
         g_oTaskResultQueue.Push(oTaskResult);
         LOGD("task finish, FrameIdx: %d, taskID: %d", stRuntimeVar.nFrameSeq, stRuntimeVar.nTaskID);
-    }
-    else
-    {
+    } else {
         LOGW("recognizer is null, please check, taskID: %d", stRuntimeVar.nTaskID);
     }
 
-//    LOGI("end process............... %d", stRuntimeVar.nFrameSeq);
+    //    LOGI("end process............... %d", stRuntimeVar.nFrameSeq);
     return true;
 }

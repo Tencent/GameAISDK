@@ -1,39 +1,34 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
-import time
 import os
-import configparser
-import json
+import time
 
-import numpy as np
 import cv2
-
-from actionmanager import ActionController
+import numpy as np
 from AgentAPI import AgentAPIMgr
+from actionmanager import ActionController
 from util import util
+
 from .GameEnv import GameEnv
 
-
 ACTION_CFG_FILE = 'cfg/task/agent/DQNAction.json'
-ENV_CFG_FILE = 'cfg/task/agent/DQNEnv.ini'
+LEARNING_CFG_FILE = 'cfg/task/agent/DQNLearning.json'
 TASK_CFG_FILE = 'cfg/task/gameReg/Task.json'
 
 REG_GROUP_ID = 1
-
-BEGIN_TASK_ID = 1
-WIN_TASK_ID = 2
-LOSE_TASK_ID = 3
-DATA_TASK_ID = 4
-
 GAME_STATE_INVALID = 0
 GAME_STATE_RUN = 1
 GAME_STATE_WIN = 2
 GAME_STATE_LOSE = 3
+
 
 class DQNEnv(GameEnv):
     """
@@ -49,6 +44,11 @@ class DQNEnv(GameEnv):
         self.Reset()
         self.__agentAPI = AgentAPIMgr.AgentAPIMgr()
         self.__frameIndex = -1
+        self.__isTerminal = False
+        self.__gameState = None
+        self.__lastRewardScore = 0
+        self.__scoreRepeatedTimes = 0
+        self.__lastScore = 0
 
     def Init(self):
         """
@@ -108,20 +108,21 @@ class DQNEnv(GameEnv):
         """
         Return (s, r, t): game image, reward, terminal
         """
-
-        #get game data , image and state
-        gameInfo = self._GetGameInfo()
-        data = gameInfo['result'].get(DATA_TASK_ID)[0]['num']
-        image = gameInfo['image']
-        self.__frameIndex = gameInfo['frameSeq']
+        game_info = self._GetGameInfo()
+        data = game_info['result'].get(self.__scoreTaskID)[0]['num']
+        image = game_info['image']
+        self.__frameIndex = game_info['frameSeq']
         state = self.__gameState
 
-        imgHeight = image.shape[0]
-        imgWidth = image.shape[1]
+        img_height = image.shape[0]
+        img_width = image.shape[1]
+
+        self.logger.debug("the width %d and the height %d of real image", img_width, img_height)
+        self.__actionController.SetSolution(img_width, img_height)
 
         img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         img = img[self.__beginRow:self.__endRow, self.__beginColumn:self.__endColumn]
-        if imgWidth < imgHeight:
+        if img_width < img_height:
             img = cv2.transpose(img)
             img = cv2.flip(img, 1)
 
@@ -180,31 +181,8 @@ class DQNEnv(GameEnv):
         """
         return self.__isTerminal
 
-    def _GetBtnState(self, resultDict, taskID):
-        state = False
-        px = -1
-        py = -1
-        regResults = resultDict.get(taskID)
-        if regResults is None:
-            return (state, px, py)
-
-        for item in regResults:
-            flag = item['flag']
-            if flag:
-                x = item['boxes'][0]['x']
-                y = item['boxes'][0]['y']
-                w = item['boxes'][0]['w']
-                h = item['boxes'][0]['h']
-
-                state = True
-                px = int(x + w/2)
-                py = int(y + h/2)
-                break
-
-        return (state, px, py)
 
     def _GetGameInfo(self):
-        gameInfo = None
 
         while True:
             gameInfo = self.__agentAPI.GetInfo(AgentAPIMgr.GAME_RESULT_INFO)
@@ -213,28 +191,29 @@ class DQNEnv(GameEnv):
                 continue
 
             result = gameInfo['result']
+            self.logger.debug('The result of game reg is {0}'.format(result))
             if result is None:
                 time.sleep(0.002)
                 continue
 
-            flag, _, _ = self._GetBtnState(result, BEGIN_TASK_ID)
+            flag, _, _ = util.get_button_state(result, self.__startTaskID)
             if flag is True:
                 self.__gameState = GAME_STATE_RUN
-                self.logger.debug('frameindex = {0}, detect begin'.format(gameInfo['frameSeq']))
+                self.logger.debug('frameindex = %d, detect begin', gameInfo['frameSeq'])
 
-            flag, _, _ = self._GetBtnState(result, WIN_TASK_ID)
+            flag, _, _ = util.get_button_state(result, self.__winTaskID)
             if flag is True:
                 self.__gameState = GAME_STATE_WIN
-                self.logger.debug('frameindex = {0}, detect win'.format(gameInfo['frameSeq']))
+                self.logger.debug('frameindex = %d, detect win', gameInfo['frameSeq'])
 
-            flag, _, _ = self._GetBtnState(result, LOSE_TASK_ID)
+            flag, _, _ = util.get_button_state(result, self.__loseTaskID)
             if flag is True:
                 self.__gameState = GAME_STATE_LOSE
-                self.logger.debug('frameindex = {0}, detect lose'.format(gameInfo['frameSeq']))
+                self.logger.debug('frameindex = %d, detect lose', gameInfo['frameSeq'])
 
             data = None
-            if result.get(DATA_TASK_ID) is not None:
-                data = result.get(DATA_TASK_ID)[0]
+            if result.get(self.__scoreTaskID) is not None:
+                data = result.get(self.__scoreTaskID)[0]
 
             if data is None:
                 time.sleep(0.002)
@@ -242,38 +221,63 @@ class DQNEnv(GameEnv):
             else:
                 break
 
+        self.update_scene_task(result, self.__actionController.get_action_dict(), self.__agentAPI)
         return gameInfo
 
     def _LoadEnvParams(self):
         if os.path.exists(self.__envCfgFile):
-            config = configparser.ConfigParser()
-            config.read(self.__envCfgFile)
-
-            self.__beginColumn = config.getint('IMAGE_ROI', 'StartX')
-            self.__beginRow = config.getint('IMAGE_ROI', 'StartY')
-            self.__cutWidth = config.getint('IMAGE_ROI', 'Width')
-            self.__cutHeight = config.getint('IMAGE_ROI', 'Height')
+            config = util.get_configure(self.__envCfgFile)
+            self.__beginColumn = config['roiRegion']['region']['x']
+            self.__beginRow = config['roiRegion']['region']['y']
+            self.__cutWidth = config['roiRegion']['region']['w']
+            self.__cutHeight = config['roiRegion']['region']['h']
             self.__endColumn = self.__beginColumn + self.__cutWidth
             self.__endRow = self.__beginRow + self.__cutHeight
 
-            self.__initScore = config.getfloat('REWARD_RULE', 'InitScore')
-            self.__maxScoreRepeatedTimes = config.getint('REWARD_RULE', 'MaxScoreRepeatedTimes')
-            self.__rewardOverRepeated = config.getfloat('REWARD_RULE', 'RewardOverRepeatedTimes')
+            self.__initScore = config['excitationFunction']['initScore']
+            self.__maxScoreRepeatedTimes = config['excitationFunction']['maxScoreRepeatedTimes']
+            self.__rewardOverRepeated = config['excitationFunction']['rewardOverRepeatedTimes']
 
-            self.__winReward = config.getfloat('REWARD_RULE', 'WinReward')
-            self.__loseReward = config.getfloat('REWARD_RULE', 'LoseReward')
+            self.__winReward = config['excitationFunction']['winReward']
+            self.__loseReward = config['excitationFunction']['loseReward']
 
-            self.__maxRunningReward = config.getfloat('REWARD_RULE', 'MaxRunningReward')
-            self.__minRunningReward = config.getfloat('REWARD_RULE', 'MinRunningReward')
-            self.__rewardPerPostive = config.getfloat('REWARD_RULE', 'RewardPerPostiveSection')
-            self.__rewardPerNegtive = config.getfloat('REWARD_RULE', 'RewardPerNegtiveSection')
-            self.__scorePerSection = config.getfloat('REWARD_RULE', 'ScorePerSection')
+            self.__maxRunningReward = config['excitationFunction']['maxRunningReward']
+            self.__minRunningReward = config['excitationFunction']['minRunningReward']
+            self.__rewardPerPostive = config['excitationFunction']['rewardPerPostiveSection']
+            self.__rewardPerNegtive = config['excitationFunction']['rewardPerNegtiveSection']
+            self.__scorePerSection = config['excitationFunction']['scorePerSection']
+            self.__scoreTaskID = config['excitationFunction']['scoreTaskID']
+            self.__winTaskID = config['excitationFunction']['winTaskID']
+            self.__loseTaskID = config['excitationFunction']['loseTaskID']
+            self.__startTaskID = config['excitationFunction']['startTaskID']
+
+            self.logger.debug("__beginColumn is %d", self.__beginColumn)
+            self.logger.debug("__beginRow is %d", self.__beginRow)
+            self.logger.debug("__cutWidth is %d", self.__cutWidth)
+            self.logger.debug("__cutHeight is %d", self.__cutHeight)
+            self.logger.debug("__endColumn is %d", self.__endColumn)
+            self.logger.debug("__endRow is %d", self.__endRow)
+
+            self.logger.debug("__initScore is %s", str(self.__initScore))
+            self.logger.debug("__maxScoreRepeatedTimes is %s", str(self.__maxScoreRepeatedTimes))
+            self.logger.debug("__rewardOverRepeated is %s", str(self.__rewardOverRepeated))
+            self.logger.debug("__winReward is %s", str(self.__winReward))
+            self.logger.debug("__loseReward is %s", str(self.__loseReward))
+            self.logger.debug("__maxRunningReward is %s", str(self.__maxRunningReward))
+            self.logger.debug("__minRunningReward is %s", str(self.__minRunningReward))
+            self.logger.debug("__rewardPerPostive is %s", str(self.__rewardPerPostive))
+            self.logger.debug("__rewardPerNegtive is %s", str(self.__rewardPerNegtive))
+            self.logger.debug("__scorePerSection is %s", str(self.__scorePerSection))
+            self.logger.debug("__scoreTaskID is %s", str(self.__scoreTaskID))
+            self.logger.debug("__winTaskID is %s", str(self.__winTaskID))
+            self.logger.debug("__loseTaskID is %s", str(self.__loseTaskID))
+            self.logger.debug("__startTaskID is %s", str(self.__startTaskID))
         else:
             self.logger.error('dqn_env cfg file not exist.')
 
     def _CaculateReward(self, curScore):
         reward = 0
-
+        self.logger.debug("the curScore is %s and lastRewardScore is %s", str(curScore), str(self.__lastRewardScore))
         if abs(curScore - self.__lastRewardScore) >= self.__scorePerSection:
             if curScore > self.__lastRewardScore:
                 sections = int((curScore - self.__lastRewardScore)/self.__scorePerSection)
@@ -298,9 +302,10 @@ class DQNEnv(GameEnv):
 
         self.__lastScore = curScore
 
+        self.logger.debug("the reward is %s", str(reward))
         return reward
 
     def _LoadCfgFilePath(self):
         self.__actionCfgFile = util.ConvertToSDKFilePath(ACTION_CFG_FILE)
-        self.__envCfgFile = util.ConvertToSDKFilePath(ENV_CFG_FILE)
+        self.__envCfgFile = util.ConvertToSDKFilePath(LEARNING_CFG_FILE)
         self.__recognizeCfgFile = util.ConvertToSDKFilePath(TASK_CFG_FILE)

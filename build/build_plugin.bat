@@ -1,6 +1,6 @@
 @echo ------------------------------------- build plugin start -------------------
 
 @rd /s /Q  ..\bin\PlugIn
-@python CompilePy3Pyc.py ../src/PlugIn/  ../bin/PlugIn/
+xcopy ..\src\PlugIn\*  ..\bin\PlugIn\* /E
 
 @echo ------------------------------------- build plugin end -------------------

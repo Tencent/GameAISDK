@@ -1,39 +1,44 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef UI_DEFINE_H_
-#define UI_DEFINE_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_UI_UIDEFINE_H_
+#define GAME_AI_SDK_IMGPROC_UI_UIDEFINE_H_
 
 
 #ifndef GAME_DEBUG_DUMP_UI
 #define GAME_DEBUG_DUMP_UI 1
-#endif // GAME_DEBUG_DUMP_UI
+#endif  // GAME_DEBUG_DUMP_UI
 
 #ifdef LINUX
 #define GAME_UI_SAMPLE_DATA_PATH "data/sample/"
 #else
 #define GAME_UI_SAMPLE_DATA_PATH "../../../Data/"
-#endif // LINUX
+#endif  // LINUX
 
 #ifndef GAME_UI_CHECK_INTERVAL
 #if NO_TBUS
 #define GAME_UI_CHECK_INTERVAL 40
 #else
 #define GAME_UI_CHECK_INTERVAL 20
-#endif // NO_TBUS
-#endif // GAME_UI_CHECK_INTERVAL
+#endif  // NO_TBUS
+#endif  // GAME_UI_CHECK_INTERVAL
 
-#define UI_PLATFORM_CFG "../cfg/platform/UI.ini"
+#define UI_PLATFORM_CFG "cfg/platform/UI.ini"
 
 #define UI_TASK_CFG_FILE "cfg/task/ui/UIConfig.json"
 
-#define GAME_DATA_ENV_VAR      "AI_SDK_PATH"
-#define TBUS_CONFIG_FILE       "../cfg/platform/bus.ini"
-#define UI_TBUS_ADDR_NAME      "UI1Addr"
-#define SDKTOOL_TBUS_ADDR_NAME "SDKToolAddr"
+#define GAME_DATA_ENV_VAR        "AI_SDK_PATH"
+#define SYS_CONFIG_DIR           ".."
+#define DEFAULT_USER_CONFIG_DIR  "../tools/SDKTool/project/TTKP"
+#define TBUS_CONFIG_FILE         "cfg/platform/bus.ini"
+#define UI_TBUS_ADDR_NAME        "UI1Addr"
+#define SDKTOOL_TBUS_ADDR_NAME   "SDKToolAddr"
 
 
 #define DEFAULT_UI_LOG_FILE "../log/UIRecognize/UIRecognize.log"
@@ -41,15 +46,15 @@
 
 #ifndef GAME_UI_DIALOG_CHECK_INTERVAL_UI
 #define GAME_UI_DIALOG_CHECK_INTERVAL_UI (GAME_UI_CHECK_INTERVAL / 4)
-#endif // GAME_UI_DIALOG_CHECK_INTERVAL_UI
+#endif  // GAME_UI_DIALOG_CHECK_INTERVAL_UI
 
 #ifndef GAME_UI_DIALOG_CHECK_INTERVAL_AI
 #define GAME_UI_DIALOG_CHECK_INTERVAL_AI (GAME_UI_CHECK_INTERVAL * 4)
-#endif // GAME_UI_DIALOG_CHECK_INTERVAL_AI
+#endif  // GAME_UI_DIALOG_CHECK_INTERVAL_AI
 
 #ifndef GAME_UI_DIALOG_ID
 #define GAME_UI_DIALOG_ID 0x80000000
-#endif // GAME_UI_DIALOG_ID
+#endif  // GAME_UI_DIALOG_ID
 
 #define GAME_UI_DIALOG_SIZE_RATIO   0.8f
 #define GAME_UI_DIALOG_BLOCK_WIDTH  8
@@ -75,39 +80,39 @@
 
 #ifndef GAME_UI_TEMPLATE_NUM
 #define GAME_UI_TEMPLATE_NUM 32
-#endif // GAME_UI_TEMPLATE_NUM
+#endif  // GAME_UI_TEMPLATE_NUM
 
 #ifndef GAME_UI_SCRIPT_TASK_NUM
 #define GAME_UI_SCRIPT_TASK_NUM 20
-#endif // GAME_UI_SCRIPT_TASK_NUM
+#endif  // GAME_UI_SCRIPT_TASK_NUM
 
 
 #define NUM_CAND_NUM 2
 
 #ifndef GAME_UI_TEMPLATE_NUM
 #define GAME_UI_TEMPLATE_NUM 32
-#endif // GAME_UI_TEMPLATE_NUM
+#endif  // GAME_UI_TEMPLATE_NUM
 
 #ifndef GAME_UI_SCRIPT_TASK_NUM
 #define GAME_UI_SCRIPT_TASK_NUM 20
-#endif // GAME_UI_SCRIPT_TASK_NUM
+#endif  // GAME_UI_SCRIPT_TASK_NUM
 
 #ifndef GAME_TEMPLATE_THRESHOLD
 #define GAME_TEMPLATE_THRESHOLD 0.7f
-#endif // GAME_TEMPLATE_THRESHOLD
+#endif  // GAME_TEMPLATE_THRESHOLD
 
 #define NUM_CAND_NUM 2
 
 #ifndef GAME_UI_TEMPLATE_NUM
 #define GAME_UI_TEMPLATE_NUM 32
-#endif // GAME_UI_TEMPLATE_NUM
+#endif  // GAME_UI_TEMPLATE_NUM
 
 #ifndef GAME_UI_SCRIPT_TASK_NUM
 #define GAME_UI_SCRIPT_TASK_NUM 20
-#endif // GAME_UI_SCRIPT_TASK_NUM
+#endif  // GAME_UI_SCRIPT_TASK_NUM
 
 #ifndef GAME_TEMPLATE_THRESHOLD
 #define GAME_TEMPLATE_THRESHOLD 0.7f
-#endif // GAME_TEMPLATE_THRESHOLD
+#endif  // GAME_TEMPLATE_THRESHOLD
 
-#endif // UI_DEFINE_H_
+#endif  // GAME_AI_SDK_IMGPROC_UI_UIDEFINE_H_

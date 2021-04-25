@@ -3,9 +3,9 @@ if exist ..\src\ImgProc (
     ..\Modules\protobuf\Windows\x64\bin\protoc -I ../protocol --cpp_out ../src/ImgProc/Protobuf/ ../protocol/gameregProtoc.proto
 )
 
-if exist ..\tools\SDKTool\libs\AgentAPI\protocol (
-    ..\Modules\protobuf\Windows\x64\bin\protoc -I ../protocol --python_out ../tools/SDKTool/libs/AgentAPI/protocol/ ../protocol/common.proto
-    ..\Modules\protobuf\Windows\x64\bin\protoc -I ../protocol --python_out ../tools/SDKTool/libs/AgentAPI/protocol/ ../protocol/gameregProtoc.proto
+if exist ..\tools\SDKTool\src\communicate\protocol (
+    ..\Modules\protobuf\Windows\x64\bin\protoc -I ../protocol --python_out ../tools/SDKTool/src/communicate/protocol/ ../protocol/common.proto
+    ..\Modules\protobuf\Windows\x64\bin\protoc -I ../protocol --python_out ../tools/SDKTool/src/communicate/protocol/ ../protocol/gameregProtoc.proto
 )
 
 ..\Modules\protobuf\Windows\x64\bin\protoc -I ../protocol --python_out ../src/ManageCenter/pyManageCenter/protocol/ ../protocol/common.proto

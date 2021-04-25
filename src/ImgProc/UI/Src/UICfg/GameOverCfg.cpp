@@ -1,22 +1,23 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/Os/TqcOs.h"
 #include "UI/Src/UICfg/GameOverCfg.h"
 
-bool ReadClickActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiState)
-{
+bool ReadClickActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiState) {
     puiState->actionType = UI_ACTION_CLICK;
     int nLen = 0;
     // x position of click in the image.
     // memset(buf, 0, TQC_PATH_STR_LEN);
     char buf[TQC_PATH_STR_LEN] = { 0 };
-    bool bRst                  = pConfig->GetArrayValue("gameOver", nIndex, "actionX", buf, &nLen, DATA_STR);
-    if (!bRst)
-    {
+    bool bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionX", buf, &nLen, DATA_STR);
+    if (!bRst) {
         LOGE("get state description failed. gameOver actionX: %d", nIndex);
         return false;
     }
@@ -25,8 +26,7 @@ bool ReadClickActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiS
     puiState->stAction1.nActionX = atoi(buf);
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionY", buf, &nLen, DATA_STR);
-    if (!bRst)
-    {
+    if (!bRst) {
         LOGE("get state description failed. gameOver actionY: %d", nIndex);
         return false;
     }
@@ -34,61 +34,54 @@ bool ReadClickActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiS
     puiState->stAction1.nActionY = atoi(buf);
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionThreshold", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction1.fActionThreshold = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdWPixel", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction1.nTmplExpdWPixel = atoi(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdHPixel", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction1.nTmplExpdHPixel = atoi(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdWRatio", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction1.fROIExpdWRatio = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdHRatio", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction1.fROIExpdHRatio = atof(buf);
     }
 
     // LOGD("x, y: %d, %d", uiState.stAction1.nXAction, uiState.stAction1.nActionY);
     LOGI("index: %d, id: %d, x, y: %d, %d, %f, %d, %d, %f, %f",
-         nIndex, puiState->nId, puiState->stAction1.nActionX, puiState->stAction1.nActionY,
-         puiState->stAction1.fActionThreshold, puiState->stAction1.nTmplExpdWPixel,
-         puiState->stAction1.nTmplExpdHPixel, puiState->stAction1.fROIExpdWRatio,
-         puiState->stAction1.fROIExpdHRatio);
+        nIndex, puiState->nId, puiState->stAction1.nActionX, puiState->stAction1.nActionY,
+        puiState->stAction1.fActionThreshold, puiState->stAction1.nTmplExpdWPixel,
+        puiState->stAction1.nTmplExpdHPixel, puiState->stAction1.fROIExpdWRatio,
+        puiState->stAction1.fROIExpdHRatio);
 
     puiState->stAction2.nActionX = 0;
     puiState->stAction2.nActionY = 0;
     return true;
 }
 
-bool  ReadDragActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiState)
-{
+bool  ReadDragActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiState) {
     // For drag operation, we will set the start point and
     // end point. The drag is from (x1, y1) to (x2, y2).
     char buf[TQC_PATH_STR_LEN] = { 0 };
-    int  nLen                  = 0;
-    bool bRst                  = pConfig->GetArrayValue("gameOver", nIndex, "actionX1", buf, &nLen, DATA_STR);
+    int  nLen = 0;
+    bool bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionX1", buf, &nLen, DATA_STR);
 
-    if (!bRst)
-    {
+    if (!bRst) {
         LOGE("get state description failed. uiStates actionX1: %d", nIndex);
         delete pConfig;
         return false;
@@ -98,8 +91,7 @@ bool  ReadDragActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiS
     puiState->stAction1.nActionX = atoi(buf);
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionY1", buf, &nLen, DATA_STR);
-    if (!bRst)
-    {
+    if (!bRst) {
         LOGE("get state description failed. uiStates actionY1: %d", nIndex);
         delete pConfig;
         return false;
@@ -109,43 +101,41 @@ bool  ReadDragActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiS
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionThreshold1", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction1.fActionThreshold = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdWPixel1", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdWPixel1",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction1.nTmplExpdWPixel = atoi(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdHPixel1", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdHPixel1",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction1.nTmplExpdHPixel = atoi(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdWRatio1", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdWRatio1",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction1.fROIExpdWRatio = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdHRatio1", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdHRatio1",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction1.fROIExpdHRatio = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionX2", buf, &nLen, DATA_STR);
-    if (!bRst)
-    {
+    if (!bRst) {
         LOGE("get state description failed. uiStates actionX2: %d", nIndex);
         delete pConfig;
         return false;
@@ -155,8 +145,7 @@ bool  ReadDragActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiS
     puiState->stAction2.nActionX = atoi(buf);
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionY2", buf, &nLen, DATA_STR);
-    if (!bRst)
-    {
+    if (!bRst) {
         LOGE("get state description failed. uiStates actionY2: %d", nIndex);
         delete pConfig;
         return false;
@@ -167,72 +156,65 @@ bool  ReadDragActionCfg(const int nIndex, CJsonConfig *pConfig, tagUIState *puiS
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionThreshold2", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         puiState->stAction2.fActionThreshold = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdWPixel2", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdWPixel2",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction2.nTmplExpdWPixel = atoi(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdHPixel2", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionTmplExpdHPixel2",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction2.nTmplExpdHPixel = atoi(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdWRatio2", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdWRatio2",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction2.fROIExpdWRatio = atof(buf);
     }
 
     memset(buf, 0, TQC_PATH_STR_LEN);
-    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdHRatio2", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    bRst = pConfig->GetArrayValue("gameOver", nIndex, "actionROIExpdHRatio2",
+        buf, &nLen, DATA_STR);
+    if (bRst) {
         puiState->stAction2.fROIExpdHRatio = atof(buf);
     }
 
     return true;
 }
 
-bool ReadActionCfg(const char *pszActionType, const int nIndex,  CJsonConfig *pConfig, tagUIState *puiState)
-{
-    if (strstr(pszActionType, "click"))
-    {
+bool ReadActionCfg(const char *pszActionType, const int nIndex, CJsonConfig *pConfig,
+    tagUIState *puiState) {
+    if (strstr(pszActionType, "click")) {
         return ReadClickActionCfg(nIndex, pConfig, puiState);
-    }
-    else if (strstr(pszActionType, "drag"))
-    {
+    } else if (strstr(pszActionType, "drag")) {
         return ReadDragActionCfg(nIndex, pConfig, puiState);
     }
 
     return false;
 }
 
-CGameOverCfg::CGameOverCfg()
-{
+CGameOverCfg::CGameOverCfg() {
     m_stateArr.clear();
     m_nCheckInterval = GAME_UI_CHECK_INTERVAL / 2;
 }
 
-CGameOverCfg::~CGameOverCfg()
-{}
+CGameOverCfg::~CGameOverCfg() {
+}
 
-bool CGameOverCfg::Initialize(const char *pszRootDir, const char *pszCftPath)
-{
+bool CGameOverCfg::Initialize(const char *pszRootDir, const char *pszCftPath) {
     CJsonConfig *pConfig = new CJsonConfig();
 
     // Cannot create json config parser.
-    if (pConfig == NULL)
-    {
+    if (pConfig == NULL) {
         LOGE("Cannot create json config parser.");
         return false;
     }
@@ -240,8 +222,7 @@ bool CGameOverCfg::Initialize(const char *pszRootDir, const char *pszCftPath)
     char szPath[TQC_PATH_STR_LEN] = { 0 };
     SNPRINTF(szPath, TQC_PATH_STR_LEN, "%s/%s", pszRootDir, pszCftPath);
     // Check if UI config file exists.
-    if (!IsFileExist(szPath))
-    {
+    if (!IsFileExist(szPath)) {
         LOGE("ui configuration  file %s is not exist", szPath);
         delete pConfig;
         return false;
@@ -249,8 +230,7 @@ bool CGameOverCfg::Initialize(const char *pszRootDir, const char *pszCftPath)
 
     // Load UI config file.
     bool bRst = pConfig->loadFile(szPath);
-    if (!bRst)
-    {
+    if (!bRst) {
         LOGE("Load file %s failed", szPath);
         delete pConfig;
         return false;
@@ -261,30 +241,26 @@ bool CGameOverCfg::Initialize(const char *pszRootDir, const char *pszCftPath)
     return bRst;
 }
 
-bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
-{
+bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig) {
     int  nSize = pConfig->GetArraySize("gameOver");
-    int  nLen  = 0;
+    int  nLen = 0;
     char buf[TQC_PATH_STR_LEN];
     bool bRst = false;
 
     // There is no game over state.
-    if (nSize <= 0)
-    {
+    if (nSize <= 0) {
         LOGI("There is no game over state.");
         return true;
     }
 
     // Parse each of game over states.
-    for (int i = 0; i < nSize; i++)
-    {
+    for (int i = 0; i < nSize; i++) {
         tagUIState uiState;
 
         // Description of game over.
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "desc", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed. gameOver desc: %d", i);
             // delete pConfig;
             return false;
@@ -295,8 +271,7 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         memcpy(uiState.strStateName, buf, nLen);
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "id", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed. gameOver id: %d", i);
             // delete pConfig;
             return false;
@@ -308,15 +283,13 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         // "actionSleepTimeMs"
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "actionSleepTimeMs", buf, &nLen, DATA_STR);
-        if (bRst)
-        {
+        if (bRst) {
             uiState.nActionSleepTimeMs = atoi(buf);
         }
 
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "imgPath", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed.  gameOver imgPath: %d", i);
             // delete pConfig;
             return false;
@@ -327,19 +300,17 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         SNPRINTF(uiState.strSampleFile, TQC_PATH_STR_LEN, "%s/%s", pszRootDir, buf);
 
         cv::Mat oImage = cv::imread(uiState.strSampleFile);
-        if (!oImage.empty())
-        {
+        if (!oImage.empty()) {
             uiState.sampleImg = oImage;
         }
 
         // memcpy(uiState.strSampleFile, buf, nLen);
         // uiState.bUseTempMatch = true;
         uiState.nTemplate = 1;
-        uiState.tempOp    = UI_TEMPLATE_AND;
+        uiState.tempOp = UI_TEMPLATE_AND;
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "x", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed. gameOver x: %d", i);
             return false;
         }
@@ -347,8 +318,7 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         uiState.szTemplState[0].stTemplParam.nSampleX = atoi(buf);
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "y", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed. gameOver y: %d", i);
             return false;
         }
@@ -356,8 +326,7 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         uiState.szTemplState[0].stTemplParam.nSampleY = atoi(buf);
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "w", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed. gameOver w: %d", i);
             return false;
         }
@@ -366,8 +335,7 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         uiState.szTemplState[0].stTemplParam.nSampleW = atoi(buf);
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "h", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get state description failed. gameOver h: %d", i);
             // delete pConfig;
             return false;
@@ -388,8 +356,7 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         // read threshold
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "templateThreshold", buf, &nLen, DATA_STR);
-        if (bRst)
-        {
+        if (bRst) {
             uiState.szTemplState[0].stTemplParam.fThreshold = atof(buf);
         }
 
@@ -399,22 +366,19 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
         // Set action during time.
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "during", buf, &nLen, DATA_STR);
-        if (bRst)
-        {
+        if (bRst) {
             uiState.nActionDuringTime = atoi(buf);
         }
 
         memset(buf, 0, TQC_PATH_STR_LEN);
         bRst = pConfig->GetArrayValue("gameOver", i, "actionType", buf, &nLen, DATA_STR);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("get UI %d gameOver actionType failed", i);
             return false;
         }
 
         bRst = ReadActionCfg(buf, i, pConfig, &uiState);
-        if (!bRst)
-        {
+        if (!bRst) {
             LOGE("read UI %d action config failed", i);
             return false;
         }
@@ -443,15 +407,11 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
 
     memset(buf, 0, TQC_PATH_STR_LEN);
     bRst = pConfig->GetConfValue("checkInterVal", buf, &nLen, DATA_STR);
-    if (bRst)
-    {
+    if (bRst) {
         int nInterval = atof(buf);
-        if (nInterval == 0)
-        {
+        if (nInterval == 0) {
             LOGE("can not set checkInterVal as 0");
-        }
-        else
-        {
+        } else {
             m_nCheckInterval = nInterval;
         }
     }
@@ -460,17 +420,14 @@ bool CGameOverCfg::ReadGameOverCfg(const char *pszRootDir, CJsonConfig *pConfig)
     return true;
 }
 
-UIStateArray CGameOverCfg::GetState()
-{
+UIStateArray CGameOverCfg::GetState() {
     return m_stateArr;
 }
 
-void CGameOverCfg::SetState(const UIStateArray &oVecStateArr)
-{
+void CGameOverCfg::SetState(const UIStateArray &oVecStateArr) {
     m_stateArr = oVecStateArr;
 }
 
-int CGameOverCfg::GetCheckInterval()
-{
+int CGameOverCfg::GetCheckInterval() {
     return m_nCheckInterval;
 }

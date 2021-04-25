@@ -1,16 +1,26 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
 import logging
 
 from common.CommonContext import IO_SERVICE_CONTEXT
-from common.Define import *
-from tools.SpeedCheck import IOSpeedCheck
+from common.Define import BASE_64_DECODE_IMG_SEND_TYPE, MSG_ID_UI_ACTION, ACTION_ID_NONE, UI_ACTION_CONTACT, \
+    ACTION_ID_CLICK, ACTION_ID_SWIPE, GAME_STATE_START, GAME_STATE_OVER, GAME_STATE_MATCH_WIN, GAME_STATE_UI, \
+    GAME_STATE_NONE, TASK_STATUS_NONE, TASK_STATUS_INIT_SUCCESS, TASK_STATUS_INIT_FAILURE, MSG_ID_CONTROL_REP, \
+    MSG_ID_CLIENT_REP, CLIENT_REP_CODE_OK, CLIENT_REP_CODE_INVALID_KEY, MSG_ID_SOURCE_RES, RESTART_RESULT_SUCCESS, \
+    RESTART_RESULT_FAILURE, MSG_ID_REPORT, MSG_ID_REGISTER, MSG_ID_UNREGISTER, MSG_ID_GAME_STATE, \
+    MSG_ID_AGENT_STATE, MSG_ID_AI_SERVICE_STATE, MSG_ID_NEW_TASK, MSG_ID_CONTROL_REQ, MSG_ID_CLIENT_DATA,\
+    MSG_ID_CLIENT_REQ, MSG_ID_CHANGE_GAME_STATE, MSG_ID_PAUSE, MSG_ID_RESTORE, MSG_ID_RESTART, MSG_ID_SOURCE_REQ, \
+    MSG_ID_CLIENT_UI_REQ, MSG_ID_RESTART_RESULT, MSG_ID_AI_TRAIN_SCHEDULE, ACTION_ID_RESET
 from protocol import common_pb2
+from tools.SpeedCheck import IOSpeedCheck
 
 LOG = logging.getLogger('IOService')
 
@@ -44,6 +54,7 @@ class MsgHandler(object):
         self._RegisterInnerMsgHandler(common_pb2.MSG_AGENT_STATE, self._OnAgentState)
         self._RegisterInnerMsgHandler(common_pb2.MSG_RESTART_RESULT, self._OnRestartResult)
         self._RegisterInnerMsgHandler(common_pb2.MSG_IM_TRAIN_STATE, self._OnIMTrainState)
+        self._RegisterInnerMsgHandler(common_pb2.MSG_PROJECT_SOURCE_RES, self._get_source_response)
 
         self._RegisterControlMsgHandler(MSG_ID_NEW_TASK, self._OnNewTask)
         self._RegisterControlMsgHandler(MSG_ID_CONTROL_REQ, self._OnControlReq)
@@ -54,6 +65,10 @@ class MsgHandler(object):
         self._RegisterClientMsgHandler(MSG_ID_PAUSE, self._OnPause)
         self._RegisterClientMsgHandler(MSG_ID_RESTORE, self._OnRestore)
         self._RegisterClientMsgHandler(MSG_ID_RESTART, self._OnRestart)
+
+        # 接收来自aiclient的获取source请求，处理完毕后返回信息给aiclient
+        self._RegisterClientMsgHandler(MSG_ID_SOURCE_REQ, self._get_source_info)
+
 
         self._RegisterHttpClientMsgHandler(MSG_ID_CLIENT_UI_REQ, self._OnHttpClietUIRequest)
 
@@ -90,7 +105,7 @@ class MsgHandler(object):
         :return:
         """
         msgBuff = self._CreatePBSrcImgMsg(frameSeq, frame, extend)
-        LOG.debug('send frame data, frameIndex={}'.format(frameSeq))
+        LOG.debug('send frame data, frameIndex=%s', frameSeq)
         self.__commMgr.SendToMC(msgBuff)
 
     def SendAIServiceStateToAIControl(self, serviceState):
@@ -100,7 +115,7 @@ class MsgHandler(object):
         :return:
         """
         msg_data = self._CreateAIServiceStateMsg(serviceState)
-        LOG.info('Send AIServiceState to AIControl, msg_data[{}]'.format(msg_data))
+        LOG.info('Send AIServiceState to AIControl, msg_data[%s]', msg_data)
         self.__controlSocket.Send(msg_data)
 
     def SendIMTrainStateToAIControl(self, progress):
@@ -110,7 +125,7 @@ class MsgHandler(object):
         :return:
         """
         msg_data = self._CreateIMTrainStateMsg(progress)
-        LOG.info('Send IMTrainState to AIControl, msg_data[{}]'.format(msg_data))
+        LOG.info('Send IMTrainState to AIControl, msg_data[%s]', msg_data)
         self.__controlSocket.Send(msg_data)
 
     def SendAIServiceStateToClient(self, serviceState):
@@ -120,7 +135,7 @@ class MsgHandler(object):
         :return:
         """
         msg_data = self._CreateAIServiceStateMsg(serviceState)
-        LOG.info('Send AIServiceState to Client, msg_data[{}]'.format(msg_data))
+        LOG.info('Send AIServiceState to Client, msg_data[%s]', msg_data)
         self.__clientSocket.Send(msg_data)
 
     def SendRegisterToAIControl(self):
@@ -129,7 +144,7 @@ class MsgHandler(object):
         :return:
         """
         msg_data = self._CreateServerRegisterMsg()
-        LOG.info('Send Register to AIControl, msg_data[{}]'.format(msg_data))
+        LOG.info('Send Register to AIControl, msg_data[%s]', msg_data)
         self.__controlSocket.Send(msg_data)
 
     def SendUnregisterToAIControl(self):
@@ -138,7 +153,7 @@ class MsgHandler(object):
         :return:
         """
         msg_data = self._CreateServiceUnregisterMsg()
-        LOG.info('Send Unregister to AIControl, msg_data[{}]'.format(msg_data))
+        LOG.info('Send Unregister to AIControl, msg_data[%s]', msg_data)
         self.__controlSocket.Send(msg_data)
 
     def _UpdateInnerMsg(self):
@@ -158,9 +173,10 @@ class MsgHandler(object):
             if handleFunc is not None:
                 handleFunc(msg)
             else:
-                LOG.warning('Unhandled MsgID[{0}]'.format(msg.eMsgID))
+                LOG.warning('Unhandled MsgID[%s]', msg.eMsgID)
 
-    def _ParsePBMsg(self, msgBuff):
+    @staticmethod
+    def _ParsePBMsg(msgBuff):
         msg = common_pb2.tagMessage()
         msg.ParseFromString(msgBuff)
         return msg
@@ -176,7 +192,7 @@ class MsgHandler(object):
             if handleFunc is not None:
                 handleFunc(msg)
             else:
-                LOG.warning('Unhandled CONTROL msgID[{0}]'.format(msgID))
+                LOG.warning('Unhandled CONTROL msgID[%s]', msgID)
 
     def _UpdateClientMsg(self):
         ret = False
@@ -193,7 +209,7 @@ class MsgHandler(object):
             if handleFunc is not None:
                 handleFunc(msg)
             else:
-                LOG.warning('Unhandled CLIENT msgID[{0}]'.format(msgID))
+                LOG.warning('Unhandled CLIENT msgID[%s]', msgID)
                 ret = False
 
         return ret
@@ -213,12 +229,13 @@ class MsgHandler(object):
             if handleFunc is not None:
                 handleFunc(msg)
             else:
-                LOG.warning('Unhandled Http Client msgID[{0}]'.format(msgID))
+                LOG.warning('Unhandled Http Client msgID[%s]', msgID)
                 ret = False
 
         return ret
 
-    def _OnHttpClietUIRequest(self, msg):
+    @staticmethod
+    def _OnHttpClietUIRequest(msg):
         try:
             key = msg['key']
             frameData = msg['image_data']
@@ -229,7 +246,7 @@ class MsgHandler(object):
             LOG.error('Wrong client data, {0}'.format(msg))
             return
 
-        LOG.debug('recv frame data, frameIndex={0}'.format(frameSeq))
+        LOG.debug('recv frame data, frameIndex=%s', frameSeq)
 
         if key == IO_SERVICE_CONTEXT['seesion_key']:
             IO_SERVICE_CONTEXT['frame'] = frameData
@@ -237,13 +254,13 @@ class MsgHandler(object):
             IO_SERVICE_CONTEXT['frame_seq'] = frameSeq
             IO_SERVICE_CONTEXT['extend'] = extend
         else:
-            LOG.warning('Recv invalid frame, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid frame, wrong key[%s]', key)
 
     def _OnAIAction(self, msg):
         frameSeq = msg.stAIAction.nFrameSeq
         actionData = msg.stAIAction.byAIActionBuff
 
-        LOG.debug('send action data, frameIndex={}'.format(frameSeq))
+        LOG.debug('send action data, frameIndex=%s', frameSeq)
         self.__speedCheck.AddSendAction(frameSeq)
         self.__clientSocket.Send(actionData)
 
@@ -262,16 +279,16 @@ class MsgHandler(object):
         msg_data['ui_id'] = msg.stUIAction.nUIID
         msg_data['actions'] = self._CreateUIActionList(msg)
 
-        LOG.info('Send UI action to ai client:{}'.format(msg_data))
+        LOG.info('Send UI action to ai client:%s', msg_data)
         self.__clientSocket.Send(msg_data)
 
         self._RecordGameState(gameState)
 
-        #report game state to asm
+        # report game state to asm
         msg_data = self._CreateTaskReportMsg()
         self.__controlSocket.Send(msg_data)
 
-        #report game state to aiclient
+        # report game state to aiclient
         msg_data = self._CreateGameStateMsg()
         self.__clientSocket.Send(msg_data)
 
@@ -287,18 +304,18 @@ class MsgHandler(object):
         self._RecordGameState(gameState)
         msg_data['game_state'] = IO_SERVICE_CONTEXT['game_state']
 
-        LOG.info('Send UI action to http client:{}'.format(msg_data))
+        LOG.info('Send UI action to http client:%s', msg_data)
         self.__httpClientConnect.Send(msg_data)
 
-        #report game state to asm
+        # report game state to asm
         msg_data = self._CreateTaskReportMsg()
         self.__controlSocket.Send(msg_data)
 
     def _CreateUIActionList(self, msg):
         actionList = list()
 
-        #when ui detect game over, add a reset action
-        #if IO_SERVICE_CONTEXT['io_service_type'] != 'HTTP':
+        # when ui detect game over, add a reset action
+        # if IO_SERVICE_CONTEXT['io_service_type'] != 'HTTP':
         gameState = msg.stUIAction.eGameState
         if gameState in [common_pb2.PB_STATE_OVER, common_pb2.PB_STATE_MATCH_WIN]:
             LOG.info('fork Reset action')
@@ -328,14 +345,15 @@ class MsgHandler(object):
                                              during_time=uiAction.nDuringTimeMs,
                                              wait_time=uiAction.nSleepTimeMs)
             else:
-                LOG.warning('Unhandled uiActionType[{0}]'.format(uiActionType))
+                LOG.warning('Unhandled uiActionType[%s]', uiActionType)
                 continue
 
             actionList.append(action)
 
         return actionList
 
-    def _RecordGameState(self, gameState):
+    @staticmethod
+    def _RecordGameState(gameState):
         if gameState == common_pb2.PB_STATE_START:
             LOG.info('GameState START')
             IO_SERVICE_CONTEXT['game_state'] = GAME_STATE_START
@@ -352,25 +370,21 @@ class MsgHandler(object):
             LOG.info('GameState NONE')
             IO_SERVICE_CONTEXT['game_state'] = GAME_STATE_NONE
         else:
-            LOG.warning('Unhandled GameState[{0}]'.format(gameState))
+            LOG.warning('Unhandled GameState[%s]', gameState)
             return
 
     def _OnServiceRegister(self, msg):
         regType = msg.stServiceRegister.eRegisterType
-        LOG.info('Recv ServiceRegister, regType[{}]'.format(regType))
+        LOG.info('Recv ServiceRegister, regType[%s]', regType)
         if regType == common_pb2.PB_SERVICE_REGISTER:
             pass
             # msg_data = self._CreateServerRegisterMsg()
         elif regType == common_pb2.PB_SERVICE_UNREGISTER:
             IO_SERVICE_CONTEXT['task_state'] = TASK_STATUS_NONE
-            # msg_data = self._CreateServiceUnregisterMsg()
-
-        # LOG.info('Send ServiceRegister to AIControl, msg_data[{}]'.format(msg_data))
-        # self.__controlSocket.Send(msg_data)
 
     def _OnTaskReport(self, msg):
         taskStatus = msg.stTaskReport.eTaskStatus
-        LOG.info('Recv TaskReport, taskStatus[{}]'.format(taskStatus))
+        LOG.info('Recv TaskReport, taskStatus[%s]', taskStatus)
         if taskStatus == common_pb2.PB_TASK_INIT_SUCCESS:
             IO_SERVICE_CONTEXT['task_state'] = TASK_STATUS_INIT_SUCCESS
         else:
@@ -378,7 +392,7 @@ class MsgHandler(object):
 
         if IO_SERVICE_CONTEXT['task_id'] is not None:
             msg_data = self._CreateTaskReportMsg()
-            LOG.info('Send TaskReport to AIControl, msg_data[{}]'.format(msg_data))
+            LOG.info('Send TaskReport to AIControl, msg_data[%s]', msg_data)
             self.__controlSocket.Send(msg_data)
         else:
             LOG.info('Waiting for NewTask')
@@ -392,23 +406,22 @@ class MsgHandler(object):
         stateID = msg.stAgentState.eAgentState
         stateStr = msg.stAgentState.strAgentState
         LOG.info('Recv MSG_AGENT_STATE msg, AgentState:'
-                 '{}/{}'.format(msg.stAgentState.eAgentState,
-                                msg.stAgentState.strAgentState))
+                 '%s/%s', msg.stAgentState.eAgentState, msg.stAgentState.strAgentState)
         msg_data = self._CreateAgentStateMsg(stateID, stateStr)
         self.__clientSocket.Send(msg_data)
 
     def _OnIMTrainState(self, msg):
         progress = msg.stIMTrainState.nProgress
-        LOG.info('Recv MSG_IM_TRAIN_STATE msg, progress: {}'.format(progress))
+        LOG.info('Recv MSG_IM_TRAIN_STATE msg, progress: %s', progress)
         self.SendIMTrainStateToAIControl(progress)
 
     def _OnNewTask(self, msg_data):
         IO_SERVICE_CONTEXT['task_id'] = msg_data['task_id']
         IO_SERVICE_CONTEXT['seesion_key'] = msg_data['key']
 
-        LOG.info('Recv NewTask, task_id[{}]'.format(msg_data['task_id']))
-        LOG.info('IO_SERVICE_CONTEXT Update task_id={0}'.format(msg_data['task_id']))
-        LOG.info('IO_SERVICE_CONTEXT Update seesion_key={0}'.format(msg_data['key']))
+        LOG.info('Recv NewTask, task_id[%s]', msg_data['task_id'])
+        LOG.info('IO_SERVICE_CONTEXT Update task_id=%s', msg_data['task_id'])
+        LOG.info('IO_SERVICE_CONTEXT Update seesion_key=%s', msg_data['key'])
 
         if IO_SERVICE_CONTEXT['task_id'] is not None:
             msgBuff = self._CreatePBNewTaskMsg()
@@ -416,7 +429,7 @@ class MsgHandler(object):
 
         if IO_SERVICE_CONTEXT['task_state'] != TASK_STATUS_NONE or IO_SERVICE_CONTEXT['test_mode']:
             msg_data = self._CreateTaskReportMsg()
-            LOG.info('Send TaskReport to AIControl, msg_data[{}]'.format(msg_data))
+            LOG.info('Send TaskReport to AIControl, msg_data[%s]', msg_data)
             self.__controlSocket.Send(msg_data)
         else:
             LOG.info('Waiting for TaskReport')
@@ -430,12 +443,12 @@ class MsgHandler(object):
             if frameType is None:
                 frameType = msg_data['send_img_type']
         except KeyError:
-            LOG.error('recv wrong client data, {0}'.format(msg_data))
+            LOG.error('recv wrong client data, %s', msg_data)
             return
 
         extend = msg_data.get('extend', 'null')
 
-        LOG.debug('recv frame data, frameIndex={0}'.format(frameSeq))
+        LOG.debug('recv frame data, frameIndex=%s', frameSeq)
 
         if key == IO_SERVICE_CONTEXT['seesion_key']:
             IO_SERVICE_CONTEXT['frame'] = frameData
@@ -444,17 +457,17 @@ class MsgHandler(object):
             IO_SERVICE_CONTEXT['frame_seq'] = frameSeq
             self.__speedCheck.AddRecvImg(frameSeq)
         else:
-            LOG.warning('Recv invalid frame, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid frame, wrong key[%s]', key)
 
     def _OnControlReq(self, msg_data):
-        LOG.info('Recv control req msg[{}]'.format(msg_data))
+        LOG.info('Recv control req msg[%s]', msg_data)
 
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_CONTROL_REP
         self.__controlSocket.Send(msg_data)
 
     def _OnClientReq(self, msg_data):
-        LOG.info('Recv client req msg[{}]'.format(msg_data))
+        LOG.info('Recv client req msg[%s]', msg_data)
         key = msg_data['key']
         testID = msg_data.get('test_id', None)
         gameID = msg_data.get('game_id', None)
@@ -465,24 +478,23 @@ class MsgHandler(object):
         if key == IO_SERVICE_CONTEXT['seesion_key']:
             msg_data['code'] = CLIENT_REP_CODE_OK
             if not isinstance(testID, str):
-                LOG.error('testID[{}] is not str'.format(testID))
+                LOG.error('testID[%s] is not str', testID)
             elif not isinstance(gameID, int):
-                LOG.error('gameID[{}] is not int'.format(gameID))
+                LOG.error('gameID[%s] is not int', gameID)
             elif not isinstance(gameVersion, str):
-                LOG.error('gameVersion[{}] is not str'.format(gameVersion))
+                LOG.error('gameVersion[%s] is not str', gameVersion)
             else:
                 msgBuff = self._CreatePBTestIDMsg(testID, gameID, gameVersion)
-                LOG.info('Send testID[{0}] gameID[{1}] gameVersion[{2}] to MC'.format(testID,
-                                                                                      gameID,
-                                                                                      gameVersion))
+                LOG.info('Send testID[%s] gameID[%s] gameVersion[%s] to MC', testID, gameID, gameVersion)
                 self.__commMgr.SendToMC(msgBuff)
         else:
             msg_data['code'] = CLIENT_REP_CODE_INVALID_KEY
-            LOG.warning('Recv invalid req, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid req, wrong key[%s]', key)
+        LOG.info("send the response to the ai client, msg_data:%s", msg_data)
         self.__clientSocket.Send(msg_data)
 
     def _OnChangeGameState(self, msg_data):
-        LOG.info('Recv client Change GameState msg[{}]'.format(msg_data))
+        LOG.info('Recv client Change GameState msg[%s]', msg_data)
         key = msg_data['key']
 
         if key == IO_SERVICE_CONTEXT['seesion_key']:
@@ -490,41 +502,60 @@ class MsgHandler(object):
             msgBuff = self._CreatePBChangeGameStateMsg()
             self.__commMgr.SendToMC(msgBuff)
         else:
-            LOG.warning('Recv invalid msg, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid msg, wrong key[%s]', key)
+
+    def _get_source_info(self, msg_data):
+        """ 发送source的信息给aiclient, 告诉当前环境信息
+        """
+        LOG.info('receive message from ai client msg[%s]', msg_data)
+        msg_buffer = self._create_pb_get_source_msg()
+        self.__commMgr.SendToMC(msg_buffer)
+
+    def _get_source_response(self, msg):
+        LOG.info('receive the source response from mc msg[%s]', msg)
+        msg_data = dict()
+        msg_data['msg_id'] = MSG_ID_SOURCE_RES
+        msg_data['device_type'] = msg.stSource.deviceType
+        msg_data['long_edge'] = msg.stSource.longEdge
+        msg_data['platform'] = msg.stSource.platform
+        msg_data['window_size'] = msg.stSource.windowsSize
+        msg_data['query_path'] = msg.stSource.queryPath
+        LOG.info('send the source response to ai client msg[%s]', msg_data)
+        self.__clientSocket.Send(msg_data)
 
     def _OnPause(self, msg_data):
-        LOG.info('Recv Pause msg[{}]'.format(msg_data))
+        LOG.info('Recv Pause msg[%s]', msg_data)
         key = msg_data['key']
 
         if key == IO_SERVICE_CONTEXT['seesion_key']:
             msgBuff = self._CreatePBPauseAgentMsg()
             self.__commMgr.SendToMC(msgBuff)
         else:
-            LOG.warning('Recv invalid msg, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid msg, wrong key[%s]', key)
 
     def _OnRestore(self, msg_data):
-        LOG.info('Recv Restore msg[{}]'.format(msg_data))
+        LOG.info('Recv Restore msg[%s]', msg_data)
         key = msg_data['key']
 
         if key == IO_SERVICE_CONTEXT['seesion_key']:
             msgBuff = self._CreatePBRestoreAgentMsg()
             self.__commMgr.SendToMC(msgBuff)
         else:
-            LOG.warning('Recv invalid msg, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid msg, wrong key[%s]', key)
 
     def _OnRestart(self, msg_data):
-        LOG.info('Recv Restart msg[{}]'.format(msg_data))
+        LOG.info('Recv Restart msg[%s]', msg_data)
         key = msg_data['key']
 
         if key == IO_SERVICE_CONTEXT['seesion_key']:
             msgBuff = self._CreatePBRestartMsg()
             self.__commMgr.SendToMC(msgBuff)
         else:
-            LOG.warning('Recv invalid msg, wrong key[{}]'.format(key))
+            LOG.warning('Recv invalid msg, wrong key[%s]', key)
 
     def _OnRestartResult(self, msg):
         result = msg.stRestartResult.eRestartResult
-        LOG.info('Recv MSG_RESTART_RESULT msg, Result:{}'.format(result))
+        LOG.info('Recv MSG_RESTART_RESULT msg, Result:%s', result)
 
         if result == common_pb2.PB_RESTART_RESULT_SUCCESS:
             msg_data = self._CreateRestartResultMsg(RESTART_RESULT_SUCCESS)
@@ -532,7 +563,8 @@ class MsgHandler(object):
             msg_data = self._CreateRestartResultMsg(RESTART_RESULT_FAILURE)
         self.__clientSocket.Send(msg_data)
 
-    def _CreateTaskReportMsg(self):
+    @staticmethod
+    def _CreateTaskReportMsg():
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_REPORT
         msg_data['task_id'] = IO_SERVICE_CONTEXT['task_id']
@@ -540,32 +572,44 @@ class MsgHandler(object):
         msg_data['game_state'] = IO_SERVICE_CONTEXT['game_state']
         return msg_data
 
-    def _CreateServerRegisterMsg(self):
+    @staticmethod
+    def _CreateServerRegisterMsg():
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_REGISTER
         msg_data['source_server_id'] = IO_SERVICE_CONTEXT['source_server_id']
         return msg_data
 
-    def _CreateServiceUnregisterMsg(self):
+    @staticmethod
+    def _CreateServiceUnregisterMsg():
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_UNREGISTER
         msg_data['source_server_id'] = IO_SERVICE_CONTEXT['source_server_id']
         return msg_data
 
-    def _CreateGameStateMsg(self):
+    @staticmethod
+    def _CreateGameStateMsg():
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_GAME_STATE
         msg_data['game_state'] = IO_SERVICE_CONTEXT['game_state']
         return msg_data
 
-    def _CreateAgentStateMsg(self, stateID, stateStr):
+    @staticmethod
+    def _CreateAgentStateMsg(stateID, stateStr):
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_AGENT_STATE
         msg_data['agent_state_id'] = stateID
         msg_data['agent_state_str'] = stateStr
         return msg_data
 
-    def _CreatePBSrcImgMsg(self, frameSeq, frame, extend, deviceIndex=0):
+    @staticmethod
+    def _create_source_info_message(content: dict):
+        msg_data = dict()
+        msg_data['msg_id'] = MSG_ID_SOURCE_RES
+        msg_data['source'] = content['source']
+        return msg_data
+
+    @staticmethod
+    def _CreatePBSrcImgMsg(frameSeq, frame, extend, deviceIndex=0):
         msg = common_pb2.tagMessage()
         # Fill the message
         msg.eMsgID = common_pb2.MSG_SRC_IMAGE_INFO
@@ -580,7 +624,15 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _CreatePBChangeGameStateMsg(self):
+    @staticmethod
+    def _create_pb_get_source_msg():
+        msg = common_pb2.tagMessage()
+        msg.eMsgID = common_pb2.MSG_PROJECT_SOURCE
+        msg_buff = msg.SerializeToString()
+        return msg_buff
+
+    @staticmethod
+    def _CreatePBChangeGameStateMsg():
         gameState = IO_SERVICE_CONTEXT['game_state']
 
         msg = common_pb2.tagMessage()
@@ -597,28 +649,31 @@ class MsgHandler(object):
         elif gameState == GAME_STATE_MATCH_WIN:
             msg.stChangeGameState.eGameState = common_pb2.PB_STATE_MATCH_WIN
         else:
-            LOG.warning('Unhandled GameState[{0}]'.format(gameState))
+            LOG.warning('Unhandled GameState[%s]', gameState)
             return
 
         # Serialize the message
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _CreateAIServiceStateMsg(self, serviceState):
+    @staticmethod
+    def _CreateAIServiceStateMsg(serviceState):
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_AI_SERVICE_STATE
         msg_data['source_server_id'] = IO_SERVICE_CONTEXT['source_server_id']
         msg_data['ai_service_state'] = serviceState
         return msg_data
 
-    def _CreateIMTrainStateMsg(self, progress):
+    @staticmethod
+    def _CreateIMTrainStateMsg(progress):
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_AI_TRAIN_SCHEDULE
         msg_data['source_server_id'] = IO_SERVICE_CONTEXT['source_server_id']
         msg_data['train_schedule'] = progress
         return msg_data
 
-    def _CreatePBPauseAgentMsg(self):
+    @staticmethod
+    def _CreatePBPauseAgentMsg():
         msg = common_pb2.tagMessage()
         # Fill the message
         msg.eMsgID = common_pb2.MSG_PAUSE_AGENT
@@ -627,7 +682,8 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _CreatePBRestoreAgentMsg(self):
+    @staticmethod
+    def _CreatePBRestoreAgentMsg():
         msg = common_pb2.tagMessage()
         # Fill the message
         msg.eMsgID = common_pb2.MSG_RESTORE_AGENT
@@ -636,7 +692,8 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _CreatePBRestartMsg(self):
+    @staticmethod
+    def _CreatePBRestartMsg():
         msg = common_pb2.tagMessage()
         # Fill the message
         msg.eMsgID = common_pb2.MSG_RESTART
@@ -645,13 +702,15 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _CreateRestartResultMsg(self, result):
+    @staticmethod
+    def _CreateRestartResultMsg(result):
         msg_data = dict()
         msg_data['msg_id'] = MSG_ID_RESTART_RESULT
         msg_data['restart_result'] = result
         return msg_data
 
-    def _CreatePBNewTaskMsg(self):
+    @staticmethod
+    def _CreatePBNewTaskMsg():
         msg = common_pb2.tagMessage()
         # Fill the message
         msg.eMsgID = common_pb2.MSG_NEW_TASK
@@ -662,7 +721,8 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _CreatePBTestIDMsg(self, testID, gameID, gameVersion):
+    @staticmethod
+    def _CreatePBTestIDMsg(testID, gameID, gameVersion):
         msg = common_pb2.tagMessage()
         # Fill the message
         msg.eMsgID = common_pb2.MSG_TEST_ID
@@ -675,7 +735,8 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         return msgBuff
 
-    def _SinglePointOp(self, px, py, contact, action_id, during_time=0, wait_time=0):
+    @staticmethod
+    def _SinglePointOp(px, py, contact, action_id, during_time=0, wait_time=0):
         msg_data = dict()
         msg_data['px'] = px
         msg_data['py'] = py
@@ -687,7 +748,8 @@ class MsgHandler(object):
             msg_data['wait_time'] = wait_time
         return msg_data
 
-    def _DoublePointOp(self, start_x, start_y, end_x, end_y, contact, action_id,
+    @staticmethod
+    def _DoublePointOp(start_x, start_y, end_x, end_y, contact, action_id,
                        during_time=0, wait_time=0):
         msg_data = dict()
         msg_data['start_x'] = start_x
@@ -702,8 +764,8 @@ class MsgHandler(object):
             msg_data['wait_time'] = wait_time
         return msg_data
 
-    def _ForkResetAction(self):
+    @staticmethod
+    def _ForkResetAction():
         msg_data = dict()
         msg_data['action_id'] = ACTION_ID_RESET
-
         return msg_data

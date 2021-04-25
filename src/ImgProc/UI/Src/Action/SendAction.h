@@ -1,113 +1,117 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef SEND_ACTION_H_
-#define SEND_ACTION_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_UI_ACTION_SENDACTION_H_
+#define GAME_AI_SDK_IMGPROC_UI_ACTION_SENDACTION_H_
 
 #include "Protobuf/common.pb.h"
 #include "UI/Src/Communicate/DataComm.h"
 #include "UI/Src/UITypes.h"
 
-class CSendAction
-{
-public:
+class CSendAction {
+  public:
     CSendAction();
     ~CSendAction();
     /*!
-     * @brief ·¢ËÍµã»÷¶¯×÷Ğ­Òé°ü
-     * @param[in]stFramectx
-     * @param[in]stSrcUIState
-     * @param[in]stDstActionState
-     * @return true±íÊ¾³É¹¦£¬false±íÊ¾Ê§°Ü
-     */
+      * @brief å‘é€ç‚¹å‡»åŠ¨ä½œåè®®åŒ…
+      * @param[in]stFramectx
+      * @param[in]stSrcUIState
+      * @param[in]stDstActionState
+      * @return trueè¡¨ç¤ºæˆåŠŸï¼Œfalseè¡¨ç¤ºå¤±è´¥
+    */
     bool SendClickAction(const tagFrameContext &stFramectx, const tagUIState &stSrcUIState,
-                         tagActionState &stDstActionState);
+        tagActionState &stDstActionState);
 
     /*!
-     * @brief ·¢ËÍµã»÷¶¯×÷Ğ­Òé°ü
-     * @param[in]eGameState
-     * @param[in]nID
-     * @return×ª»»ºóµÄ×´Ì¬
-     */
+      * @brief å‘é€ç‚¹å‡»åŠ¨ä½œåè®®åŒ…
+      * @param[in]eGameState
+      * @param[in]nID
+      * @returnè½¬æ¢åçš„çŠ¶æ€
+    */
     GAMESTATEENUM MapState(const enGameState eGameState, const int nID);
 
     /*!
-     * @brief ·¢ËÍĞ­Òé°ü
-     * @param[in]stFramectx
-     * @param[in]pt1
-     * @param[in]pt2
-     * @param[in]uID
-     * @param[in]stDstActionState
-     * @param[in]eMsgState
-     * @param[in]uiMsg
-     * @param[in]nSleepTimeMS:·¢ËÍÍê¶¯×÷ºóµÄµÈ´ıÊ±¼ä
-     * @return true±íÊ¾³É¹¦£¬false±íÊ¾Ê§°Ü
-     */
-    bool SendActionMsg(const tagFrameContext &stFramectx, const cv::Point pt1, const cv::Point pt2, const int uID,
-                       GAMESTATEENUM eMsgState, tagMessage &uiMsg, const int nSleepTimeMS = 100);
-
-    /*!
-     * @brief ·¢ËÍÍÏ×§¶¯×÷Ğ­Òé°ü
-     * @param[in]stFramectx¡¡Í¼ÏñÖ¡ĞÅÏ¢
-     * @param[in]stSrcUIState¡¡UI×´Ì¬
-     * @param[in]stDstActionState1¡¡ÍÏ×§Æğµã
-     * @param[in]stDstActionState2¡¡ÍÏ×§ÖÕµã
-     * @return true±íÊ¾³É¹¦£¬false±íÊ¾Ê§°Ü
-     */
-    bool SendDragAction(const tagFrameContext &stFramectx, const tagUIState &stSrcUIState,
-                        const tagActionState &stDstActionState1, const tagActionState &stDstActionState2);
-
-    /*!
-     * @brief ¶ÁÈ¡¶¯×÷²ÎÊı
-     * @param[in]josnValue
-     * @param[out]stState1
-     * @param[out]stDstActionState1¡¡ÍÏ×§Æğµã
-     * @param[out]stState2¡¡ÍÏ×§ÖÕµã
-     * @return true±íÊ¾³É¹¦£¬false±íÊ¾Ê§°Ü
+      * @brief å‘é€åè®®åŒ…
+      * @param[in]stFramectx
+      * @param[in]pt1
+      * @param[in]pt2
+      * @param[in]uID
+      * @param[in]stDstActionState
+      * @param[in]eMsgState
+      * @param[in]uiMsg
+      * @param[in]nSleepTimeMS:å‘é€å®ŒåŠ¨ä½œåçš„ç­‰å¾…æ—¶é—´
+      * @return trueè¡¨ç¤ºæˆåŠŸï¼Œfalseè¡¨ç¤ºå¤±è´¥
     */
-    void ReadActionJsonValue(const Json::Value &josnValue, tagActionState &stState1, tagActionState &stState2);
+    bool SendActionMsg(const tagFrameContext &stFramectx, const cv::Point pt1,
+        const cv::Point pt2, const int uID,
+        GAMESTATEENUM eMsgState, tagMessage &uiMsg, const int nSleepTimeMS = 100);
+
     /*!
-     * @brief ¶ÁÈ¡¶¯×÷²ÎÊı
-     * @param[in]inPoint
-     * @param[in]inImgSize
-     * @param[in]outImgSize
-     * @param[out]outPoint
+      * @brief å‘é€æ‹–æ‹½åŠ¨ä½œåè®®åŒ…
+      * @param[in]stFramectxã€€å›¾åƒå¸§ä¿¡æ¯
+      * @param[in]stSrcUIStateã€€UIçŠ¶æ€
+      * @param[in]stDstActionState1ã€€æ‹–æ‹½èµ·ç‚¹
+      * @param[in]stDstActionState2ã€€æ‹–æ‹½ç»ˆç‚¹
+      * @return trueè¡¨ç¤ºæˆåŠŸï¼Œfalseè¡¨ç¤ºå¤±è´¥
+    */
+    bool SendDragAction(const tagFrameContext &stFramectx, const tagUIState &stSrcUIState,
+        const tagActionState &stDstActionState1, const tagActionState &stDstActionState2);
+
+    /*!
+      * @brief è¯»å–åŠ¨ä½œå‚æ•°
+      * @param[in]josnValue
+      * @param[out]stState1
+      * @param[out]stDstActionState1ã€€æ‹–æ‹½èµ·ç‚¹
+      * @param[out]stState2ã€€æ‹–æ‹½ç»ˆç‚¹
+      * @return trueè¡¨ç¤ºæˆåŠŸï¼Œfalseè¡¨ç¤ºå¤±è´¥
+    */
+    void ReadActionJsonValue(const Json::Value &josnValue, tagActionState &stState1,
+        tagActionState &stState2);
+    /*!
+      * @brief è¯»å–åŠ¨ä½œå‚æ•°
+      * @param[in]inPoint
+      * @param[in]inImgSize
+      * @param[in]outImgSize
+      * @param[out]outPoint
     */
     void RestoreActionPoint(const cv::Point inPoint, const cv::Size inImgSize,
-                            const cv::Size outImgSize, cv::Point &outPoint);
+        const cv::Size outImgSize, cv::Point &outPoint);
 
     /*!
-     * @brief ¶¯×÷½á¹û»æÖÆ
-     * @param[in]oFrame¡¡Í¼ÏñÖ¡
-     * @param[in]actionPoint1¡¡µÚÒ»¸öµã»÷Î»ÖÃ(µã»÷¶¯×÷Ê±£¬Ö»ĞèÒªÕâÒ»¸öÎ»ÖÃ£¬µÚ¶ş¸öµã»÷Î»ÖÃÎŞĞ§
-       ÍÏ×§¶¯×÷Ê±£¬µÚÒ»¸öµã»÷Î»ÖÃ±íÊ¾ÍÏ×§µÄÆğµã£¬µÚ¶ş¸öµã»÷Î»ÖÃ±íÊ¾ÍÏ×§µÄÖÕµã)
-     * @param[in]actionPoint2¡¡µÚ¶ş¸öµã»÷Î»ÖÃ(µã»÷¶¯×÷Ê±£¬Ö»ĞèÒªÕâÒ»¸öÎ»ÖÃ)
-     * @param[in]nActionID¡¡ÓÎÏ·×´Ì¬
-     */
+      * @brief åŠ¨ä½œç»“æœç»˜åˆ¶
+      * @param[in]oFrameã€€å›¾åƒå¸§
+      * @param[in]actionPoint1ã€€ç¬¬ä¸€ä¸ªç‚¹å‡»ä½ç½®(ç‚¹å‡»åŠ¨ä½œæ—¶ï¼Œåªéœ€è¦è¿™ä¸€ä¸ªä½ç½®ï¼Œç¬¬äºŒä¸ªç‚¹å‡»ä½ç½®æ— æ•ˆ
+        æ‹–æ‹½åŠ¨ä½œæ—¶ï¼Œç¬¬ä¸€ä¸ªç‚¹å‡»ä½ç½®è¡¨ç¤ºæ‹–æ‹½çš„èµ·ç‚¹ï¼Œç¬¬äºŒä¸ªç‚¹å‡»ä½ç½®è¡¨ç¤ºæ‹–æ‹½çš„ç»ˆç‚¹)
+      * @param[in]actionPoint2ã€€ç¬¬äºŒä¸ªç‚¹å‡»ä½ç½®(ç‚¹å‡»åŠ¨ä½œæ—¶ï¼Œåªéœ€è¦è¿™ä¸€ä¸ªä½ç½®)
+      * @param[in]nActionIDã€€æ¸¸æˆçŠ¶æ€
+    */
     void PaintAction(cv::Mat oFrame, cv::Point actionPoint1, cv::Point actionPoint2, int nActionID,
-                     GAMESTATEENUM eMsgState = PB_STATE_NONE);
+        GAMESTATEENUM eMsgState = PB_STATE_NONE);
     /*!
-     * @brief ÉèÖÃÔËĞĞÄ£Ê½
-     * @param[in]eTestMode
-     */
+      * @brief è®¾ç½®è¿è¡Œæ¨¡å¼
+      * @param[in]eTestMode
+    */
     void SetTestMode(const ETestMode eTestMode);
 
     /*!
-     * @brief ÉèÖÃÓÎÏ·×´Ì¬
-     * @param[in]eTestMode
-     */
+      * @brief è®¾ç½®æ¸¸æˆçŠ¶æ€
+      * @param[in]eTestMode
+    */
     void SetGameState(const enGameState eGameState);
 
     /*!
-     * @brief ÉèÖÃÊÇ·ñÏßÉÏÓÎÏ·½á¹û
-     * @param[in]eTestMode
-     */
+      * @brief è®¾ç½®æ˜¯å¦çº¿ä¸Šæ¸¸æˆç»“æœ
+      * @param[in]eTestMode
+    */
     void SetShowResult(const bool bShowResult);
 
-private:
+  private:
     ETestMode     m_eTestMode;
     GAMESTATEENUM m_eMsgState;
     enGameState   m_eGameState;
@@ -115,4 +119,4 @@ private:
     bool m_bShowResult;
 };
 
-#endif // SEND_ACTION_H_
+#endif  // GAME_AI_SDK_IMGPROC_UI_ACTION_SENDACTION_H_

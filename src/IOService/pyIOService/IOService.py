@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -12,7 +15,7 @@ import time
 
 import cv2
 
-from common.Define import *
+from common.Define import TASK_STATUS_INIT_SUCCESS
 from common.CommonContext import IO_SERVICE_CONTEXT
 from communicate.HTTPClient import HTTPClient
 from communicate.SocketServer import SocketServer
@@ -20,13 +23,14 @@ from communicate.HttpServer import HttpServer
 from communicate.TBUSMgr import TBUSMgr
 from msghandler.MsgHandler import MsgHandler
 from tools.ImgDecode import ImgDecode
+from util.config_path_mgr import SYS_CONFIG_DIR
 
 MAIN_LOOP_RATE = 60
 MAIN_LOOP_SLEEP_TIME = 1. / MAIN_LOOP_RATE
 OTHERS_LOOP_RATE = 1
 OTHERS_LOOP_COUNT = int(MAIN_LOOP_RATE / OTHERS_LOOP_RATE)
 
-DEFAULT_TBUS_CFG_PATH = '../cfg/platform/bus.ini'
+TBUS_CFG_PATH = 'cfg/platform/bus.ini'
 
 LOG = logging.getLogger('IOService')
 
@@ -48,6 +52,7 @@ class IOService(object):
         self.__controlCfg = {}
 
         self.__clientSocket = None
+        self.__httpServer = None
         self.__controlSocket = None
         self.__commMgr = None
         self.__msgHandler = None
@@ -78,7 +83,8 @@ class IOService(object):
                                        self.__controlSocket)
 
         # Initialize sub modules
-        if not self.__commMgr.Initialize(DEFAULT_TBUS_CFG_PATH):
+        tbus_cfg_path = os.path.join(SYS_CONFIG_DIR, TBUS_CFG_PATH)
+        if not self.__commMgr.Initialize(tbus_cfg_path):
             LOG.error('TBUSMgr Initialize failed.')
             return False
 
@@ -91,14 +97,9 @@ class IOService(object):
                 LOG.error('Client Socket Initialize failed!')
                 return False
 
-        if not self.__controlSocket.Initialize(self.__controlCfg):
-            LOG.error('Control Socket Initialize failed!')
+        if not self.__controlSocket.Initialize(self.__controlCfg) or not self.__msgHandler.Initialize():
+            LOG.error('Control Socket Initialize failed! or MsgHandler Initialize failed!')
             return False
-
-        if not self.__msgHandler.Initialize():
-            LOG.error('MsgHandler Initialize failed!')
-            return False
-
         return True
 
     def Run(self):
@@ -123,10 +124,8 @@ class IOService(object):
                 msgHandlerMS = int(1000 * (updateMsgHandlerTime - beginTime))
                 frameMS = int(1000 * (updateFrameTime - updateMsgHandlerTime))
                 othersMS = int(1000 * (endTime - updateFrameTime))
-                LOG.warning('MainLoop overschedule {0}ms: {1}={2}+{3}+{4}'.format(overMS, totalMS,
-                                                                                  msgHandlerMS,
-                                                                                  frameMS,
-                                                                                  othersMS))
+                LOG.warning('MainLoop overschedule %sms: %s=%s+%s+%s', overMS, totalMS,
+                            msgHandlerMS, frameMS, othersMS)
             self.__loopCount += 1
 
         self.__msgHandler.SendUnregisterToAIControl()
@@ -190,7 +189,7 @@ class IOService(object):
             iniCfg = configparser.ConfigParser()
             iniCfg.read(self.__platformCfgPath)
         else:
-            LOG.error('Config File not exist in {0}'.format(self.__platformCfgPath))
+            LOG.error('Config File not exist in %s', self.__platformCfgPath)
             return False
 
         try:
@@ -220,8 +219,8 @@ class IOService(object):
 
             self.__controlCfg['STAFFNAME'] = iniCfg.get('CONTROL_COMMUNICATION', 'StaffName')
             self.__controlCfg['pattern'] = iniCfg.getint('CONTROL_COMMUNICATION', 'Pattern')
-        except Exception as e:
-            LOG.error('Load Config File[{}] failed, err: {}'.format(self.__platformCfgPath, e))
+        except KeyError as e:
+            LOG.error('Load Config File[%s] failed, err: %s', self.__platformCfgPath, e)
             return False
 
         return True

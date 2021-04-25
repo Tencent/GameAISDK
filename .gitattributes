@@ -1,3 +1,2 @@
-opencv_world342.dll filter=lfs diff=lfs merge=lfs -text
-opencv_world342d.dll filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
 libprotobufd.lib filter=lfs diff=lfs merge=lfs -text

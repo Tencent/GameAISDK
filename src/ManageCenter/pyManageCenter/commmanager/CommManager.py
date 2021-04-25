@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -11,7 +14,7 @@ import os
 
 import tbus
 
-from common.Define import *
+from common.Define import RUN_TYPE_UI_AI, RUN_TYPE_AI, RUN_TYPE_UI
 
 LOG = logging.getLogger('ManageCenter')
 
@@ -59,7 +62,7 @@ class CommManager(object):
 
         ret = tbus.Init(self.__selfAddr, configFile)
         if ret != 0:
-            LOG.error('TBus Init failed with return code[{0}]'.format(ret))
+            LOG.error('TBus Init failed with return code[%s]', ret)
             return False
 
         if self.__runType == RUN_TYPE_UI_AI:
@@ -74,13 +77,14 @@ class CommManager(object):
 
         return True
 
-    def SendTo(self, addr, buff):
+    @staticmethod
+    def SendTo(addr, buff):
         """
         Send the buff to addr
         """
         ret = tbus.SendTo(addr, buff)
         if ret != 0:
-            LOG.debug('TBus Send To {0} return code[{1}]'.format(addr, ret))
+            LOG.debug('TBus Send To %s return code[%s]', addr, ret)
             return False
         return True
 
@@ -90,7 +94,7 @@ class CommManager(object):
         """
         ret = tbus.SendTo(self.__IOAddr, buff)
         if ret != 0:
-            LOG.debug('TBus Send To IOService return code[{0}]'.format(ret))
+            LOG.debug('TBus Send To IOService return code[%s]', ret)
             return False
         return True
 
@@ -120,7 +124,8 @@ class CommManager(object):
         if self.__selfAddr:
             tbus.Exit(self.__selfAddr)
 
-    def _LoadTbusConfig(self, cfgPath):
+    @staticmethod
+    def _LoadTbusConfig(cfgPath):
         tbusArgs = {}
 
         if os.path.exists(cfgPath):
@@ -136,6 +141,6 @@ class CommManager(object):
             tbusArgs['Agent1Addr'] = config.get('BusConf', 'Agent1Addr')
             tbusArgs['Agent2Addr'] = config.get('BusConf', 'Agent2Addr')
         else:
-            LOG.error('Tbus Config File not exist in {0}'.format(cfgPath))
+            LOG.error('Tbus Config File not exist in %s', cfgPath)
 
         return tbusArgs

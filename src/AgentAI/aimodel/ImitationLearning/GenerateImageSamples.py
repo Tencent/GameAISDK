@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -9,13 +12,10 @@ import csv
 import logging
 import operator
 import os
-import random
 import shutil
-
-import cv2
 import numpy as np
-
-from .util import *
+import cv2
+from .util import ObtainTaskDict, FindIndex, RepeatList
 
 
 class GenerateImageSamples(object):
@@ -38,9 +38,7 @@ class GenerateImageSamples(object):
         self.classImageTimes = cfgData['classImageTimes']
 
         self.imageSize = cfgData['imageSize']
-
         self.actionAheadNum = cfgData['actionAheadNum']
-
         self.actionDefine = cfgData.get('actionDefine')
 
         self.taskList, self.taskActionDict, self.actionNameDict = ObtainTaskDict(self.actionDefine)
@@ -159,8 +157,8 @@ class GenerateImageSamples(object):
         labelTmpDic = {}
         for n in range(actionSpace):
             indexAction = FindIndex(labelTask, n)
-            self.logger.info('action number of action {} for taskIndex {} is {}'.
-                             format(n, taskIndex, len(indexAction)))
+            self.logger.info('action number of action %s for taskIndex %s is %s',
+                             str(n), str(taskIndex), str(indexAction))
 
             if len(indexAction) == 0:
                 continue
@@ -180,13 +178,14 @@ class GenerateImageSamples(object):
                 featureTmpDic[n] = RepeatList(featureSpecificClass, repeatNum)
             labelTmpDic[n] = [label[i] for i in indexAction] * repeatNum
 
-            self.logger.info('New action number of action {} is {}'.format(n, len(labelTmpDic[n])))
+            self.logger.info('New action number of action %s is %d', str(n), len(labelTmpDic[n]))
 
         feature, label = self.AppendData(actionSpace, featureTmpDic, labelTmpDic)
 
         return feature, label
 
-    def AppendData(self, actionSpace, featureTmpDic, labelTmpDic):
+    @staticmethod
+    def AppendData(actionSpace, featureTmpDic, labelTmpDic):
         """
         combine feature and label from multi-task
         """
@@ -240,7 +239,8 @@ class GenerateImageSamples(object):
 
         return imageNameListNew, actionListNew
 
-    def SaveTxt(self, outFileDir, imageNameList, actionList, name='data.txt'):
+    @staticmethod
+    def SaveTxt(outFileDir, imageNameList, actionList, name='data.txt'):
         """
         Save data to txt file
         """

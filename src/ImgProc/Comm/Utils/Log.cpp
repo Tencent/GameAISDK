@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include <limits.h>
 #include <stdarg.h>
@@ -23,8 +26,7 @@
 #include "Comm/Utils/TqcLog.h"
 
 
-CLog::CLog()
-{
+CLog::CLog() {
     m_pfLogfile = NULL;
     m_nFileSize = -1;
     m_nLogPriotify = -1;
@@ -32,23 +34,21 @@ CLog::CLog()
     m_nCurRollNum = -1;
     m_nCurPosition = -1;
 }
-int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int nLogRollNum)
-{
+int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int nLogRollNum) {
     static bool bInit = true;
-    int         iRet  = 0;
+    int         iRet = 0;
 
-    if (bInit)
-    {
+    if (bInit) {
         std::string path;
         std::string pathLog;
         std::string logFolderName;
         std::string fileName;
 
-        m_pfLogfile      = NULL;
-        m_nLogPriotify   = eLogLevel;
-        m_nFileSize      = nLogFileSize;
-        m_nMaxRollNum    = nLogRollNum;
-        m_nCurRollNum    = -1;
+        m_pfLogfile = NULL;
+        m_nLogPriotify = eLogLevel;
+        m_nFileSize = nLogFileSize;
+        m_nMaxRollNum = nLogRollNum;
+        m_nCurRollNum = -1;
         m_strLogBaseName = pszLogFileName;
 
         SplitFullName(m_strLogBaseName, path, fileName);
@@ -58,7 +58,7 @@ int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int 
         char   szLogFileName[256];
         time_t stLastModTime = 0;
         SNPRINTF(szLogFileName, sizeof(szLogFileName), "%s", m_strLogBaseName.c_str());
-        m_nCurRollNum  = 0;
+        m_nCurRollNum = 0;
         m_nCurPosition = 0;
         // if (0 == _access(szLogFileName, F_OK))    // 文件存在
 #ifdef _WINDOWS
@@ -69,14 +69,14 @@ int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int 
         {
             struct stat stFileAttr;
             stat(szLogFileName, &stFileAttr);
-            stLastModTime  = stFileAttr.st_mtime;
+            stLastModTime = stFileAttr.st_mtime;
             m_nCurPosition = stFileAttr.st_size;
 
             char szTmpLogFileName[128];         // 临时，循环查找使??
 
-            for (int i = 1; i < m_nMaxRollNum; ++i)
-            {
-                SNPRINTF(szTmpLogFileName, sizeof(szTmpLogFileName), "%s.log.%d", m_strLogBaseName.c_str(), i);
+            for (int i = 1; i < m_nMaxRollNum; ++i) {
+                SNPRINTF(szTmpLogFileName, sizeof(szTmpLogFileName), "%s.log.%d",
+                    m_strLogBaseName.c_str(), i);
 #ifdef _WINDOWS
                 if (0 != _access(szTmpLogFileName, 0))    // 不存
 #else
@@ -85,26 +85,20 @@ int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int 
 
                 {
                     break;
-                }
-                else             // 存在
-                {
+                } else {
                     struct stat stTmpFileAttr;
                     stat(szTmpLogFileName, &stTmpFileAttr);
-                    if (stTmpFileAttr.st_mtime > stLastModTime)
-                    {
+                    if (stTmpFileAttr.st_mtime > stLastModTime) {
                         strncpy(szLogFileName, szTmpLogFileName, sizeof(szLogFileName));
-                        m_nCurRollNum  = i;
+                        m_nCurRollNum = i;
                         m_nCurPosition = stTmpFileAttr.st_size;
-                        stLastModTime  = stTmpFileAttr.st_mtime;
-                    }
-                    else if (stTmpFileAttr.st_mtime == stLastModTime)
-                    {
-                        if (stTmpFileAttr.st_size < m_nCurPosition)                    // 选取文件大小最小的
-                        {
+                        stLastModTime = stTmpFileAttr.st_mtime;
+                    } else if (stTmpFileAttr.st_mtime == stLastModTime) {
+                        if (stTmpFileAttr.st_size < m_nCurPosition) {  // 选取文件大小最小的
                             strncpy(szLogFileName, szTmpLogFileName, sizeof(szLogFileName));
-                            m_nCurRollNum  = i;
+                            m_nCurRollNum = i;
                             m_nCurPosition = stTmpFileAttr.st_size;
-                            stLastModTime  = stTmpFileAttr.st_mtime;
+                            stLastModTime = stTmpFileAttr.st_mtime;
                         }
                     }
                 }
@@ -113,8 +107,7 @@ int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int 
 
         // 打开文件
         int iRet = openLogFile(szLogFileName);
-        if (iRet == -1)
-        {
+        if (iRet == -1) {
             CreateDir(pathLog.c_str());
             CreateDir(path.c_str());
             iRet = openLogFile(szLogFileName);
@@ -127,26 +120,37 @@ int CLog::init(const char *pszLogFileName, int eLogLevel, int nLogFileSize, int 
     }
 
     return iRet;
-};
+}
 
-int CLog::logWrite(int eLogLevel, const char *pszLogContent, size_t uLogContentLen)
-{
+int CLog::getLogLevel(char *arg) {
+    // 如果加参数"DEBUG",则日志级别为DEBUG
+    if (strcmp(arg, "DEBUG") == 0) {
+        return FACE_DEBUG;
+    } else if (strcmp(arg, "INFO") == 0) {
+        return FACE_INFO;
+    } else if (strcmp(arg, "WARN") == 0) {
+        return FACE_WARNING;
+    } else if (strcmp(arg, "ERROR") == 0) {
+        return FACE_ERROR;
+    }
+
+    return FACE_INFO;
+}
+
+int CLog::logWrite(int eLogLevel, const char *pszLogContent, size_t uLogContentLen) {
     int iRet = 0;
 
     m_oLock.Lock();
 
-    if (LOG_PRIORITY_ERROR == (m_nLogPriotify & eLogLevel))
-    {
+    if (LOG_PRIORITY_ERROR == (m_nLogPriotify & eLogLevel)) {
         logError(pszLogContent, uLogContentLen);
     }
 
-    if (LOG_PRIORITY_WARN == (m_nLogPriotify & eLogLevel))
-    {
+    if (LOG_PRIORITY_WARN == (m_nLogPriotify & eLogLevel)) {
         logWarn(pszLogContent, uLogContentLen);
     }
 
-    if (LOG_PRIORITY_RUN == (m_nLogPriotify & eLogLevel))
-    {
+    if (LOG_PRIORITY_RUN == (m_nLogPriotify & eLogLevel)) {
         logRun(pszLogContent, uLogContentLen);
     }
 
@@ -155,49 +159,39 @@ int CLog::logWrite(int eLogLevel, const char *pszLogContent, size_t uLogContentL
     return iRet;
 }
 
-void CLog::logError(const char *pszLogContent, size_t uLogContentLen)
-{
+void CLog::logError(const char *pszLogContent, size_t uLogContentLen) {
     logRun(pszLogContent, uLogContentLen);
 }
 
-void CLog::logWarn(const char *pszLogContent, size_t uLogContentLen)
-{
+void CLog::logWarn(const char *pszLogContent, size_t uLogContentLen) {
     logRun(pszLogContent, uLogContentLen);
 }
 
-void CLog::logRun(const char *pszLogContent, size_t uLogContentLen)
-{
-    if (NULL != m_pfLogfile)
-    {
+void CLog::logRun(const char *pszLogContent, size_t uLogContentLen) {
+    if (NULL != m_pfLogfile) {
         // 需要先判断若写入文件单个文件是否会超限
-        if (m_nFileSize < m_nCurPosition + static_cast<int>(uLogContentLen))
-        {
+        if (m_nFileSize < m_nCurPosition + static_cast<int>(uLogContentLen)) {
             // 关闭老的日志文件
             closeLog();
 
             m_nCurRollNum = (m_nCurRollNum + 1) % m_nMaxRollNum;
             char szNewLogFile[64];
-            if (0 == m_nCurRollNum)            // 首文??
-            {
+            if (0 == m_nCurRollNum) {
                 SNPRINTF(szNewLogFile, sizeof(szNewLogFile), "%s.log", m_strLogBaseName.c_str());
-            }
-            else
-            {
-                SNPRINTF(szNewLogFile, sizeof(szNewLogFile), "%s.log.%d", m_strLogBaseName.c_str(), m_nCurRollNum);
+            } else {
+                SNPRINTF(szNewLogFile, sizeof(szNewLogFile), "%s.log.%d", m_strLogBaseName.c_str(),
+                    m_nCurRollNum);
             }
 
             // 打开新的日志文件
             openResetLogFile(szNewLogFile);
             m_nCurPosition = 0;
-            if (NULL != m_pfLogfile)
-            {
+            if (NULL != m_pfLogfile) {
                 fwrite(pszLogContent, uLogContentLen, 1, m_pfLogfile);
                 m_nCurPosition += static_cast<int>(uLogContentLen);
                 fflush(m_pfLogfile);
             }
-        }
-        else
-        {
+        } else {
             fwrite(pszLogContent, uLogContentLen, 1, m_pfLogfile);
             m_nCurPosition += static_cast<int>(uLogContentLen);
             fflush(m_pfLogfile);
@@ -208,10 +202,8 @@ void CLog::logRun(const char *pszLogContent, size_t uLogContentLen)
 //
 // Close log file.
 //
-void CLog::closeLog()
-{
-    if (m_pfLogfile)
-    {
+void CLog::closeLog() {
+    if (m_pfLogfile) {
         fclose(m_pfLogfile);
         m_pfLogfile = NULL;
     }
@@ -220,14 +212,12 @@ void CLog::closeLog()
 //
 // Open log file.
 //
-int CLog::openLogFile(const char *pszLogFileName)
-{
+int CLog::openLogFile(const char *pszLogFileName) {
     int iRet = 0;
 
     m_pfLogfile = fopen(pszLogFileName, "a+");
 
-    if (NULL == m_pfLogfile)
-    {
+    if (NULL == m_pfLogfile) {
         iRet = -1;
     }
 
@@ -237,14 +227,12 @@ int CLog::openLogFile(const char *pszLogFileName)
 //
 // Open and reset log file.
 //
-int CLog::openResetLogFile(const char *pszLogFileName)
-{
+int CLog::openResetLogFile(const char *pszLogFileName) {
     int iRet = 0;
 
     m_pfLogfile = fopen(pszLogFileName, "w");
 
-    if (NULL == m_pfLogfile)
-    {
+    if (NULL == m_pfLogfile) {
         iRet = -1;
     }
 

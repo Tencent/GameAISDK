@@ -1,18 +1,20 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef TASK_DEFINE_H_
-#define TASK_DEFINE_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
 
-#include <boost/thread.hpp>
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_GAMERECOGNIZE_TASKMGR_TASKDEFINE_H_
+#define GAME_AI_SDK_IMGPROC_GAMERECOGNIZE_TASKMGR_TASKDEFINE_H_
+
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
-
+#include <boost/thread.hpp>
 #include "Comm/ImgReg/Recognizer/CBloodLengthReg.h"
 #include "Comm/ImgReg/Recognizer/CDeformObjReg.h"
 #include "Comm/ImgReg/Recognizer/CFixBloodReg.h"
@@ -34,82 +36,69 @@
 // ==============================================================================
 // 定义识别器需要的数据结构
 // ==============================================================================
-class CTaskParam
-{
-public:
-    CTaskParam()
-    {
-        m_nTaskID    = 0;
-        m_eType      = TYPE_BEGIN;
-        m_pRegParam  = NULL;
+class CTaskParam {
+  public:
+    CTaskParam() {
+        m_nTaskID = 0;
+        m_eType = TYPE_BEGIN;
+        m_pRegParam = NULL;
         m_nSkipFrame = -1;
     }
 
-    ~CTaskParam()
-    {}
+    ~CTaskParam() {
+    }
 
-    void Release()
-    {
-        if (m_pRegParam != NULL)
-        {
+    void Release() {
+        if (m_pRegParam != NULL) {
             delete m_pRegParam;
             m_pRegParam = NULL;
         }
     }
 
     /*!
-     * @brief 设置任务结果对应的识别类型
-     * @param[in] eType 识别类型
-     */
-    void SetType(EREGTYPE eType)
-    {
+      * @brief 设置任务结果对应的识别类型
+      * @param[in] eType 识别类型
+    */
+    void SetType(EREGTYPE eType) {
         m_eType = eType;
     }
 
     /*!
-     * @brief 获取结果对应的识别类型
-     */
-    EREGTYPE GetType()
-    {
+      * @brief 获取结果对应的识别类型
+    */
+    EREGTYPE GetType() {
         return m_eType;
     }
 
 
-    void SetTaskID(int nTaskID)
-    {
+    void SetTaskID(int nTaskID) {
         m_nTaskID = nTaskID;
     }
 
 
-    int GetTaskID()
-    {
+    int GetTaskID() {
         return m_nTaskID;
     }
 
-    void SetSkipFrame(int nSkipFrame)
-    {
+    void SetSkipFrame(int nSkipFrame) {
         m_nSkipFrame = nSkipFrame;
     }
 
 
-    int GetSkipFrame()
-    {
+    int GetSkipFrame() {
         return m_nSkipFrame;
     }
 
     // 获取对象参数
     // 如果没有初始化，则new一个
-    IRegParam* GetInstance(EREGTYPE eType)
-    {
-        if (NULL != m_pRegParam)
-        {
+    IRegParam* GetInstance(EREGTYPE eType) {
+        if (NULL != m_pRegParam) {
             return m_pRegParam;
         }
 
         m_eType = eType;
 
-        switch (eType)
-        {
+        switch (eType) {
         case TYPE_FIXOBJREG:
         {
             m_pRegParam = new CFixObjRegParam();
@@ -204,7 +193,7 @@ public:
         return m_pRegParam;
     }
 
-private:
+  private:
     int       m_nTaskID;
     EREGTYPE  m_eType;
     int       m_nSkipFrame;
@@ -212,22 +201,19 @@ private:
 };
 
 // thread pool use
-struct tagTask
-{
+struct tagTask {
     boost::function<void()> ofunc;
     int                     nLevel;
     int                     nOverload;
-    tagTask()
-    {
-        nLevel    = -1;
+    tagTask() {
+        nLevel = -1;
         nOverload = -1;
     }
-//    int                     nFrameSeq;
+    //    int                     nFrameSeq;
 };
 
 // runtime varient
-struct tagRuntimeVar
-{
+struct tagRuntimeVar {
     cv::Mat oSrcImage;
     int     nFrameSeq;
     int     nDeviceIndex;
@@ -235,8 +221,7 @@ struct tagRuntimeVar
 };
 
 // recv src image info from auto/MC
-struct tagSrcImgInfo
-{
+struct tagSrcImgInfo {
     cv::Mat     oSrcImage;
     uint64_t    uFrameSeq;
     uint64_t    uDeviceIndex;
@@ -246,49 +231,43 @@ struct tagSrcImgInfo
 // task type of receiving from Agent/MC
 
 
-struct tagCmdMsg
-{
-    tagCmdMsg(){}
-    virtual ~tagCmdMsg() {};
-    virtual void Release() {};
+struct tagCmdMsg {
+    tagCmdMsg() {}
+    virtual ~tagCmdMsg() {}
+    virtual void Release() {}
 };
 
 // group message
-struct tagAgentMsg : tagCmdMsg
-{
+struct tagAgentMsg : tagCmdMsg {
     // taskID, taskParameters
     unsigned int              uGroupID;
     std::map<int, CTaskParam> mapTaskParams;
 
-    tagAgentMsg()
-    {
+    tagAgentMsg() {
         uGroupID = 1;
     }
 
-    virtual void Release()
-    {}
+    virtual void Release() {
+    }
 };
 
 // task flag message
-struct tagTaskFlagMsg : tagCmdMsg
-{
+struct tagTaskFlagMsg : tagCmdMsg {
     // taskID, flag
     std::map<int, bool> mapTaskFlag;
 };
 
 //// delete task message
-struct tagDelTaskMsg : tagCmdMsg
-{
+struct tagDelTaskMsg : tagCmdMsg {
     // taskID
     std::vector<int> nVecTask;
 };
 
-struct tagConfTaskMsg : tagCmdMsg
-{
+struct tagConfTaskMsg : tagCmdMsg {
     // conf file name
     std::vector<std::string> strVecConfName;
 };
 
 // ms
 const int GM_WAITING_RESULT_TIME = 20;
-#endif // TASK_DEFINE_H_
+#endif  // GAME_AI_SDK_IMGPROC_GAMERECOGNIZE_TASKMGR_TASKDEFINE_H_

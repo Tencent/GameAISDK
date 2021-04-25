@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/Os/TqcOs.h"
 #include "Comm/Utils/Pool.h"
@@ -11,8 +14,7 @@
 //
 // Memory pool.
 //
-CMemoryPool::CMemoryPool()
-{
+CMemoryPool::CMemoryPool() {
     int           nTmp  = 0;
     unsigned int  uTmp  = 0;
     unsigned char ucTmp = 0;
@@ -20,60 +22,49 @@ CMemoryPool::CMemoryPool()
     bool          bTmp  = false;
 
     m_pIntPool = new boost::pool<>(sizeof(nTmp));
-    if (m_pIntPool == NULL)
-    {
+    if (m_pIntPool == NULL) {
         LOGE("Cannot create int pool");
     }
 
     m_pBoolPool = new boost::pool<>(sizeof(bTmp));
-    if (m_pBoolPool == NULL)
-    {
+    if (m_pBoolPool == NULL) {
         LOGE("Cannot create bool pool");
     }
 
     m_pUIntPool = new boost::pool<>(sizeof(uTmp));
-    if (m_pUIntPool == NULL)
-    {
+    if (m_pUIntPool == NULL) {
         LOGE("Cannot create unsigned int pool");
     }
 
     m_pUCharPool = new boost::pool<>(sizeof(ucTmp));
-    if (m_pUCharPool == NULL)
-    {
+    if (m_pUCharPool == NULL) {
         LOGE("Cannot create unsigned char pool");
     }
 
     m_pCharPool = new boost::pool<>(sizeof(cTmp));
-    if (m_pCharPool == NULL)
-    {
+    if (m_pCharPool == NULL) {
         LOGE("Cannot create char pool");
     }
 }
 
-CMemoryPool::~CMemoryPool()
-{
-    if (m_pIntPool)
-    {
+CMemoryPool::~CMemoryPool() {
+    if (m_pIntPool) {
         delete m_pIntPool;
     }
 
-    if (m_pUIntPool)
-    {
+    if (m_pUIntPool) {
         delete m_pUIntPool;
     }
 
-    if (m_pCharPool)
-    {
+    if (m_pCharPool) {
         delete m_pCharPool;
     }
 
-    if (m_pUCharPool)
-    {
+    if (m_pUCharPool) {
         delete m_pUCharPool;
     }
 
-    if (m_pBoolPool)
-    {
+    if (m_pBoolPool) {
         delete m_pBoolPool;
     }
 }
@@ -81,8 +72,7 @@ CMemoryPool::~CMemoryPool()
 //
 // Allocate memory for charater type.
 //
-char* CMemoryPool::AllocateChar(int nSize)
-{
+char* CMemoryPool::AllocateChar(int nSize) {
     if (!m_pCharPool)
         return NULL;
 
@@ -96,8 +86,7 @@ char* CMemoryPool::AllocateChar(int nSize)
 //
 // Allocate memory for unsigned charater type.
 //
-unsigned char* CMemoryPool::AllocateUChar(int nSize)
-{
+unsigned char* CMemoryPool::AllocateUChar(int nSize) {
     if (!m_pUCharPool)
         return NULL;
 
@@ -111,8 +100,7 @@ unsigned char* CMemoryPool::AllocateUChar(int nSize)
 //
 // Allocate memory for integer type.
 //
-int* CMemoryPool::AllocateInt(int nSize)
-{
+int* CMemoryPool::AllocateInt(int nSize) {
     if (!m_pIntPool)
         return NULL;
 
@@ -126,8 +114,7 @@ int* CMemoryPool::AllocateInt(int nSize)
 //
 // Allocate memory for unsigned integer type.
 //
-unsigned int* CMemoryPool::AllocateUInt(int nSize)
-{
+unsigned int* CMemoryPool::AllocateUInt(int nSize) {
     if (!m_pUIntPool)
         return NULL;
 
@@ -141,8 +128,7 @@ unsigned int* CMemoryPool::AllocateUInt(int nSize)
 //
 // Allocate memory for bool type.
 //
-bool* CMemoryPool::AllocateBool(int nSize)
-{
+bool* CMemoryPool::AllocateBool(int nSize) {
     if (!m_pBoolPool)
         return NULL;
 
@@ -168,40 +154,35 @@ bool* CMemoryPool::AllocateBool(int nSize)
 //
 // Allocate memory interface.
 //
-bool* AllocateBoolFromPool(int nSize)
-{
+bool* AllocateBoolFromPool(int nSize) {
     return g_pMemoryPool->AllocateBool(nSize);
 }
 
 //
 // Allocate memory interface.
 //
-int* AllocateIntFromPool(int nSize)
-{
+int* AllocateIntFromPool(int nSize) {
     return g_pMemoryPool->AllocateInt(nSize);
 }
 
 //
 // Allocate memory interface.
 //
-unsigned int* AllocateUIntFromPool(int nSize)
-{
+unsigned int* AllocateUIntFromPool(int nSize) {
     return g_pMemoryPool->AllocateUInt(nSize);
 }
 
 //
 // Allocate memory interface.
 //
-char* AllocateCharFromPool(int nSize)
-{
+char* AllocateCharFromPool(int nSize) {
     return g_pMemoryPool->AllocateChar(nSize);
 }
 
 //
 // Allocate memory interface.
 //
-unsigned char* AllocateUCharFromPool(int nSize)
-{
+unsigned char* AllocateUCharFromPool(int nSize) {
     return g_pMemoryPool->AllocateUChar(nSize);
 }
 

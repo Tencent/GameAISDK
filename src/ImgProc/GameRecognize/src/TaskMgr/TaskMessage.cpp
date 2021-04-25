@@ -1,40 +1,38 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/Utils/TqcLog.h"
 #include "GameRecognize/src/TaskMgr/TaskMessage.h"
 
 using namespace std;
 
-CTaskMessage::CTaskMessage()
-{
-    m_pCmdMsg     = NULL;
+CTaskMessage::CTaskMessage() {
+    m_pCmdMsg = NULL;
     m_EAgentMsgID = MSG_RECV_BEGIN;
-};
+}
 
-CTaskMessage::~CTaskMessage()
-{};
+CTaskMessage::~CTaskMessage() {
+}
 
 // 释放资源
-void CTaskMessage::Release()
-{
-    if (m_pCmdMsg != NULL)
-    {
+void CTaskMessage::Release() {
+    if (m_pCmdMsg != NULL) {
         m_pCmdMsg->Release();
         delete m_pCmdMsg;
         m_pCmdMsg = NULL;
     }
 }
 
-tagCmdMsg* CTaskMessage::GetInstance(const EAgentMsgID eMsgID)
-{
+tagCmdMsg* CTaskMessage::GetInstance(const EAgentMsgID eMsgID) {
     m_EAgentMsgID = eMsgID;
 
-    switch (eMsgID)
-    {
+    switch (eMsgID) {
     case  MSG_RECV_GROUP_ID:
     {
         // 创建任务消息
@@ -88,64 +86,50 @@ tagCmdMsg* CTaskMessage::GetInstance(const EAgentMsgID eMsgID)
 }
 
 // 设置消息类型
-void CTaskMessage::SetMsgType(const EAgentMsgID eMsgID)
-{
+void CTaskMessage::SetMsgType(const EAgentMsgID eMsgID) {
     m_EAgentMsgID = eMsgID;
 }
 
 // 获取消息类型
-EAgentMsgID CTaskMessage::GetMsgType()
-{
+EAgentMsgID CTaskMessage::GetMsgType() {
     return m_EAgentMsgID;
 }
 
 // ===================================================================
 // 实例化创建消息
 // ===================================================================
-void CTaskMessage::CreateGroupMsg()
-{
-    if (!m_pCmdMsg)
-    {
+void CTaskMessage::CreateGroupMsg() {
+    if (!m_pCmdMsg) {
         m_pCmdMsg = new tagAgentMsg();
     }
 }
 
-void CTaskMessage::CreateFlagMsg()
-{
-    if (!m_pCmdMsg)
-    {
+void CTaskMessage::CreateFlagMsg() {
+    if (!m_pCmdMsg) {
         m_pCmdMsg = new tagTaskFlagMsg();
     }
 }
 
-void CTaskMessage::CreateAddTaskMsg()
-{
-    if (!m_pCmdMsg)
-    {
+void CTaskMessage::CreateAddTaskMsg() {
+    if (!m_pCmdMsg) {
         m_pCmdMsg = new tagAgentMsg();
     }
 }
 
-void CTaskMessage::CreateDelTaskMsg()
-{
-    if (!m_pCmdMsg)
-    {
+void CTaskMessage::CreateDelTaskMsg() {
+    if (!m_pCmdMsg) {
         m_pCmdMsg = new tagDelTaskMsg();
     }
 }
 
-void CTaskMessage::CreateChgTaskMsg()
-{
-    if (!m_pCmdMsg)
-    {
+void CTaskMessage::CreateChgTaskMsg() {
+    if (!m_pCmdMsg) {
         m_pCmdMsg = new tagAgentMsg();
     }
 }
 
-void CTaskMessage::CreateConfTaskMsg()
-{
-    if (!m_pCmdMsg)
-    {
+void CTaskMessage::CreateConfTaskMsg() {
+    if (!m_pCmdMsg) {
         m_pCmdMsg = new tagConfTaskMsg();
     }
 }

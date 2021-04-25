@@ -33,6 +33,10 @@ enum EMSGIDENUM
     /* 80000 ~ 89999 for MC进程和UI进程 */
     MSG_UI_STATE_IMG          = 80001;
     MSG_UI_ACTION             = 80002;
+
+    /* 90000 ~ 99999 for AI Client进程 */
+    MSG_PROJECT_SOURCE        = 90001;
+    MSG_PROJECT_SOURCE_RES    = 90002;
 }
 
 message tagSrcImageInfo
@@ -233,6 +237,16 @@ message tagTestID
     int32                       nGameID            = 2;
     string                      strGameVersion     = 3;
 }
+
+message tagSource
+{
+    string                      deviceType         = 1;
+    string                      platform           = 2;
+    int32                       longEdge           = 3;
+    string                      queryPath          = 4;
+    string                      windowsSize        = 5;
+}
+
 // *************************************************
 // 总消息结构体
 // *************************************************
@@ -255,4 +269,5 @@ message tagMessage
     tagTestID              stTestID          = 18; // MSG_TEST_ID
     tagPBAgentMsg          stPBAgentMsg      = 19; // MSG_GAMEREG_INFO
     tagIMTrainState        stIMTrainState    = 20; // MSG_IM_TRAIN_STATE
+    tagSource              stSource          = 21; // MSG_PROJECT_SOURCE_RES
 }

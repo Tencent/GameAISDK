@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -13,7 +16,6 @@ import json
 import threading
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from socketserver import ThreadingMixIn
 
 LOG = logging.getLogger('IOService')
 SEND_QUEUE = queue.Queue()
@@ -21,12 +23,13 @@ RECV_QUEUE = queue.Queue()
 
 UI_ACTION_TIMEOUT = os.getenv('UI_ACTION_TIMEOUT', 5)
 
+
 class ResquestHandler(BaseHTTPRequestHandler):
     """
     HTTP Server request handler
     """
-
-    def _GetUIAction(self, msgData, timeout=0):
+    @staticmethod
+    def _GetUIAction(msgData, timeout=0):
         """
         Initialize this module, load config from cfg
         :param msgData:
@@ -93,11 +96,9 @@ class ResquestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(responseData).encode('utf-8'))
-        except Exception as e:
-            LOG.error('do_Post error: {}'.format(e))
+        except KeyError as e:
+            LOG.error('do_Post error: %s', e)
 
-#class MultiThreadingHttpServer(ThreadingMixIn, HTTPServer):
-#    pass
 
 class HTTPServerThread(threading.Thread):
     """
@@ -122,6 +123,7 @@ class HTTPServerThread(threading.Thread):
         """
         self.__server.shutdown()
 
+
 class HttpServer(object):
     """
     Socket Server implement for communication with AIClient
@@ -140,7 +142,7 @@ class HttpServer(object):
         self.__httpServerThread = HTTPServerThread(cfg['recv_port'])
         self.__httpServerThread.setDaemon(True)
         self.__httpServerThread.start()
-        LOG.info('Start HTTP, listen port: {}'.format(cfg['recv_port']))
+        LOG.info('Start HTTP, listen port: %s', cfg['recv_port'])
         return True
 
     def Finish(self):

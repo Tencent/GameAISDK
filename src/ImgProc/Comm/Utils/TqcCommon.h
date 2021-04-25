@@ -1,11 +1,14 @@
-﻿/*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+/*
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef TQC_COMMON_H_
-#define TQC_COMMON_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_UTILS_TQCCOMMON_H_
+#define GAME_AI_SDK_IMGPROC_COMM_UTILS_TQCCOMMON_H_
 
 #include <stdint.h>
 #include <stdio.h>
@@ -17,8 +20,7 @@
 #define TQC_CHARACTER_SIZE 28
 
 // 时间字符的各种格式，
-enum TIME_STRING_FORMAT
-{
+enum TIME_STRING_FORMAT {
     // 格式：只有年月日的紧缩格式 20150825
     TSF_YYYYMMDD,
     // 格式：年月日时分秒的格式，没有分隔符,20150825200145
@@ -34,8 +36,7 @@ enum TIME_STRING_FORMAT
 };
 
 // 时间转换缓存最小长度
-enum TIME_STRING_FORMAT_MIN_LEN
-{
+enum TIME_STRING_FORMAT_MIN_LEN {
     // 格式：只有年月日的紧缩格式 20150825
     TSF_YYYYMMDD_MIN_LEN = 10,
     // 格式：年月日时分秒的格式，没有分隔符,20150825200145
@@ -51,65 +52,66 @@ enum TIME_STRING_FORMAT_MIN_LEN
 };
 
 /*!
-   @brief 左规整字符串，去掉字符串左边的空格，换行，回车，Tab
-   @param[in] pszStr
-   @return char*
- */
+  @brief 左规整字符串，去掉字符串左边的空格，换行，回车，Tab
+  @param[in] pszStr
+  @return char*
+*/
 char* StrTrimLeft(char *pszStr);
 
 /*!
-   @brief 右规整字符串，去掉字符串右边的空格，换行，回车，Tab
-   @param[in] pszStr
-   @return char*
- */
+  @brief 右规整字符串，去掉字符串右边的空格，换行，回车，Tab
+  @param[in] pszStr
+  @return char*
+*/
 char* StrTrimRight(char *pszStr);
 
 /*!
-   @brief 规整字符串，去掉字符串两边的空格，换行，回车，Tab
-   @param[in] pszStr
-   @return char*
- */
+  @brief 规整字符串，去掉字符串两边的空格，换行，回车，Tab
+  @param[in] pszStr
+  @return char*
+*/
 char* StrTrim(char *pszStr);
 
 /*!
-   @brief 将字符串全部转换为大写字符
-   @param[in] pszStr
-   @return char*
- */
+  @brief 将字符串全部转换为大写字符
+  @param[in] pszStr
+  @return char*
+*/
 char* StrUpper(char *pszStr);
 
 /*!
-   @brief 将字符串全部转换为小写字符
-   @param[in] pszStr
-   @return char*
- */
+  @brief 将字符串全部转换为小写字符
+  @param[in] pszStr
+  @return char*
+*/
 char* StrLower(char *pszStr);
 
 /*!
-   @brief 字符串定长比较，敏感大小写
-   @param[in] pszStr1
-   @param[in] pszStr2
-   @param[in] nCmpLen 字符串比较长度，默认全比较
-   @return char*
- */
+  @brief 字符串定长比较，敏感大小写
+  @param[in] pszStr1
+  @param[in] pszStr2
+  @param[in] nCmpLen 字符串比较长度，默认全比较
+  @return char*
+*/
 int StrCaseSensorCmp(const char *pszStr1, const char *pszStr2, size_t nCmpLen = 0);
 
 /*!
-   @brief 获取当前系统时间戳（非线程安全）
-   @param[in] pszTimeBuff 缓存buff
-   @param[in] nTimeBuffLen 缓存buff长度
-   @param[in] eFormat 输出时间戳格式，默认格式为TSF_YYYY_MM_DD_HH_MM_SS_UUUUUU
-   @return 时间戳格式化输出
- */
-char* CurTimeStamp(char *pszTimeBuff, int nTimeBuffLen, TIME_STRING_FORMAT eFormat = TSF_YYYY_MM_DD_HH_MM_SS_UUUU);
+  @brief 获取当前系统时间戳（非线程安全）
+  @param[in] pszTimeBuff 缓存buff
+  @param[in] nTimeBuffLen 缓存buff长度
+  @param[in] eFormat 输出时间戳格式，默认格式为TSF_YYYY_MM_DD_HH_MM_SS_UUUUUU
+  @return 时间戳格式化输出
+*/
+char* CurTimeStamp(char *pszTimeBuff, int nTimeBuffLen,
+    TIME_STRING_FORMAT eFormat = TSF_YYYY_MM_DD_HH_MM_SS_UUUU);
 
 /*!
-   @brief 字符串比较，忽视大小写
-   @param[in] pszStr1
-   @param[in] pszStr2
-   @param[in] nCmpLen 字符串比较长度，默认全比较
-   @return int 其值含义参见strcasecmp返回值
- */
+  @brief 字符串比较，忽视大小写
+  @param[in] pszStr1
+  @param[in] pszStr2
+  @param[in] nCmpLen 字符串比较长度，默认全比较
+  @return int 其值含义参见strcasecmp返回值
+*/
 int StrCaseIgnoreCmp(const char *pszStr1, const char *pszStr2, size_t nCmpLen = 0);
 
 void CreateDir(const char *strSavedPath);
@@ -125,4 +127,7 @@ void SplitFullName(const std::string &str, std::string &path, std::string &fileN
 int gettimeofday(struct timeval *tp, void *tzp);
 #endif
 
-#endif // TQC_COMMON_H_
+#endif  // GAME_AI_SDK_IMGPROC_COMM_UTILS_TQCCOMMON_H_
+
+// 获取文件路径的目录名
+void GetPathDir(const char *path, char *dir);

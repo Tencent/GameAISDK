@@ -24,3 +24,8 @@ termcolor==1.1.0
 urllib3==1.24.1
 Werkzeug==1.0.0
 zmq==0.0.0
+pywinauto==0.6.8
+mss==6.0.0
+torch==1.3.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+torchvision==0.4.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+onnx==1.5

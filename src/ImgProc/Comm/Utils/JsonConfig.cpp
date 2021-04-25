@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -22,10 +25,8 @@
 #include "Comm/Utils/TqcString.h"
 
 
-bool CJsonConfig::loadFile(const char *pstrConfName)
-{
-    if (NULL == pstrConfName)
-    {
+bool CJsonConfig::loadFile(const char *pstrConfName) {
+    if (NULL == pstrConfName) {
         LOGE("input config file is null");
         return false;
     }
@@ -35,8 +36,7 @@ bool CJsonConfig::loadFile(const char *pstrConfName)
     // read and open file
     std::ifstream in(std::string(pstrConfName), std::ios::binary);
 
-    if (!in.is_open())
-    {
+    if (!in.is_open()) {
         LOGE("Error opening file, format is wrong.");
         return false;
     }
@@ -45,26 +45,21 @@ bool CJsonConfig::loadFile(const char *pstrConfName)
     return reader.parse(in, m_root);
 }
 
-bool CJsonConfig::GetData(const char *strKey, const Json::Value &JsonRoot, Json::Value *pval)
-{
-    if (pval == NULL)
-    {
+bool CJsonConfig::GetData(const char *strKey, const Json::Value &JsonRoot, Json::Value *pval) {
+    if (pval == NULL) {
         return false;
     }
 
     *pval = JsonRoot[strKey];
-    if (pval->isNull())
-    {
+    if (pval->isNull()) {
         return false;
     }
 
     return true;
 }
 
-int CJsonConfig::GetArraySize(const char *pData)
-{
-    if (NULL == pData)
-    {
+int CJsonConfig::GetArraySize(const char *pData) {
+    if (NULL == pData) {
         LOGE("input data is null");
         return -1;
     }
@@ -76,8 +71,7 @@ int CJsonConfig::GetArraySize(const char *pData)
     token(pData, "/", &szNameValue);
 
     int nSize = static_cast<int>(szNameValue.size());
-    if (nSize < 1)
-    {
+    if (nSize < 1) {
         LOGE("input data %s is invalid", pData);
         return -1;
     }
@@ -89,11 +83,9 @@ int CJsonConfig::GetArraySize(const char *pData)
     JsonValRoot = m_root;
 
     // iteration to obtain value with keywords which get from split source string
-    for (int i = 0; i < nSize; i++)
-    {
+    for (int i = 0; i < nSize; i++) {
         bRet = GetData(szNameValue[i].c_str(), JsonValRoot, &JsonVal);
-        if (!bRet)
-        {
+        if (!bRet) {
             // if one of keywords not exist, return false
             LOGI("get data  %s failed", szNameValue[i].c_str());
             return -1;
@@ -105,10 +97,8 @@ int CJsonConfig::GetArraySize(const char *pData)
     return JsonVal.size();
 }
 
-Json::Value  CJsonConfig::GetJosnValue(const char *pszValuePath)
-{
-    if (NULL == pszValuePath)
-    {
+Json::Value  CJsonConfig::GetJosnValue(const char *pszValuePath) {
+    if (NULL == pszValuePath) {
         LOGE("input data is invalid");
         return false;
     }
@@ -118,8 +108,7 @@ Json::Value  CJsonConfig::GetJosnValue(const char *pszValuePath)
     // each sub string is a keyword
     token(pszValuePath, "/", &szNameValue);
     int nSize = static_cast<int>(szNameValue.size());
-    if (nSize < 1)
-    {
+    if (nSize < 1) {
         LOGE("input %s is invalid", pszValuePath);
         return false;
     }
@@ -130,11 +119,9 @@ Json::Value  CJsonConfig::GetJosnValue(const char *pszValuePath)
     JsonValRoot = m_root;
 
     // iteration to obtain value with keywords which get from split source string
-    for (int i = 0; i < nSize; i++)
-    {
+    for (int i = 0; i < nSize; i++) {
         bRet = GetData(szNameValue[i].c_str(), JsonValRoot, &JsonVal);
-        if (!bRet)
-        {
+        if (!bRet) {
             // if one of keywords not exist, return false
             LOGI("get data  %s failed", szNameValue[i].c_str());
             return false;
@@ -147,10 +134,9 @@ Json::Value  CJsonConfig::GetJosnValue(const char *pszValuePath)
 
 
 bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const char *psElement,
-                                char *pszRst, int *pnLen, const ConfigDataType eDataType)
-{
-    if (NULL == pArrayPath || NULL == pnLen || NULL == psElement || NULL == pszRst || nIndex < 0 || eDataType > DATA_MAX)
-    {
+    char *pszRst, int *pnLen, const ConfigDataType eDataType) {
+    if (NULL == pArrayPath || NULL == pnLen || NULL == psElement || NULL == pszRst
+        || nIndex < 0 || eDataType > DATA_MAX) {
         LOGE("input data is invalid");
         return false;
     }
@@ -161,8 +147,7 @@ bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const 
     // each sub string is a keyword
     token(pArrayPath, "/", &szNameValue);
     int nSize = static_cast<int>(szNameValue.size());
-    if (nSize < 1)
-    {
+    if (nSize < 1) {
         LOGE("input %s is invalid", pArrayPath);
         return false;
     }
@@ -173,11 +158,9 @@ bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const 
     JsonValRoot = m_root;
 
     // iteration to obtain value with keywords which get from split source string
-    for (int i = 0; i < nSize; i++)
-    {
+    for (int i = 0; i < nSize; i++) {
         bRet = GetData(szNameValue[i].c_str(), JsonValRoot, &JsonVal);
-        if (!bRet)
-        {
+        if (!bRet) {
             // if one of keywords not exist, return false
             LOGI("get data  %s failed", szNameValue[i].c_str());
             return false;
@@ -187,9 +170,9 @@ bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const 
     }
 
     // if the index larger than the size of JonValue, the index is invalid
-    if (nIndex > static_cast<int>(JsonVal.size()))
-    {
-        LOGE("input index %d, larger than the max count  %d of array %s", nIndex, JsonVal.size(), pArrayPath);
+    if (nIndex > static_cast<int>(JsonVal.size())) {
+        LOGE("input index %d, larger than the max count  %d of array %s",
+            nIndex, JsonVal.size(), pArrayPath);
         return false;
     }
 
@@ -201,20 +184,16 @@ bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const 
     // }
     // else
     // {
-    if (!JsonVal[nIndex].isMember(psElement))
-    {
+    if (!JsonVal[nIndex].isMember(psElement)) {
         // LOGE("%s is not one of %s  %d element ", psElement, pArrayPath, nIndex);
         return false;
-    }
-    else
-    {
+    } else {
         DstValue = JsonVal[nIndex][psElement];
     }
     // }
     // data type may be int, uint, bool, string, float, double,
     // transfer it with JSON API and save the data length
-    switch (eDataType)
-    {
+    switch (eDataType) {
     case DATA_INT:
     {
         int nData = DstValue.asInt();
@@ -268,7 +247,7 @@ bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const 
     default:
     {
         pszRst = NULL;
-        *pnLen   = 0;
+        *pnLen = 0;
     }
     break;
     }
@@ -276,10 +255,9 @@ bool CJsonConfig::GetArrayValue(const char *pArrayPath, const int nIndex, const 
     return true;
 }
 
-bool CJsonConfig::GetConfValue(const char *pszSrcPath, char *pszDst, int *pnDstLen, const ConfigDataType eDataType)
-{
-    if (NULL == pszSrcPath || NULL == pnDstLen || eDataType > DATA_MAX)
-    {
+bool CJsonConfig::GetConfValue(const char *pszSrcPath, char *pszDst, int *pnDstLen,
+    const ConfigDataType eDataType) {
+    if (NULL == pszSrcPath || NULL == pnDstLen || eDataType > DATA_MAX) {
         LOGE("input data is is invalid");
         return false;
     }
@@ -291,8 +269,7 @@ bool CJsonConfig::GetConfValue(const char *pszSrcPath, char *pszDst, int *pnDstL
     token(pszSrcPath, "/", &szNameValue);
 
     int nSize = static_cast<int>(szNameValue.size());
-    if (nSize < 1)
-    {
+    if (nSize < 1) {
         return false;
     }
 
@@ -302,11 +279,9 @@ bool CJsonConfig::GetConfValue(const char *pszSrcPath, char *pszDst, int *pnDstL
     JsonValRoot = m_root;
 
     // iteration to obtain value with keywords which get from split source string
-    for (int i = 0; i < nSize; i++)
-    {
+    for (int i = 0; i < nSize; i++) {
         bRet = GetData(szNameValue[i].c_str(), JsonValRoot, &JsonVal);
-        if (!bRet)
-        {
+        if (!bRet) {
             // if one of keywords not exist, return false
             LOGI("get data %s failed", szNameValue[i].c_str());
             return false;
@@ -319,8 +294,7 @@ bool CJsonConfig::GetConfValue(const char *pszSrcPath, char *pszDst, int *pnDstL
 
     // data type may be int, uint, bool ,string, float, double,
     // transfer it with JSON API and save the data length
-    switch (eDataType)
-    {
+    switch (eDataType) {
     case DATA_INT:
     {
         int nData = val.asInt();
@@ -372,11 +346,11 @@ bool CJsonConfig::GetConfValue(const char *pszSrcPath, char *pszDst, int *pnDstL
     // set length zero or you can add other case process here
     default:
     {
-        pszDst  = NULL;
+        pszDst = NULL;
         *pnDstLen = 0;
     }
     break;
     }
 
     return true;
-};
+}

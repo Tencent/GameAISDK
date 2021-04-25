@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef IMG_SEG_H_
-#define IMG_SEG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGSEG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGSEG_H_
 
 #include <vector>
 
@@ -15,9 +18,8 @@
 //          IImgSegParam Class Define
 // **************************************************************************************
 
-class IImgSegParam : public IImgProcParam
-{
-public:
+class IImgSegParam : public IImgProcParam {
+  public:
     IImgSegParam() {}
     virtual ~IImgSegParam() {}
 };
@@ -26,9 +28,8 @@ public:
 //          CImgSegData Class Define
 // **************************************************************************************
 
-class CImgSegData : public IImgProcData
-{
-public:
+class CImgSegData : public IImgProcData {
+  public:
     CImgSegData() {}
     virtual ~CImgSegData() {}
 };
@@ -37,13 +38,12 @@ public:
 //          CImgSegResult Class Define
 // **************************************************************************************
 
-class CImgSegResult : public IImgProcResult
-{
-public:
+class CImgSegResult : public IImgProcResult {
+  public:
     CImgSegResult() {}
     virtual ~CImgSegResult() {}
 
-public:
+  public:
     std::vector<cv::Rect> m_oVecRects;
 };
 
@@ -51,9 +51,8 @@ public:
 //          IImgSegFactory Class Define
 // **************************************************************************************
 
-class IImgSegFactory : public IImgProcFactory
-{
-public:
+class IImgSegFactory : public IImgProcFactory {
+  public:
     IImgSegFactory() {}
     virtual ~IImgSegFactory() {}
 
@@ -64,11 +63,10 @@ public:
 //          IImgSeg Class Define
 // **************************************************************************************
 
-class IImgSeg : public IImgProc
-{
-public:
+class IImgSeg : public IImgProc {
+  public:
     IImgSeg() {}
     virtual ~IImgSeg() {}
 };
 
-#endif /* IMG_SEG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGSEG_H_

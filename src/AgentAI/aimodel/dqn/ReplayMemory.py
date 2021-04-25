@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -41,9 +44,11 @@ class ReplayMemory(object):
         """
         Add one sample (s, a, r, t) to replay memory
         """
+        self.logger.info('begin to add memory, action:{}, reward:{}, terminal:{}'.format(action, reward, terminal))
         self.replayBuffer.append((action, reward, state, terminal, variables))
 
         if len(self.replayBuffer) < self.maxBufferLen:
+            self.logger.info('replay buffer length not reach the max buffer len, len:{}'.format(len(self.replayBuffer)))
             if terminal is True:
                 self.replayBuffer.clear()
             return
@@ -69,6 +74,7 @@ class ReplayMemory(object):
                     #r = -1.0
                     t = True
                 variables = replay[4]
+
                 self._InsertNew(a, r, s, variables, t, 0)
             self.replayBuffer.clear()
         else:
@@ -82,6 +88,10 @@ class ReplayMemory(object):
 
 
     def _InsertNew(self, action, reward, state, variables, terminal, flag):
+
+        self.logger.info('insert the variable, action:{}, reward:{}, variables:{}, terminal:{}, flag:{}'
+                         .format(action, reward, variables, terminal, flag))
+
         if self.showState is True:
             cv2.imshow('replay', state)
             cv2.waitKey(1)
@@ -106,10 +116,19 @@ class ReplayMemory(object):
         """
         validCount = 0
         batch = list()
+        self.logger.info("the keySet is {}, batchSize:{}, stateRecentFrame:{}".format(self.keySet,
+                                                                                      batchSize, self.stateRecentFrame))
 
-        keys = random.sample(self.keySet, batchSize + self.stateRecentFrame)
+        if len(self.keySet) < batchSize + self.stateRecentFrame:
+            return batch
+
+        index = int(batchSize) + int(self.stateRecentFrame)
+        keys = random.sample(self.keySet, index)
+
         invalidKeys = [(self.keyIndicate - x) % self.replayNum \
                     for x in range(1, self.stateRecentFrame + 1)]
+
+        self.logger.info("the invalidKeys is".format(invalidKeys))
 
         for x in keys:
             if x in invalidKeys:
@@ -138,5 +157,5 @@ class ReplayMemory(object):
             validCount += 1
             if validCount == batchSize:
                 break
-
+        self.logger.info("the size of  batch is {}".format(len(batch)))
         return batch

@@ -1,0 +1,34 @@
+{
+"template":
+    {
+        "templateID":"0",
+        "templateName":"",
+        "path":"",
+        "name":"",
+        "location":{
+            "x":0,
+            "y":0,
+            "w":0,
+            "h":0
+        },
+        "threshold":0.8,
+        "classID":0
+    },
+"Infer":
+    {
+    "inferROI":{
+            "x":0,
+            "y":0,
+            "w":0,
+            "h":0
+        },
+        "inferLocations":[
+            {
+                "x":0,
+                "y":0,
+                "w":0,
+                "h":0
+            }
+        ]
+    }
+}

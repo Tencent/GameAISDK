@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -32,11 +35,17 @@ class BrainDQN(object):
         self.stateStep = 0
         self.qNetWork = QNetwork(args)
 
+        self.currentState = None
+
+        self.logger.debug("the observeState is {}".format( self.observeState))
+
     def Learn(self):
         """
         QNetwork learning, trian DQN network
         """
         if self.stateStep > self.observeState:
+            self.logger.debug("begin to train the model, stateStep:{}, observeState:{}".format(self.stateStep
+                              , self.observeState))
             self.qNetWork.Train()
 
     def GetAction(self, extraEpsilon=0.):
@@ -69,7 +78,7 @@ class BrainDQN(object):
         self.currentState = np.append(self.currentState[:, :, 1:], nextState, axis=2)
 
         self.stateStep += 1
-
+        self.logger.debug("get the step of state, stateStep:{}".format(self.stateStep))
         # change episilon
         if self.epsilon > self.finalEpsilon and self.stateStep > self.observeState:
             self.epsilon -= (self.initialEpsilon - self.finalEpsilon)/self.exploreState

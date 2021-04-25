@@ -1,0 +1,19 @@
+{
+    "BaseExample": {
+        "ExplorePath": "data/UIExploreResult/explore_path.txt",
+        "StartGroupID": 0,
+        "StartSceneID": 0,
+        "EndGroupID": 7,
+        "EndSceneID": 0,
+        "UIGraphFolder": "data/UIExploreResult/Graph/",
+        "ActionFolder": "data/UIExploreResult/Action/",
+        "BaseExampleFolder": "data/UIExploreResult/TestExample/"
+    },
+    "ExpandExample": {
+        "ExplorePath": "data/UIExploreResult/explore_path.txt",
+        "UIGraphFolder": "data/UIExploreResult/Graph/",
+        "ActionFolder": "data/UIExploreResult/Action/",
+        "BaseExampleFolder": "data/UIExploreResult/TestExample/",
+        "ExpandExampleFolder": "data/UIExploreResult/ExpandExample/"
+    }
+}

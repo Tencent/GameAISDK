@@ -19,9 +19,9 @@ if [ -d ../src/ImgProc/ ]; then
 	gen_cpp_pb ../src/ImgProc/Protobuf/ gameregProtoc.proto
 fi
 
-if [ -d ../tools/SDKTool/libs/AgentAPI/protocol/ ]; then
-	gen_py_pb ../tools/SDKTool/libs/AgentAPI/protocol/ common.proto
-	gen_py_pb ../tools/SDKTool/libs/AgentAPI/protocol/ gameregProtoc.proto
+if [ -d ../tools/SDKTool/src/communicate/protocol/ ]; then
+	gen_py_pb ../tools/SDKTool/src/communicate/protocol/ common.proto
+	gen_py_pb ../tools/SDKTool/src/communicate/protocol/ gameregProtoc.proto
 fi
 
 gen_py_pb ../src/ManageCenter/pyManageCenter/protocol/ common.proto

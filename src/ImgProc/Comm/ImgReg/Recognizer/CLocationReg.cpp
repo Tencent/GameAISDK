@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/ImgReg/Recognizer/CLocationReg.h"
 
@@ -10,34 +13,30 @@
 //          CLocationRegTmplMatch Class Functions
 // **************************************************************************************
 
-CLocationRegTmplMatch::CLocationRegTmplMatch()
-{
-    m_nTaskID       = -1; // task ID
-    m_nMatchCount   = 5; // matching count
-    m_fExpandWidth  = 0.10f; // width expand ratio
-    m_fExpandHeight = 0.10f; // height expand ratio
-    m_strAlgorithm  = "Detect"; // algorithm type
-    m_oLocation     = cv::Rect(-1, -1, -1, -1); // inference locatioin
-    m_oInferROI     = cv::Rect(-1, -1, -1, -1); // inference ROI
+CLocationRegTmplMatch::CLocationRegTmplMatch() {
+    m_nTaskID = -1;  // task ID
+    m_nMatchCount = 5;  // matching count
+    m_fExpandWidth = 0.10f;  // width expand ratio
+    m_fExpandHeight = 0.10f;  // height expand ratio
+    m_strAlgorithm = "Detect";  // algorithm type
+    m_oLocation = cv::Rect(-1, -1, -1, -1);  // inference locatioin
+    m_oInferROI = cv::Rect(-1, -1, -1, -1);  // inference ROI
 
-    m_oVecInferLocations.clear(); // clear vector of inference locatioins
-    m_oVecLocationPoints.clear(); // clear vector of locatioin Points
-    m_oVecROIPoints.clear(); // clear vector of ROI Points
-    m_oVecDetRects.clear(); // clear vector of detection rectangles
+    m_oVecInferLocations.clear();  // clear vector of inference locatioins
+    m_oVecLocationPoints.clear();  // clear vector of locatioin Points
+    m_oVecROIPoints.clear();  // clear vector of ROI Points
+    m_oVecDetRects.clear();  // clear vector of detection rectangles
 
-    m_hDetRectLock = TqcOsCreateMutex(); // detection rectangle locker
+    m_hDetRectLock = TqcOsCreateMutex();  // detection rectangle locker
 }
 
-CLocationRegTmplMatch::~CLocationRegTmplMatch()
-{
-    TqcOsDeleteMutex(m_hDetRectLock); // delete locker
+CLocationRegTmplMatch::~CLocationRegTmplMatch() {
+    TqcOsDeleteMutex(m_hDetRectLock);  // delete locker
 }
 
-int CLocationRegTmplMatch::Initialize(const int nTaskID, const tagLocationRegParam &stParam)
-{
+int CLocationRegTmplMatch::Initialize(const int nTaskID, const tagLocationRegParam &stParam) {
     // check task ID
-    if (nTaskID < 0)
-    {
+    if (nTaskID < 0) {
         LOGE("CLocationRegTmplMatch -- task ID %d is invalid, please check", nTaskID);
         return -1;
     }
@@ -46,33 +45,29 @@ int CLocationRegTmplMatch::Initialize(const int nTaskID, const tagLocationRegPar
     m_nTaskID = nTaskID;
 
     // check matching count
-    if (stParam.nMatchCount <= 0)
-    {
+    if (stParam.nMatchCount <= 0) {
         LOGE("task ID %d: CLocationRegTmplMatch -- match count %d is invalid, please check",
             m_nTaskID, stParam.nMatchCount);
         return -1;
     }
 
     // check width expand ratio
-    if (stParam.fExpandWidth < 0 || stParam.fExpandWidth > 1)
-    {
+    if (stParam.fExpandWidth < 0 || stParam.fExpandWidth > 1) {
         LOGE("task ID %d: CLocationRegTmplMatch -- expand width %f is invalid, please check",
             m_nTaskID, stParam.fExpandWidth);
         return -1;
     }
 
     // check height expand ratio
-    if (stParam.fExpandHeight < 0 || stParam.fExpandHeight > 1)
-    {
+    if (stParam.fExpandHeight < 0 || stParam.fExpandHeight > 1) {
         LOGE("task ID %d: CLocationRegTmplMatch -- expand height %f is invalid, please check",
             m_nTaskID, stParam.fExpandWidth);
         return -1;
     }
 
     // check algorithm type
-    if ("Detect" != stParam.strAlgorithm && "Infer" != stParam.strAlgorithm)
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- algorithm %s is invalid, please check",
+    if ("Detect" != stParam.strAlgorithm && "Infer" != stParam.strAlgorithm) {
+        LOGE("task ID %d: CLRegTmplMatch -- algorithm %s is invalid, please check",
             m_nTaskID, stParam.strAlgorithm.c_str());
         return -1;
     }
@@ -82,38 +77,36 @@ int CLocationRegTmplMatch::Initialize(const int nTaskID, const tagLocationRegPar
     // fill ColorMatch parameters
     CColorMatchParam oParam;
     nState = FillColorMatchParam(stParam, oParam);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- CColorMatch fill param failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLRegTmplMatch -- CColorMatch fill param failed, please check",
+            m_nTaskID);
         return nState;
     }
 
     // initialize ColorMatch
     nState = m_oMethod.Initialize(&oParam);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- CColorMatch initialization failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLRegTmplMatch -- CColorMatch initialization failed, please check",
+            m_nTaskID);
         return nState;
     }
 
     // copy parameters
-    if ("Detect" == stParam.strAlgorithm)
-    {
-        m_nMatchCount   = stParam.nMatchCount;
-        m_fExpandWidth  = stParam.fExpandWidth;
+    if ("Detect" == stParam.strAlgorithm) {
+        m_nMatchCount = stParam.nMatchCount;
+        m_fExpandWidth = stParam.fExpandWidth;
         m_fExpandHeight = stParam.fExpandHeight;
-        m_strAlgorithm  = stParam.strAlgorithm;
-        m_oLocation     = stParam.oLocation;
+        m_strAlgorithm = stParam.strAlgorithm;
+        m_oLocation = stParam.oLocation;
     }
 
-    if ("Infer" == stParam.strAlgorithm)
-    {
-        m_nMatchCount        = stParam.nMatchCount;
-        m_fExpandWidth       = stParam.fExpandWidth;
-        m_fExpandHeight      = stParam.fExpandHeight;
-        m_strAlgorithm       = stParam.strAlgorithm;
-        m_oLocation          = stParam.oLocation;
-        m_oInferROI          = stParam.oInferROI;
+    if ("Infer" == stParam.strAlgorithm) {
+        m_nMatchCount = stParam.nMatchCount;
+        m_fExpandWidth = stParam.fExpandWidth;
+        m_fExpandHeight = stParam.fExpandHeight;
+        m_strAlgorithm = stParam.strAlgorithm;
+        m_oLocation = stParam.oLocation;
+        m_oInferROI = stParam.oInferROI;
         m_oVecInferLocations = stParam.oVecInferLocations;
 
         // set location points and ROI points
@@ -124,12 +117,10 @@ int CLocationRegTmplMatch::Initialize(const int nTaskID, const tagLocationRegPar
     return 1;
 }
 
-int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult &stResult)
-{
+int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult &stResult) {
     // check source image
-    if (oSrcImg.empty())
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- source image is invalid, please check", m_nTaskID);
+    if (oSrcImg.empty()) {
+        LOGE("task ID %d: CLRegTmplMatch -- source image is invalid, please check", m_nTaskID);
         return -1;
     }
 
@@ -141,25 +132,23 @@ int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult 
     CObjDetData   oData;
     CObjDetResult oResult;
     oData.m_oSrcImg = oSrcImg;
-    oData.m_oROI    = oROI;
+    oData.m_oROI = oROI;
 
     // run ObjDet
     int nState = m_oMethod.Predict(&oData, &oResult);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- CColorMatch predict failed, please check", m_nTaskID);
-        stResult.nState   = 0;
+    if (1 != nState) {
+        LOGE("task ID %d: CLRegTmplMatch -- CColorMatch predict failed, please check", m_nTaskID);
+        stResult.nState = 0;
         stResult.nRectNum = 0;
-        stResult.fScale   = 0.0f;
+        stResult.fScale = 0.0f;
         return nState;
     }
 
-    if (oResult.m_oVecBBoxes.empty())
-    {
-        LOGI("task ID %d: CLocationRegTmplMatch -- cannot match template in ROI", m_nTaskID);
-        stResult.nState   = 1;
+    if (oResult.m_oVecBBoxes.empty()) {
+        LOGI("task ID %d: CLRegTmplMatch -- cannot match template in ROI", m_nTaskID);
+        stResult.nState = 1;
         stResult.nRectNum = 0;
-        stResult.fScale   = 0.0f;
+        stResult.fScale = 0.0f;
         return 1;
     }
 
@@ -167,11 +156,10 @@ int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult 
     TqcOsAcquireMutex(m_hDetRectLock);
     m_oVecDetRects.push_back(oResult.m_oVecBBoxes[0].oRect);
     TqcOsReleaseMutex(m_hDetRectLock);
-    if (m_oVecDetRects.size() < m_nMatchCount)
-    {
-        stResult.nState   = 1;
+    if (m_oVecDetRects.size() < m_nMatchCount) {
+        stResult.nState = 1;
         stResult.nRectNum = 0;
-        stResult.fScale   = 0.0f;
+        stResult.fScale = 0.0f;
         return 1;
     }
 
@@ -182,21 +170,19 @@ int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult 
     TqcOsReleaseMutex(m_hDetRectLock);
 
     float fScale = 0.5f * (static_cast<float>(oAvgRect.width) / m_oLocation.width +
-                           static_cast<float>(oAvgRect.height) / m_oLocation.height);
+        static_cast<float>(oAvgRect.height) / m_oLocation.height);
 
-    if ("Detect" == m_strAlgorithm)
-    {
-        stResult.nState     = 1;
-        stResult.nRectNum   = 1;
-        stResult.fScale     = fScale;
-        stResult.fScore     = oResult.m_oVecBBoxes[0].fScore;
+    if ("Detect" == m_strAlgorithm) {
+        stResult.nState = 1;
+        stResult.nRectNum = 1;
+        stResult.fScale = fScale;
+        stResult.fScore = oResult.m_oVecBBoxes[0].fScore;
         stResult.szRects[0] = oAvgRect;
 
         return 1;
     }
 
-    if ("Infer" == m_strAlgorithm)
-    {
+    if ("Infer" == m_strAlgorithm) {
         cv::Rect oROILoc;
         InferROI(oAvgRect, fScale, oROILoc);
         nState = CheckROI(m_nTaskID, oSrcImg, oROILoc);
@@ -204,12 +190,11 @@ int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult 
         std::vector<cv::Rect> oVecRects;
         InferLocation(oROILoc, fScale, oVecRects);
 
-        stResult.nState   = 1;
+        stResult.nState = 1;
         stResult.nRectNum = static_cast<int>(oVecRects.size());
-        stResult.fScale   = fScale;
+        stResult.fScale = fScale;
 
-        for (int i = 0; i < static_cast<int>(oVecRects.size()); i++)
-        {
+        for (int i = 0; i < static_cast<int>(oVecRects.size()); i++) {
             stResult.szRects[i] = oVecRects[i];
         }
     }
@@ -217,47 +202,44 @@ int CLocationRegTmplMatch::Predict(const cv::Mat &oSrcImg, tagLocationRegResult 
     return 1;
 }
 
-int CLocationRegTmplMatch::Release()
-{
-    m_oVecInferLocations.clear(); // clear vector of inference locatioins
-    m_oVecLocationPoints.clear(); // clear vector of locatioin Points
-    m_oVecROIPoints.clear(); // clear vector of ROI Points
-    m_oVecDetRects.clear(); // clear vector of detection rectangles
+int CLocationRegTmplMatch::Release() {
+    m_oVecInferLocations.clear();  // clear vector of inference locatioins
+    m_oVecLocationPoints.clear();  // clear vector of locatioin Points
+    m_oVecROIPoints.clear();  // clear vector of ROI Points
+    m_oVecDetRects.clear();  // clear vector of detection rectangles
 
     // release ColorMatch
     int nState = m_oMethod.Release();
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- CColorMatch release failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLocationRegTmplMatch -- CColorMatch release failed, please check",
+            m_nTaskID);
         return nState;
     }
 
     return 1;
 }
 
-int CLocationRegTmplMatch::FillColorMatchParam(const tagLocationRegParam &stParam, CColorMatchParam &oParam)
-{
-    oParam.m_nTaskID     = m_nTaskID;
+int CLocationRegTmplMatch::FillColorMatchParam(const tagLocationRegParam &stParam,
+    CColorMatchParam &oParam) {
+    oParam.m_nTaskID = m_nTaskID;
     oParam.m_nScaleLevel = stParam.nScaleLevel;
-    oParam.m_fMinScale   = stParam.fMinScale;
-    oParam.m_fMaxScale   = stParam.fMaxScale;
-    oParam.m_oROI        = stParam.oLocation;
-    oParam.m_strOpt      = "CCOEFF_NORMED";
+    oParam.m_fMinScale = stParam.fMinScale;
+    oParam.m_fMaxScale = stParam.fMaxScale;
+    oParam.m_oROI = stParam.oLocation;
+    oParam.m_strOpt = "CCOEFF_NORMED";
 
     // analyze tmplate path
     int nState = AnalyzeTmplPath(m_nTaskID, stParam.oVecTmpls, oParam.m_oVecTmpls);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationRegTmplMatch -- analyze template path failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLRegTmplMatch -- analyze template path failed, please check",
+            m_nTaskID);
         return nState;
     }
 
     // copy location to template rectangle
-    for (int i = 0; i < static_cast<int>(oParam.m_oVecTmpls.size()); i++)
-    {
+    for (int i = 0; i < static_cast<int>(oParam.m_oVecTmpls.size()); i++) {
         if ((-1 == oParam.m_oVecTmpls[i].oRect.width && -1 == oParam.m_oVecTmpls[i].oRect.height) ||
-            (0 == oParam.m_oVecTmpls[i].oRect.width && 0 == oParam.m_oVecTmpls[i].oRect.height))
-        {
+            (0 == oParam.m_oVecTmpls[i].oRect.width && 0 == oParam.m_oVecTmpls[i].oRect.height)) {
             oParam.m_oVecTmpls[i].oRect = stParam.oLocation;
         }
     }
@@ -265,8 +247,7 @@ int CLocationRegTmplMatch::FillColorMatchParam(const tagLocationRegParam &stPara
     return 1;
 }
 
-int CLocationRegTmplMatch::SetPoint(const cv::Rect &oRect, std::vector<cv::Point> &oVecPoints)
-{
+int CLocationRegTmplMatch::SetPoint(const cv::Rect &oRect, std::vector<cv::Point> &oVecPoints) {
     oVecPoints.clear();
     int x = 0;
     int y = 0;
@@ -319,8 +300,10 @@ int CLocationRegTmplMatch::SetPoint(const cv::Rect &oRect, std::vector<cv::Point
     return 1;
 }
 
-int CLocationRegTmplMatch::SetROI(const cv::Rect &oRect, int nImgWidth, int nImgHeight, cv::Rect &oROI)
-{
+int CLocationRegTmplMatch::SetROI(const cv::Rect &oRect, int nImgWidth, int nImgHeight,
+    cv::Rect &oROI) {
+    // remove resize 1280
+    /*
     if (nImgWidth > nImgHeight)
     {
         ResizeRect(oRect, static_cast<float>(nImgWidth) / IMAGE_LONG_SIDE,
@@ -330,38 +313,35 @@ int CLocationRegTmplMatch::SetROI(const cv::Rect &oRect, int nImgWidth, int nImg
     {
         ResizeRect(oRect, static_cast<float>(nImgHeight) / IMAGE_LONG_SIDE,
                    static_cast<float>(nImgHeight) / IMAGE_LONG_SIDE, oROI);
-    }
+    }*/
+    ResizeRect(oRect, 1.0f, 1.0f, oROI);
 
     ExpandRect(oROI, static_cast<int>(nImgWidth * m_fExpandWidth),
-               static_cast<int>(nImgHeight * m_fExpandHeight), oROI);
+        static_cast<int>(nImgHeight * m_fExpandHeight), oROI);
 
     return 1;
 }
 
-int CLocationRegTmplMatch::InferROI(const cv::Rect &oRect, float fScale, cv::Rect &oROILoc)
-{
+int CLocationRegTmplMatch::InferROI(const cv::Rect &oRect, float fScale, cv::Rect &oROILoc) {
     // search closest two points between location points and ROI points
-    int   nLocIdx  = 0;
-    int   nROIIdx  = 0;
+    int   nLocIdx = 0;
+    int   nROIIdx = 0;
     float fMinDist = static_cast<float>(1e+8);
 
-    for (int i = 0; i < m_oVecLocationPoints.size(); i++)
-    {
+    for (int i = 0; i < m_oVecLocationPoints.size(); i++) {
         cv::Point oPt1 = m_oVecLocationPoints[i];
 
-        for (int j = 0; j < m_oVecROIPoints.size(); j++)
-        {
+        for (int j = 0; j < m_oVecROIPoints.size(); j++) {
             cv::Point oPt2 = m_oVecROIPoints[j];
 
             int nDx = oPt1.x - oPt2.x;
             int nDy = oPt1.y - oPt2.y;
 
             float fDist = static_cast<float>(std::sqrt(nDx * nDx + nDy * nDy));
-            if (fDist < fMinDist)
-            {
+            if (fDist < fMinDist) {
                 fMinDist = fDist;
-                nLocIdx  = i;
-                nROIIdx  = j;
+                nLocIdx = i;
+                nROIIdx = j;
             }
         }
     }
@@ -376,80 +356,64 @@ int CLocationRegTmplMatch::InferROI(const cv::Rect &oRect, float fScale, cv::Rec
     oROIPoint.y = m_oVecROIPoints[nROIIdx].y - oOffset.y;
 
     // infer ROI location
-    int nInferWidth  = static_cast<int>(fScale * m_oInferROI.width);
+    int nInferWidth = static_cast<int>(fScale * m_oInferROI.width);
     int nInferHeight = static_cast<int>(fScale * m_oInferROI.height);
 
-    if (0 == nROIIdx)
-    {
+    if (0 == nROIIdx) {
         // left-top
         oROILoc.x = oROIPoint.x;
         oROILoc.y = oROIPoint.y;
-    }
-    else if (1 == nROIIdx)
-    {
+    } else if (1 == nROIIdx) {
         // left-down
         oROILoc.x = oROIPoint.x;
         oROILoc.y = oROIPoint.y - nInferHeight;
-    }
-    else if (2 == nROIIdx)
-    {
+    } else if (2 == nROIIdx) {
         // right-top
         oROILoc.x = oROIPoint.x - nInferWidth;
         oROILoc.y = oROIPoint.y;
-    }
-    else if (3 == nROIIdx)
-    {
+    } else if (3 == nROIIdx) {
         // right-down
         oROILoc.x = oROIPoint.x - nInferWidth;
         oROILoc.y = oROIPoint.y - nInferHeight;
-    }
-    else if (4 == nROIIdx)
-    {
+    } else if (4 == nROIIdx) {
         // top-middle
         oROILoc.x = static_cast<int>(oROIPoint.x - 0.5 * nInferWidth);
         oROILoc.y = oROIPoint.y;
-    }
-    else if (5 == nROIIdx)
-    {
+    } else if (5 == nROIIdx) {
         // left-middle
         oROILoc.x = oROIPoint.x;
         oROILoc.y = static_cast<int>(oROIPoint.y - 0.5 * nInferHeight);
-    }
-    else if (6 == nROIIdx)
-    {
+    } else if (6 == nROIIdx) {
         // right-middle
         oROILoc.x = oROIPoint.x - nInferWidth;
         oROILoc.y = static_cast<int>(oROIPoint.y - 0.5 * nInferHeight);
-    }
-    else if (7 == nROIIdx)
-    {
+    } else if (7 == nROIIdx) {
         // down-middle
         oROILoc.x = static_cast<int>(oROIPoint.x - 0.5 * nInferWidth);
         oROILoc.y = oROIPoint.y - nInferHeight;
-    }
-    else
-    {
+    } else {
         // center
         oROILoc.x = static_cast<int>(oROIPoint.x - 0.5 * nInferWidth);
         oROILoc.y = static_cast<int>(oROIPoint.y - 0.5 * nInferHeight);
     }
 
-    oROILoc.width  = nInferWidth;
+    oROILoc.width = nInferWidth;
     oROILoc.height = nInferHeight;
 
     return 1;
 }
 
-int CLocationRegTmplMatch::InferLocation(const cv::Rect &oROILoc, float fScale, std::vector<cv::Rect> &oVecRects)
-{
+int CLocationRegTmplMatch::InferLocation(const cv::Rect &oROILoc, float fScale,
+    std::vector<cv::Rect> &oVecRects) {
     oVecRects.clear();
 
-    for (int i = 0; i < m_oVecInferLocations.size(); i++)
-    {
+    for (int i = 0; i < m_oVecInferLocations.size(); i++) {
         cv::Rect oRect;
-        oRect.x      = static_cast<int>((m_oVecInferLocations[i].x - m_oInferROI.x) * fScale + oROILoc.x);
-        oRect.y      = static_cast<int>((m_oVecInferLocations[i].y - m_oInferROI.y) * fScale + oROILoc.y);
-        oRect.width  = static_cast<int>(m_oVecInferLocations[i].width * fScale);
+        oRect.x = static_cast<int>((m_oVecInferLocations[i].x - m_oInferROI.x)
+            * fScale + oROILoc.x);
+        oRect.y = static_cast<int>((m_oVecInferLocations[i].y - m_oInferROI.y)
+            * fScale + oROILoc.y);
+        oRect.width = static_cast<int>(m_oVecInferLocations[i].width * fScale);
         oRect.height = static_cast<int>(m_oVecInferLocations[i].height * fScale);
         oVecRects.push_back(oRect);
     }
@@ -457,62 +421,50 @@ int CLocationRegTmplMatch::InferLocation(const cv::Rect &oROILoc, float fScale, 
     return 1;
 }
 
-int CLocationRegTmplMatch::ComputeOffset(const int nLocIdx, const cv::Rect &oLocation, const cv::Rect &oRect,
-    cv::Point &oOffset)
-{
-    if (0 == nLocIdx)
-    {
+int CLocationRegTmplMatch::ComputeOffset(const int nLocIdx, const cv::Rect &oLocation,
+    const cv::Rect &oRect, cv::Point &oOffset) {
+    if (0 == nLocIdx) {
         // left - top
         oOffset.x = m_oLocation.x - oRect.x;
         oOffset.y = m_oLocation.y - oRect.y;
-    }
-    else if (1 == nLocIdx)
-    {
+    } else if (1 == nLocIdx) {
         // left-down
         oOffset.x = m_oLocation.x - oRect.x;
         oOffset.y = m_oLocation.y + m_oLocation.height - oRect.y - oRect.height;
-    }
-    else if (2 == nLocIdx)
-    {
+    } else if (2 == nLocIdx) {
         // right-top
         oOffset.x = m_oLocation.x + m_oLocation.width - oRect.x - oRect.width;
         oOffset.y = m_oLocation.y - oRect.y;
-    }
-    else if (3 == nLocIdx)
-    {
+    } else if (3 == nLocIdx) {
         // right-down
         oOffset.x = m_oLocation.x + m_oLocation.width - oRect.x - oRect.width;
         oOffset.y = m_oLocation.y + m_oLocation.height - oRect.y - oRect.height;
-    }
-    else if (4 == nLocIdx)
-    {
+    } else if (4 == nLocIdx) {
         // top-middle
-        oOffset.x = static_cast<int>(m_oLocation.x + 0.5 * m_oLocation.width - oRect.x - 0.5 * oRect.width);
+        oOffset.x = static_cast<int>(m_oLocation.x + 0.5 * m_oLocation.width
+            - oRect.x - 0.5 * oRect.width);
         oOffset.y = m_oLocation.y - oRect.y;
-    }
-    else if (5 == nLocIdx)
-    {
+    } else if (5 == nLocIdx) {
         // left-middle
         oOffset.x = m_oLocation.x - oRect.x;
-        oOffset.y = static_cast<int>(m_oLocation.y + 0.5 * m_oLocation.height - oRect.y - 0.5 * oRect.height);
-    }
-    else if (6 == nLocIdx)
-    {
+        oOffset.y = static_cast<int>(m_oLocation.y + 0.5 * m_oLocation.height
+            - oRect.y - 0.5 * oRect.height);
+    } else if (6 == nLocIdx) {
         // right-middle
         oOffset.x = m_oLocation.x + m_oLocation.width - oRect.x - oRect.width;
-        oOffset.y = static_cast<int>(m_oLocation.y + 0.5 * m_oLocation.height - oRect.y - 0.5 * oRect.height);
-    }
-    else if (7 == nLocIdx)
-    {
+        oOffset.y = static_cast<int>(m_oLocation.y + 0.5 * m_oLocation.height - oRect.y
+            - 0.5 * oRect.height);
+    } else if (7 == nLocIdx) {
         // down-middle
-        oOffset.x = static_cast<int>(m_oLocation.x + 0.5 * m_oLocation.width - oRect.x - 0.5 * oRect.width);
+        oOffset.x = static_cast<int>(m_oLocation.x + 0.5 * m_oLocation.width - oRect.x
+            - 0.5 * oRect.width);
         oOffset.y = m_oLocation.y + m_oLocation.height - oRect.y - oRect.height;
-    }
-    else
-    {
+    } else {
         // center
-        oOffset.x = static_cast<int>(m_oLocation.x + 0.5 * m_oLocation.width - oRect.x - 0.5 * oRect.width);
-        oOffset.y = static_cast<int>(m_oLocation.y + 0.5 * m_oLocation.height - oRect.y - 0.5 * oRect.height);
+        oOffset.x = static_cast<int>(m_oLocation.x + 0.5 * m_oLocation.width - oRect.x
+            - 0.5 * oRect.width);
+        oOffset.y = static_cast<int>(m_oLocation.y + 0.5 * m_oLocation.height - oRect.y
+            - 0.5 * oRect.height);
     }
 
     return 1;
@@ -522,31 +474,27 @@ int CLocationRegTmplMatch::ComputeOffset(const int nLocIdx, const cv::Rect &oLoc
 //          CLocationReg Class Functions
 // **************************************************************************************
 
-CLocationReg::CLocationReg()
-{}
+CLocationReg::CLocationReg() {
+}
 
-CLocationReg::~CLocationReg()
-{}
+CLocationReg::~CLocationReg() {
+}
 
-int CLocationReg::Initialize(IRegParam *pParam)
-{
+int CLocationReg::Initialize(IRegParam *pParam) {
     // check parameters
-    if (NULL == pParam)
-    {
+    if (NULL == pParam) {
         LOGE("CLocationReg -- IRegParam pointer is NULL, please check");
         return -1;
     }
 
     CLocationRegParam *pP = dynamic_cast<CLocationRegParam*>(pParam);
 
-    if (NULL == pP)
-    {
-        LOGE("CLocationReg -- CLocationRegParam pointer is NULL, please check");
+    if (NULL == pP) {
+        LOGE("CLocationReg -- CLRegParam pointer is NULL, please check");
         return -1;
     }
 
-    if (pP->m_nTaskID < 0)
-    {
+    if (pP->m_nTaskID < 0) {
         LOGE("CLocationReg -- task ID %d is invalid, please check", pP->m_nTaskID);
         return -1;
     }
@@ -557,9 +505,8 @@ int CLocationReg::Initialize(IRegParam *pParam)
 
     // initialize method
     int nState = m_oMethod.Initialize(m_nTaskID, m_stParam);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationReg -- CLocationRegTmplMatch initialization failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLocationReg -- initialization failed, please check", m_nTaskID);
         return nState;
     }
 
@@ -567,31 +514,28 @@ int CLocationReg::Initialize(IRegParam *pParam)
     return 1;
 }
 
-int CLocationReg::Predict(const tagRegData &stData, IRegResult *pResult)
-{
+int CLocationReg::Predict(const tagRegData &stData, IRegResult *pResult) {
     // check parameters
-    if (stData.nFrameIdx < 0)
-    {
-        LOGE("task ID %d: CLocationReg -- frame index %d is invalid, please check", m_nTaskID, stData.nFrameIdx);
+    if (stData.nFrameIdx < 0) {
+        LOGE("task ID %d: CLocationReg -- frame index %d is invalid, please check",
+            m_nTaskID, stData.nFrameIdx);
         return -1;
     }
 
-    if (stData.oSrcImg.empty())
-    {
+    if (stData.oSrcImg.empty()) {
         LOGE("task ID %d: CLocationReg -- source image is invalid, please check", m_nTaskID);
         return -1;
     }
 
-    if (NULL == pResult)
-    {
+    if (NULL == pResult) {
         LOGE("task ID %d: CLocationReg -- IRegResult pointer is NULL, please check", m_nTaskID);
         return -1;
     }
 
     CLocationRegResult *pR = dynamic_cast<CLocationRegResult*>(pResult);
-    if (NULL == pR)
-    {
-        LOGE("task ID %d: CLocationReg -- CLocationRegResult pointer is NULL, please check", m_nTaskID);
+    if (NULL == pR) {
+        LOGE("task ID %d: CLocationReg -- CLocationRegResult pointer is NULL, please check",
+            m_nTaskID);
         return -1;
     }
 
@@ -599,9 +543,9 @@ int CLocationReg::Predict(const tagRegData &stData, IRegResult *pResult)
 
     // run method
     int nState = m_oMethod.Predict(stData.oSrcImg, stResult);
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationReg -- CLocationRegTmplMatch predict failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLocationReg -- CLocationRegTmplMatch predict failed, please check",
+            m_nTaskID);
         return nState;
     }
 
@@ -612,14 +556,13 @@ int CLocationReg::Predict(const tagRegData &stData, IRegResult *pResult)
     return 1;
 }
 
-int CLocationReg::Release()
-{
+int CLocationReg::Release() {
     // release method
     int nState = m_oMethod.Release();
 
-    if (1 != nState)
-    {
-        LOGE("task ID %d: CLocationReg -- CLocationRegTmplMatch release failed, please check", m_nTaskID);
+    if (1 != nState) {
+        LOGE("task ID %d: CLocationReg -- CLocationRegTmplMatch release failed, please check",
+            m_nTaskID);
         return nState;
     }
 
@@ -632,8 +575,7 @@ int CLocationReg::Release()
 // **************************************************************************************
 int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::Rect &oSrcRect,
     const float fThreshold, const float fExpandWidth, const float fExpandHeight,
-    cv::Rect *pDstRect, float *pScore)
-{
+    cv::Rect *pDstRect, float *pScore) {
     float   fResizeSrcRatio;
     cv::Mat oResizeSrcImg;
 
@@ -652,8 +594,7 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
     int nState = 0;
 
     nState = CheckROI(nID, oResizeTmplImg, oResizeSrcRect);
-    if (1 != nState)
-    {
+    if (1 != nState) {
         LOGE("UI ID %d: template rectangle is invalid, please check", nID);
         return nState;
     }
@@ -662,12 +603,14 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
     stTmpl.fThreshold = fThreshold;
     stTmpl.oTmplImg = oResizeTmplImg(oResizeSrcRect);
 
-	// it should recalculate position in source image according to template position
-	cv::Rect oRealLocation;
-	oRealLocation.x = static_cast<int>(oResizeSrcImg.cols * oResizeSrcRect.x / oResizeTmplImg.cols);
-	oRealLocation.y = static_cast<int>(oResizeSrcImg.rows * oResizeSrcRect.y / oResizeTmplImg.rows);
-	oRealLocation.width = static_cast<int>(oResizeSrcImg.cols * oResizeSrcRect.width / oResizeTmplImg.cols);
-	oRealLocation.height = static_cast<int>(oResizeSrcImg.rows * oResizeSrcRect.height / oResizeTmplImg.rows);
+    // it should recalculate position in source image according to template position
+    cv::Rect oRealLocation;
+    oRealLocation.x = static_cast<int>(oResizeSrcImg.cols * oResizeSrcRect.x / oResizeTmplImg.cols);
+    oRealLocation.y = static_cast<int>(oResizeSrcImg.rows * oResizeSrcRect.y / oResizeTmplImg.rows);
+    oRealLocation.width = static_cast<int>(oResizeSrcImg.cols
+        * oResizeSrcRect.width / oResizeTmplImg.cols);
+    oRealLocation.height = static_cast<int>(oResizeSrcImg.rows
+        * oResizeSrcRect.height / oResizeTmplImg.rows);
 
     tagLocationRegParam stParam;
     stParam.strAlgorithm = "Detect";
@@ -675,8 +618,8 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
     stParam.fMaxScale = 1.2f;
     stParam.nScaleLevel = 9;
     stParam.nMatchCount = 1;
-    //stParam.oLocation = oResizeSrcRect;
-	stParam.oLocation = oRealLocation;
+    // stParam.oLocation = oResizeSrcRect;
+    stParam.oLocation = oRealLocation;
     stParam.fExpandWidth = fExpandWidth;
     stParam.fExpandHeight = fExpandHeight;
     stParam.oVecTmpls.push_back(stTmpl);
@@ -691,23 +634,20 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
 
     CLocationReg oReg;
     nState = oReg.Initialize(&oParam);
-    if (1 != nState)
-    {
+    if (1 != nState) {
         LOGE("UI ID %d: CLocationReg initialize failed, please check", nID);
         return nState;
     }
 
     CLocationRegResult oResult;
     nState = oReg.Predict(stData, &oResult);
-    if (1 != nState)
-    {
+    if (1 != nState) {
         LOGE("UI ID %d: CLocationReg predict failed, please check", nID);
         return nState;
     }
 
     nState = oReg.Release();
-    if (1 != nState)
-    {
+    if (1 != nState) {
         LOGE("UI ID %d: CLocationReg release failed, please check", nID);
         return nState;
     }
@@ -715,17 +655,14 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
     tagLocationRegResult stResult;
     oResult.GetResult(&stResult);
 
-    if (1 == stResult.nState)
-    {
+    if (1 == stResult.nState) {
         pDstRect->x = static_cast<int>(stResult.szRects[0].x * fResizeSrcRatio);
         pDstRect->y = static_cast<int>(stResult.szRects[0].y * fResizeSrcRatio);
         pDstRect->width = static_cast<int>(stResult.szRects[0].width * fResizeSrcRatio);
         pDstRect->height = static_cast<int>(stResult.szRects[0].height * fResizeSrcRatio);
         *pScore = stResult.fScore;
         return 1;
-    }
-    else
-    {
+    } else {
         pDstRect->x = 0;
         pDstRect->y = 0;
         pDstRect->width = 0;
@@ -737,12 +674,8 @@ int Detect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::R
     return 1;
 }
 
-// int g_nImageIndex = 0;
-// int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::Point &oSrcPoint,
-//               cv::Point *pDstPoint)
-int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const tagActionState &oSrcPoint,
-                cv::Point *pDstPoint)
-{
+int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg,
+    const tagActionState &oSrcPoint, cv::Point *pDstPoint) {
     int nExpandWidth = oSrcPoint.nTmplExpdWPixel;
     int nExpandHeight = oSrcPoint.nTmplExpdHPixel;
     int nCenterX = oSrcPoint.nActionX;
@@ -766,20 +699,23 @@ int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const 
 
     cv::Rect oDstRect;
     float fScore;
-    int nState = Detect(nID, oSrcImg, oTmplImg, oSrcRect, fThreshold, fExpandWidth, fExpandHeight, &oDstRect, &fScore);
-    if (1 != nState)
-    {
+    int nState = Detect(nID, oSrcImg, oTmplImg, oSrcRect, fThreshold,
+        fExpandWidth, fExpandHeight, &oDstRect, &fScore);
+    if (1 != nState) {
         LOGE("UI ID %d: detect point failed, please check", nID);
         pDstPoint->x = 0;
         pDstPoint->y = 0;
 
         /*
         char szImageName[512] = { 0 };
-        SNPRINTF(szImageName, 512, "src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y, pDstPoint->x, pDstPoint->y);
+        SNPRINTF(szImageName, 512, "src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x,
+        oSrcPoint.y, pDstPoint->x, pDstPoint->y);
         cv::imwrite(szImageName, oSrcImg);
         memset(szImageName, 0, sizeof(szImageName));
-        printf("save src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y, pDstPoint->x, pDstPoint->y);
-        SNPRINTF(szImageName, 512, "template_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y, pDstPoint->x, pDstPoint->y);
+        printf("save src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y,
+        pDstPoint->x, pDstPoint->y);
+        SNPRINTF(szImageName, 512, "template_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x,
+        oSrcPoint.y, pDstPoint->x, pDstPoint->y);
         cv::imwrite(szImageName, oTmplImg);
         g_nImageIndex++;
         */
@@ -793,11 +729,14 @@ int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const 
 
     /*
     char szImageName[512] = { 0 };
-    printf("save src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y, pDstPoint->x, pDstPoint->y);
-    SNPRINTF(szImageName, 512, "src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y, pDstPoint->x, pDstPoint->y);
+    printf("save src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y,
+    pDstPoint->x, pDstPoint->y);
+    SNPRINTF(szImageName, 512, "src_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x,
+    oSrcPoint.y, pDstPoint->x, pDstPoint->y);
     cv::imwrite(szImageName, oSrcImg);
     memset(szImageName, 0, sizeof(szImageName));
-    SNPRINTF(szImageName, 512, "template_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x, oSrcPoint.y, pDstPoint->x, pDstPoint->y);
+    SNPRINTF(szImageName, 512, "template_%d__%d_%d-%d_%d.jpg", g_nImageIndex, oSrcPoint.x,
+    oSrcPoint.y, pDstPoint->x, pDstPoint->y);
     cv::imwrite(szImageName, oTmplImg);
     g_nImageIndex++;
     */
@@ -806,14 +745,13 @@ int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const 
 }
 
 int DetectRect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::Rect &oSrcRect,
-               const float fThreshold, cv::Rect *pDstRect, float *pScore)
-{
+    const float fThreshold, cv::Rect *pDstRect, float *pScore) {
     float fExpandWidth = 0.275f;
     float fExpandHeight = 0.275f;
 
-    int nState = Detect(nID, oSrcImg, oTmplImg, oSrcRect, fThreshold, fExpandWidth, fExpandHeight, pDstRect, pScore);
-    if (1 != nState)
-    {
+    int nState = Detect(nID, oSrcImg, oTmplImg, oSrcRect, fThreshold, fExpandWidth,
+        fExpandHeight, pDstRect, pScore);
+    if (1 != nState) {
         LOGE("UI ID %d: detect rect failed, please check", nID);
         return nState;
     }
@@ -821,15 +759,14 @@ int DetectRect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const c
     return 1;
 }
 
-int DetectCloseIcon(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::Rect &oSrcRect,
-    const float fThreshold, cv::Rect *pDstRect, float *pScore)
-{
+int DetectCloseIcon(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg,
+    const cv::Rect &oSrcRect, const float fThreshold, cv::Rect *pDstRect, float *pScore) {
     float fExpandWidth = 1.0f;
     float fExpandHeight = 1.0f;
 
-    int nState = Detect(nID, oSrcImg, oTmplImg, oSrcRect, fThreshold, fExpandWidth, fExpandHeight, pDstRect, pScore);
-    if (1 != nState)
-    {
+    int nState = Detect(nID, oSrcImg, oTmplImg, oSrcRect, fThreshold,
+        fExpandWidth, fExpandHeight, pDstRect, pScore);
+    if (1 != nState) {
         LOGE("UI ID %d: detect close icon failed, please check", nID);
         return nState;
     }

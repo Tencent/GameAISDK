@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef FIX_OBJ_REG_H_
-#define FIX_OBJ_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CFIXOBJREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CFIXOBJREG_H_
 
 #include <string>
 #include <vector>
@@ -21,8 +24,7 @@
 // **************************************************************************************
 
 // parameter of each element
-struct tagFixObjRegElement
-{
+struct tagFixObjRegElement {
     int                  nMaxBBoxNum;
     int                  nScaleLevel;
     float                fMinScale;
@@ -34,34 +36,31 @@ struct tagFixObjRegElement
     std::string strMethod;
     std::string strOpt;
 
-    tagFixObjRegElement()
-    {
-        nMaxBBoxNum  = 1;
-        nScaleLevel  = 1;
-        fMinScale    = 1.0;
-        fMaxScale    = 1.0;
-        oROI         = cv::Rect(-1, -1, -1, -1);
+    tagFixObjRegElement() {
+        nMaxBBoxNum = 1;
+        nScaleLevel = 1;
+        fMinScale = 1.0;
+        fMaxScale = 1.0;
+        oROI = cv::Rect(-1, -1, -1, -1);
         strAlgorithm = "ColorMatch";
         oVecTmpls.clear();
 
         strMethod = "";
-        strOpt    = "";
+        strOpt = "";
     }
 };
 
 // result of each element
-struct tagFixObjRegResult
-{
+struct tagFixObjRegResult {
     int      nState;
     int      nBBoxNum;
     cv::Rect oROI;
     tagBBox  szBBoxes[MAX_BBOX_SIZE];
 
-    tagFixObjRegResult()
-    {
-        nState   = 0;
+    tagFixObjRegResult() {
+        nState = 0;
         nBBoxNum = 0;
-        oROI     = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -69,17 +68,15 @@ struct tagFixObjRegResult
 //          CFixObjReg Parameter Class Define
 // **************************************************************************************
 
-class CFixObjRegParam : public IObjRegParam
-{
-public:
-    CFixObjRegParam()
-    {
+class CFixObjRegParam : public IObjRegParam {
+  public:
+    CFixObjRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CFixObjRegParam() {}
 
-public:
+  public:
     std::vector<tagFixObjRegElement> m_oVecElements;
 };
 
@@ -87,33 +84,28 @@ public:
 //          CFixObjReg Result Class Define
 // **************************************************************************************
 
-class CFixObjRegResult : public IObjRegResult
-{
-public:
-    CFixObjRegResult()
-    {
+class CFixObjRegResult : public IObjRegResult {
+  public:
+    CFixObjRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CFixObjRegResult() {}
 
-    void SetResult(tagFixObjRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagFixObjRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagFixObjRegResult* GetResult(int *pResultNum)
-    {
+    tagFixObjRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                m_nResultNum;
     tagFixObjRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -122,9 +114,8 @@ private:
 //          CFixObjReg Class Define
 // **************************************************************************************
 
-class CFixObjReg : public IObjReg
-{
-public:
+class CFixObjReg : public IObjReg {
+  public:
     CFixObjReg();
     ~CFixObjReg();
 
@@ -133,7 +124,7 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
+  private:
     int InitColorMatch(const tagFixObjRegElement &stParam);
     int InitGradMatch(const tagFixObjRegElement &stParam);
     int InitEdgeMatch(const tagFixObjRegElement &stParam);
@@ -144,10 +135,10 @@ private:
     int FillORBMatchParam(const tagFixObjRegElement &stParam, CORBMatchParam &oParam);
     int AnalyzeCMD(const std::string &strCMD, std::string &strMethod, std::string &strOpt);
 
-private:
-    std::vector<tagFixObjRegElement> m_oVecParams; // vector of parameters
-    std::vector<IImgProc*>           m_pVecMethods; // vector of methods
-    std::vector<int>                 m_oVecMaxBBoxNum; // vector of max bbox number
+  private:
+    std::vector<tagFixObjRegElement> m_oVecParams;  // vector of parameters
+    std::vector<IImgProc*>           m_pVecMethods;  // vector of methods
+    std::vector<int>                 m_oVecMaxBBoxNum;  // vector of max bbox number
 };
 
-#endif /* FIX_OBJ_REG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CFIXOBJREG_H_

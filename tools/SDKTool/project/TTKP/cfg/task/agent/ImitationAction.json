@@ -1,0 +1,76 @@
+{
+    "gameAction": [
+        {
+            "id": 2,
+            "name": "None",
+            "type": "none"
+        },
+        {
+            "id": 0,
+            "name": "slip",
+            "contact": 0,
+            "sceneTask": "",
+            "type": "click",
+            "actionRegion": {
+                "path": "data/KPIM/_0_0.jpg",
+                "region": {
+                    "x": 46,
+                    "y": 532,
+                    "w": 146,
+                    "h": 135
+                }
+            }
+        },
+        {
+            "id": 1,
+            "name": "jump",
+            "contact": 0,
+            "sceneTask": "",
+            "type": "click",
+            "actionRegion": {
+                "path": "data/KPIM/_1_0.jpg",
+                "region": {
+                    "x": 1085,
+                    "y": 527,
+                    "w": 157,
+                    "h": 150
+                }
+            }
+        }
+    ],
+    "aiAction": [
+        {
+            "id": 0,
+            "name": "slip",
+            "prior": 1,
+            "task": [
+                0
+            ],
+            "actionIDGroup": [
+                0
+            ]
+        },
+        {
+            "id": 1,
+            "name": "jump",
+            "prior": 1,
+            "task": [
+                0
+            ],
+            "actionIDGroup": [
+                1
+            ]
+        },
+        {
+            "id": 2,
+            "name": "None",
+            "prior": 1,
+            "task": [
+                0
+            ],
+            "actionIDGroup": [
+                2
+            ]
+        }
+    ]
+}

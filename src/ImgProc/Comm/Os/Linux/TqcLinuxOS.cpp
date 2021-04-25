@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #ifdef LINUX
 
@@ -27,8 +30,7 @@ typedef void*(*pfnLinuxThreadDecl)(void *pThreadData);
 //
 // Create Thread
 //
-void* TqcOsCreateThread(void *threadMain, void *pThread)
-{
+void* TqcOsCreateThread(void *threadMain, void *pThread) {
     pthread_t ThreadID;
 
     pthread_create(&ThreadID, NULL, (pfnLinuxThreadDecl)threadMain, reinterpret_cast<void*>(pThread));
@@ -38,10 +40,8 @@ void* TqcOsCreateThread(void *threadMain, void *pThread)
 //
 // Wait for thread exit.
 //
-bool TqcCloseThread(PTHREDID ThreadID)
-{
-    if (NULL == ThreadID)
-    {
+bool TqcCloseThread(PTHREDID ThreadID) {
+    if (NULL == ThreadID) {
         return false;
     }
 
@@ -51,27 +51,24 @@ bool TqcCloseThread(PTHREDID ThreadID)
     return true;
 }
 // Sleep
-void TqcOsSleep(int millisecond)
-{
+void TqcOsSleep(int millisecond) {
     usleep(1000 * millisecond);
 }
 
 // Create Mutex
-LockerHandle TqcOsCreateMutex()
-{
+LockerHandle TqcOsCreateMutex() {
     pthread_mutex_t *mutex = new pthread_mutex_t;
 
-    if (pthread_mutex_init(mutex, NULL) != 0)
+    if (pthread_mutex_init(mutex, NULL) != 0) {
         return 0;
+    }
 
     return (LockerHandle)mutex;
 }
 
 // Delete Mutex
-void TqcOsDeleteMutex(LockerHandle handle)
-{
-    if (NULL == handle)
-    {
+void TqcOsDeleteMutex(LockerHandle handle) {
+    if (NULL == handle) {
         return;
     }
 
@@ -82,10 +79,8 @@ void TqcOsDeleteMutex(LockerHandle handle)
 //
 // Request mutex
 //
-bool TqcOsAcquireMutex(LockerHandle handle)
-{
-    if (NULL == handle)
-    {
+bool TqcOsAcquireMutex(LockerHandle handle) {
+    if (NULL == handle) {
         return false;
     }
 
@@ -96,10 +91,8 @@ bool TqcOsAcquireMutex(LockerHandle handle)
 //
 // Release mutex
 //
-void TqcOsReleaseMutex(LockerHandle handle)
-{
-    if (NULL == handle)
-    {
+void TqcOsReleaseMutex(LockerHandle handle) {
+    if (NULL == handle) {
         return;
     }
 
@@ -109,8 +102,7 @@ void TqcOsReleaseMutex(LockerHandle handle)
 //
 // Get current system time
 //
-unsigned int TqcOsGetMicroSeconds(void)
-{
+unsigned int TqcOsGetMicroSeconds(void) {
     unsigned int   time;
     struct timeval tv;
 
@@ -130,7 +122,7 @@ unsigned int TqcOsGetMicroSeconds(void)
 //     Window *pWin = new Window;
 
 //     stCapScreen->m_pFromHandle = reinterpret_cast<void*>(XOpenDisplay(NULL));
-//     *pWin                      = (Window)RootWindow((reinterpret_cast<Display*>(stCapScreen->m_pFromHandle)), 0);
+//     *pWin = (Window)RootWindow((reinterpret_cast<Display*>(stCapScreen->m_pFromHandle)), 0);
 //     stCapScreen->m_pToHandle   = reinterpret_cast<void*>(pWin);
 
 //     if (NULL == stCapScreen->m_pFromHandle || NULL == stCapScreen->m_pToHandle)
@@ -163,14 +155,16 @@ unsigned int TqcOsGetMicroSeconds(void)
 //                     const int nScissorWidth, const int nScissorHeight, unsigned char *pImageData,
 //                     PixelFormat &ePixelFormat)
 // {
-//     if (NULL == pImageData || NULL == stCapScreen.m_pFromHandle || NULL == stCapScreen.m_pToHandle)
+//     if (NULL == pImageData || NULL == stCapScreen.m_pFromHandle
+//          || NULL == stCapScreen.m_pToHandle)
 //     {
 //         return false;
 //     }
 
 //     Window *pWin = reinterpret_cast<Window*>(stCapScreen.m_pToHandle);
 //     XImage *img;
-//     img = XGetImage(reinterpret_cast<Display*>(stCapScreen.m_pFromHandle), *pWin, nColBegin, nRowBegin,
+//     img = XGetImage(reinterpret_cast<Display*>(stCapScreen.m_pFromHandle),
+//                     *pWin, nColBegin, nRowBegin,
 //                     nScissorWidth, nScissorHeight, ~0, ZPixmap);
 //     int nWindowWidth  = img->width;
 //     int nWindowHeight = img->height;
@@ -181,15 +175,12 @@ unsigned int TqcOsGetMicroSeconds(void)
 //     return true;
 // }
 
-bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecFileName)
-{
-    if (poVecFileName == NULL)
-    {
+bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecFileName) {
+    if (poVecFileName == NULL) {
         return false;
     }
 
-    if (strPathName.empty())
-    {
+    if (strPathName.empty()) {
         return false;
     }
 
@@ -197,8 +188,7 @@ bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecF
     struct dirent *ptr = NULL;
     char          base[1000];
 
-    if ((dir = opendir(strPathName.c_str())) == NULL)
-    {
+    if ((dir = opendir(strPathName.c_str())) == NULL) {
         perror("Open dir error...");
         return false;
     }
@@ -206,12 +196,10 @@ bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecF
     char          szName[256] = {0};
     struct dirent stEntry;
 
-    while ((!readdir_r(dir, &stEntry, &ptr)) && (ptr != NULL))
-    {
-        if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) /// current dir OR parrent dir
+    while ((!readdir_r(dir, &stEntry, &ptr)) && (ptr != NULL)) {
+        if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
             continue;
-        else if (ptr->d_type == 8)    /// file
-        {
+        } else if (ptr->d_type == 8) {
             SNPRINTF(szName, sizeof(szName), "%s/%s", strPathName.c_str(), ptr->d_name);
             // for check
             printf("d_name:%s/%s\n", strPathName.c_str(), ptr->d_name);
@@ -224,21 +212,16 @@ bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecF
     return true;
 }
 
-bool TqcOsStartProcess(const char *strWorkPath, const char *args)
-{
+bool TqcOsStartProcess(const char *strWorkPath, const char *args) {
     int childPid = fork();
 
-    if (childPid == -1)
-    {
+    if (childPid == -1) {
         return false;
     }
 
-    if (childPid != 0)
-    {
+    if (childPid != 0) {
         return true;
-    }
-    else
-    {
+    } else {
         char buf[256];
 
         memset(buf, 0, 256);
@@ -247,19 +230,18 @@ bool TqcOsStartProcess(const char *strWorkPath, const char *args)
         char                     *outerPtr = NULL;
         char                     *tmpStr   = strtok_r(buf, " ", &outerPtr);
 
-        while (tmpStr != NULL)
-        {
+        while (tmpStr != NULL) {
             resultVec.push_back(std::string(tmpStr));
             tmpStr = strtok_r(NULL, " ", &outerPtr);
         }
 
         int  size   = resultVec.size();
         char **argv = reinterpret_cast<char**>(malloc(sizeof(tmpStr) * (size + 1)));
-        if (argv == NULL)
+        if (argv == NULL) {
             return false;
+        }
 
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             argv[i] = reinterpret_cast<char*>(malloc(256));
             memset(argv[i], 0, 256);
             memcpy(argv[i], resultVec[i].c_str(), strlen(resultVec[i].c_str()));
@@ -277,10 +259,8 @@ bool TqcOsStartProcess(const char *strWorkPath, const char *args)
     return false;
 }
 
-bool  TqcOsGetCWD(char *buff, int nMaxLen)
-{
-    if (buff == NULL || nMaxLen <= 0)
-    {
+bool  TqcOsGetCWD(char *buff, int nMaxLen) {
+    if (buff == NULL || nMaxLen <= 0) {
         return false;
     }
 
@@ -289,10 +269,8 @@ bool  TqcOsGetCWD(char *buff, int nMaxLen)
 }
 
 
-bool IsFileExist(const char *pszFileName)
-{
-    if (access(pszFileName, F_OK) == 0)
-    {
+bool IsFileExist(const char *pszFileName) {
+    if (access(pszFileName, F_OK) == 0) {
         return true;
     }
     return false;

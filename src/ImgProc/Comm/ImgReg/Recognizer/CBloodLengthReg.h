@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef BLOOD_LENGTH_REG_H_
-#define BLOOD_LENGTH_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CBLOODLENGTHREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CBLOODLENGTHREG_H_
 
 #include <string>
 #include <vector>
@@ -18,8 +21,7 @@
 //          BloodLengthReg Structure Define
 // **************************************************************************************
 
-struct tagBloodLengthRegElement
-{
+struct tagBloodLengthRegElement {
     int                      nScaleLevel;
     float                    fMinScale;
     float                    fMaxScale;
@@ -31,12 +33,11 @@ struct tagBloodLengthRegElement
     cv::Rect                 oROI;
     int                      nMatchCount;
 
-    tagBloodLengthRegElement()
-    {
-        nScaleLevel   = 1;
-        fMinScale     = 1.0;
-        fMaxScale     = 1.0;
-        fExpandWidth  = 0.10;
+    tagBloodLengthRegElement() {
+        nScaleLevel = 1;
+        fMinScale = 1.0;
+        fMaxScale = 1.0;
+        fExpandWidth = 0.10;
         fExpandHeight = 0.10;
         oVecConditions.clear();
         oAlgorithm = "TemplateMatch";
@@ -45,19 +46,17 @@ struct tagBloodLengthRegElement
     }
 };
 
-struct tagBloodLengthRegResult
-{
+struct tagBloodLengthRegResult {
     int      nState;
     float    fScore;
     float    fScale;
     cv::Rect oROI;
 
-    tagBloodLengthRegResult()
-    {
+    tagBloodLengthRegResult() {
         nState = 0;
         fScore = -1.0f;
         fScale = -1.0f;
-        oROI   = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -65,9 +64,8 @@ struct tagBloodLengthRegResult
 //          BloodLength Recognizer Template Match Class Define
 // **************************************************************************************
 
-class CBloodLengthRegTmplMatch
-{
-public:
+class CBloodLengthRegTmplMatch {
+  public:
     CBloodLengthRegTmplMatch();
     ~CBloodLengthRegTmplMatch();
 
@@ -75,7 +73,7 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagBloodLengthRegResult &stResult);
     int Release();
 
-private:
+  private:
     int            m_nTaskID;
     float          m_fExpandWidth;
     float          m_fExpandHeight;
@@ -87,15 +85,14 @@ private:
 //          BloodLength Recognizer Parameter Class Define
 // **************************************************************************************
 
-class CBloodLengthRegParam : public IComnBaseRegParam
-{
-public:
-    CBloodLengthRegParam()
-    {}
+class CBloodLengthRegParam : public IComnBaseRegParam {
+  public:
+    CBloodLengthRegParam() {
+    }
 
     virtual ~CBloodLengthRegParam() {}
 
-public:
+  public:
     tagBloodLengthRegElement m_oElement;
 };
 
@@ -103,24 +100,21 @@ public:
 //          BloodLength Recognizer Result Class Define
 // **************************************************************************************
 
-class CBloodLengthRegResult : public IComnBaseRegResult
-{
-public:
-    CBloodLengthRegResult()
-    {}
+class CBloodLengthRegResult : public IComnBaseRegResult {
+  public:
+    CBloodLengthRegResult() {
+    }
 
-    void SetResult(tagBloodLengthRegResult szResult)
-    {
+    void SetResult(tagBloodLengthRegResult szResult) {
         m_szResult = szResult;
     }
 
-    tagBloodLengthRegResult GetResult()
-    {
+    tagBloodLengthRegResult GetResult() {
         return m_szResult;
     }
     virtual ~CBloodLengthRegResult() {}
 
-private:
+  private:
     tagBloodLengthRegResult m_szResult;
 };
 
@@ -128,9 +122,8 @@ private:
 //          CBloodLengthReg Class
 // **************************************************************************************
 
-class CBloodLengthReg : public IComnBaseReg
-{
-public:
+class CBloodLengthReg : public IComnBaseReg {
+  public:
     CBloodLengthReg();
     ~CBloodLengthReg();
 
@@ -139,7 +132,7 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
+  private:
     CBloodLengthRegTmplMatch m_oMethod;
     tagBloodLengthRegElement m_oElement;
     int                      m_oMatchCountCurrent = 0;
@@ -149,5 +142,5 @@ private:
     LockerHandle m_hResultTmpLock;
 };
 
-#endif /* __BLOOD_LENGTH_REG_H */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CBLOODLENGTHREG_H_
 

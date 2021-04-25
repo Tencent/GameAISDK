@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
 import logging
 import time
-import sys
 
 from ActionAPI.ActionAPIMgr import ActionAPIMgr
 from aimodel.ImitationLearning.MainImitationLearning import MainImitationLearning
@@ -25,13 +27,12 @@ class ImitationAction(object):
         self.mainImitationLearning = MainImitationLearning()
         self.mainImitationLearning.Init()
         self.cfgData = self.mainImitationLearning.cfgData
-        self.actionsContextList = self.mainImitationLearning.cfgData['actionsContextList']
+        self.actionsContextDict = self.mainImitationLearning.cfgData['actionsContextDict']
         self.actionName = self.mainImitationLearning.actionName
         self.actionDefine = self.mainImitationLearning.cfgData['actionDefine']
         self.taskActionDict = self.mainImitationLearning.taskActionDict
-
-
         self.preAction = [None] * len(self.taskActionDict)
+
         self.resetWaitTime = 5
         self.timeInit = -1
 
@@ -41,10 +42,16 @@ class ImitationAction(object):
         self.radius = -1
         self.contactJoyStick = -1
 
+        self.downStateDict = dict()
+        #最多3个触点[0，1，2]
+        for contact in range(3):
+            self.downStateDict[contact] = False
+
     def Initialize(self, height, width):
         """
         Action initialization
         """
+        self.logger.info('the resolution of action, height:%d, width:%d',  height, width)
         return self.__actionMgr.Initialize()
 
     def Finish(self):
@@ -73,7 +80,9 @@ class ImitationAction(object):
         """
         for n in range(3):
             if n != self.contactJoyStick:
-                self.__actionMgr.Up(contact=n, frameSeq=frameIndex)
+                if self.downStateDict[n]:
+                    self.__actionMgr.Up(contact=n, frameSeq=frameIndex)
+                    self.downStateDict[n] = False
             else:
                 self.__actionMgr.Moving(-1, frameSeq=frameIndex)
 
@@ -91,7 +100,9 @@ class ImitationAction(object):
 
         self.ActionResetContact(frameIndex)
 
-        for ind, actionId in enumerate(actionIdList):
+        for ind in range(len(actionIdList)):
+            actionId = actionIdList[ind]
+
             if self.actionDefine is not None:
                 actionIdOriList = self.taskActionDict[ind][actionId]["actionIDGroup"]
 
@@ -100,61 +111,89 @@ class ImitationAction(object):
 
                 self.preAction[ind] = actionId
                 for actionIdOri in actionIdOriList:
-                    if self.actionsContextList[actionIdOri]['type'] == 0:
+                    if self.actionsContextDict[actionIdOri]['type'] == 'none':
                         # self.ActionResetContact(frameIndex)
                         continue
 
-                    contact = self.actionsContextList[actionIdOri]['contact']
+                    contact = self.actionsContextDict[actionIdOri]['contact']
                     if self.preAction[ind] != actionId:
                         if contact != self.contactJoyStick:
-                            self.__actionMgr.Up(contact=contact, frameSeq=frameIndex)
+                            if self.downStateDict[contact]:
+                                self.__actionMgr.Up(contact=contact, frameSeq=frameIndex)
+                                self.downStateDict[contact] = False
 
-                    actionType = self.actionsContextList[actionIdOri]['type']
+                    actionType = self.actionsContextDict[actionIdOri]['type']
                     self.DoSpecificAction(actionIdOri, actionType, ratioX, ratioY, frameIndex)
-
             else:
                 self.logger.error('Should define actionDefine in imitationLearning.json')
 
     def DoSpecificAction(self, actionId, actionType, ratioX, ratioY, frameIndex):
         """
         Do specific action
-        actionType == 0: no action
-        actionType == 3: click
-        actionType == 4: swipe
-        actionType == 5: use joystick
+        actionType == none: no action
+        actionType == click: click
+        actionType == swipe: swipe
+        actionType == joystick: use joystick
         """
-        if actionType == 0:
+        if actionType == 'none':
             return
-        if actionType == 3:
-            actionX = int((self.actionsContextList[actionId]['regionX1'] +
-                           self.actionsContextList[actionId]['regionX2']) / 2 * ratioX)
-            actionY = int((self.actionsContextList[actionId]['regionY1'] +
-                           self.actionsContextList[actionId]['regionY2']) / 2 * ratioY)
-            self.__actionMgr.Down(actionX, actionY,
-                                  contact=self.actionsContextList[actionId]['contact'],
-                                  frameSeq=frameIndex)
+        if actionType == 'click':
+            if self.actionsContextDict[actionId]['updateBtn'] is True:
+                contact = self.actionsContextDict[actionId]['contact']
+                self.downStateDict[contact] = True
+                self.__actionMgr.Down(self.actionsContextDict[actionId]['updateBtnX'],
+                                      self.actionsContextDict[actionId]['updateBtnY'],
+                                      contact=contact,
+                                      frameSeq=frameIndex)
+                self.logger.info('Use the updated button position based on task for actionId %d', actionId)
+            else:
+                actionX = int(self.actionsContextDict[actionId]['buttonX'] * ratioX)
+                actionY = int(self.actionsContextDict[actionId]['buttonY'] * ratioY)
+                contact = self.actionsContextDict[actionId]['contact']
+                self.downStateDict[contact] = True
+                self.logger.info('execute the click action for actionId %d', actionId)
+                self.__actionMgr.Down(actionX,
+                                      actionY,
+                                      contact=contact,
+                                      frameSeq=frameIndex)
+        if actionType == 'key':
+            actionX = int(self.actionsContextDict[actionId]['buttonX'] * ratioX)
+            actionY = int(self.actionsContextDict[actionId]['buttonY'] * ratioY)
+            alphabet = self.actionsContextDict[actionId]['alphabet']
+            action_type = self.actionsContextDict[actionId]['action_type']
+            action_text = self.actionsContextDict[actionId]['action_text']
+            contact = self.actionsContextDict[actionId]['contact']
 
-        if actionType == 4:
-            swipeStartX = int(self.actionsContextList[actionId]['swipeStartX'] * ratioX)
-            swipeStartY = int(self.actionsContextList[actionId]['swipeStartY'] * ratioY)
-            swipeEndX = int(self.actionsContextList[actionId]['swipeEndX'] * ratioX)
-            swipeEndY = int(self.actionsContextList[actionId]['swipeEndY'] * ratioY)
+            self.logger.info('execute the key action for actionId %d', actionId)
+            self.logger.info('key action, actionId:%d, actionX:%d, actionY:%d, contact:%d',
+                             actionId, actionX, actionY, contact)
+            self.logger.info('key action, actionId: %d, alphabet: %s, type: %s, text: %s',
+                             actionId, alphabet, str(action_type), action_text)
+
+            self.__actionMgr.SimulatorKeyAction(actionX, actionY, contact=contact, frameSeq=frameIndex,
+                                                alphabet=alphabet, action_type=action_type, action_text=action_text)
+
+        if actionType == 'swipe':
+            swipeStartX = int(self.actionsContextDict[actionId]['swipeStartX'] * ratioX)
+            swipeStartY = int(self.actionsContextDict[actionId]['swipeStartY'] * ratioY)
+            swipeEndX = int(self.actionsContextDict[actionId]['swipeEndX'] * ratioX)
+            swipeEndY = int(self.actionsContextDict[actionId]['swipeEndY'] * ratioY)
 
             self.__actionMgr.Swipe(swipeStartX, swipeStartY, swipeEndX, swipeEndY,
-                                   contact=self.actionsContextList[actionId]['contact'],
+                                   contact=self.actionsContextDict[actionId]['contact'],
                                    frameSeq=frameIndex, durationMS=80, needUp=False)
 
-        if actionType == 5:
+        if actionType == 'joystick':
             self.timeNow = time.time()
             if self.timeNow - self.timeInit > self.resetWaitTime:
-                self.centerx = int(self.actionsContextList[actionId]['centerx'] * ratioX)
-                self.centery = int(self.actionsContextList[actionId]['centery'] * ratioY)
-                self.radius = int(0.5 * (self.actionsContextList[actionId]['rangeInner'] +
-                                         self.actionsContextList[actionId]['rangeOuter']) * ratioX)
+                self.centerx = int(self.actionsContextDict[actionId]['centerx'] * ratioX)
+                self.centery = int(self.actionsContextDict[actionId]['centery'] * ratioY)
+                self.radius = int(0.5 * (self.actionsContextDict[actionId]['rangeInner'] +
+                                         self.actionsContextDict[actionId]['rangeOuter']) * ratioX)
 
-                self.contactJoyStick = self.actionsContextList[actionId]['contact']
+                self.contactJoyStick = self.actionsContextDict[actionId]['contact']
 
                 self.ActionInit()
                 self.timeInit = self.timeNow
 
-            self.__actionMgr.Moving(self.actionsContextList[actionId]['angle'], frameSeq=frameIndex)
+            self.__actionMgr.Moving(self.actionsContextDict[actionId]['angle'], frameSeq=frameIndex)

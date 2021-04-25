@@ -1,41 +1,40 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include "Comm/Utils/TqcThreadPool.h"
 
-CDefaultTask::CDefaultTask()
-{
+CDefaultTask::CDefaultTask() {
     m_pFunc = NULL;
 }
 
-CDefaultTask::~CDefaultTask()
-{}
+CDefaultTask::~CDefaultTask() {
+}
 
 //
 // set the task.
 //
-void CDefaultTask::SetFunc(void *func)
-{
+void CDefaultTask::SetFunc(void *func) {
     m_pFunc = func;
 }
 
-void* CDefaultTask::GetFunc()
-{
+void* CDefaultTask::GetFunc() {
     return m_pFunc;
 }
 
 //
 // sample code to show task setting.
 //
-void CDefaultTask::PushParam(int x)
-{
+void CDefaultTask::PushParam(int x) {
     tagParam param;
 
     param.param.x = x;
-    param.type    = FUNC_PARAM_INT;
+    param.type = FUNC_PARAM_INT;
 
     m_paramQueue.push(param);
 }
@@ -43,12 +42,11 @@ void CDefaultTask::PushParam(int x)
 //
 // sample code to show task setting.
 //
-void CDefaultTask::PushParam(char x)
-{
+void CDefaultTask::PushParam(char x) {
     tagParam param;
 
     param.param.y = x;
-    param.type    = FUNC_PARAM_INT;
+    param.type = FUNC_PARAM_INT;
 
     m_paramQueue.push(param);
 }
@@ -56,8 +54,7 @@ void CDefaultTask::PushParam(char x)
 //
 // sample code to show task setting.
 //
-tagParam CDefaultTask::PopParam()
-{
+tagParam CDefaultTask::PopParam() {
     tagParam param;
 
     if (m_paramQueue.size() == 0)
@@ -69,40 +66,35 @@ tagParam CDefaultTask::PopParam()
     return param;
 }
 
-int CDefaultTask::ParamCount()
-{
+int CDefaultTask::ParamCount() {
     return m_paramQueue.size();
 }
 
-void CDefaultTask::SetBindFunc(boost::function<void()> func)
-{
+void CDefaultTask::SetBindFunc(boost::function<void()> func) {
     m_bindFunc = func;
 }
 
-boost::function<void()> CDefaultTask::GetBindFunc()
-{
+boost::function<void()> CDefaultTask::GetBindFunc() {
     return m_bindFunc;
 }
 
-CDefaultTaskList::CDefaultTaskList()
-{}
+CDefaultTaskList::CDefaultTaskList() {
+}
 
-CDefaultTaskList::~CDefaultTaskList()
-{}
+CDefaultTaskList::~CDefaultTaskList() {
+}
 
 //
 // Push one task to task queue.
 //
-void CDefaultTaskList::Push(CDefaultTask *task)
-{
+void CDefaultTaskList::Push(CDefaultTask *task) {
     m_funcQueue.push(reinterpret_cast<void*>(task));
 }
 
 //
 // Pop one task from task queue
 //
-CDefaultTask* CDefaultTaskList::Pop()
-{
+CDefaultTask* CDefaultTaskList::Pop() {
     CDefaultTask *pTask = NULL;
 
     if (m_funcQueue.size() == 0)
@@ -117,22 +109,20 @@ CDefaultTask* CDefaultTaskList::Pop()
 //
 // Get number of task in the queue.
 //
-int CDefaultTaskList::TaskCount()
-{
+int CDefaultTaskList::TaskCount() {
     return m_funcQueue.size();
 }
 
-CThreadPoolDispatch::CThreadPoolDispatch()
-{}
+CThreadPoolDispatch::CThreadPoolDispatch() {
+}
 
-CThreadPoolDispatch::~CThreadPoolDispatch()
-{}
+CThreadPoolDispatch::~CThreadPoolDispatch() {
+}
 
 //
 // Push task to FIFO queue.
 //
-void CThreadPoolDispatch::PushTaskToFIFO(CDefaultTask *pTask)
-{
+void CThreadPoolDispatch::PushTaskToFIFO(CDefaultTask *pTask) {
     m_funcQueue.push(pTask);
 }
 
@@ -140,10 +130,8 @@ void CThreadPoolDispatch::PushTaskToFIFO(CDefaultTask *pTask)
 // Push task to the queue by specified dispatch type.
 // Now default queue is FIFO.
 //
-void CThreadPoolDispatch::PushDefaultTask(CDefaultTask *pTask, TaskDispatchType dispatchType)
-{
-    switch (dispatchType)
-    {
+void CThreadPoolDispatch::PushDefaultTask(CDefaultTask *pTask, TaskDispatchType dispatchType) {
+    switch (dispatchType) {
     case TASK_DISPATCH_FIFO:
         PushTaskToFIFO(pTask);
         break;
@@ -156,8 +144,7 @@ void CThreadPoolDispatch::PushDefaultTask(CDefaultTask *pTask, TaskDispatchType 
 //
 // sample code to show task setting.
 //
-CDefaultTask* CThreadPoolDispatch::PopDefaultTask()
-{
+CDefaultTask* CThreadPoolDispatch::PopDefaultTask() {
     CDefaultTask *pTask = NULL;
 
     if (m_funcQueue.size() == 0)
@@ -172,15 +159,12 @@ CDefaultTask* CThreadPoolDispatch::PopDefaultTask()
 //
 // Push task to FIFO queue.
 //
-void CThreadPoolDispatch::PushTaskToFIFO(tagTask task)
-{
+void CThreadPoolDispatch::PushTaskToFIFO(tagTask task) {
     m_taskQueue.push(task);
 }
 
-void CThreadPoolDispatch::PushTask(const tagTask &task, TaskDispatchType dispatchType)
-{
-    switch (dispatchType)
-    {
+void CThreadPoolDispatch::PushTask(const tagTask &task, TaskDispatchType dispatchType) {
+    switch (dispatchType) {
     case TASK_DISPATCH_FIFO:
         PushTaskToFIFO(task);
         break;
@@ -190,8 +174,7 @@ void CThreadPoolDispatch::PushTask(const tagTask &task, TaskDispatchType dispatc
     }
 }
 
-tagTask CThreadPoolDispatch::PopTask()
-{
+tagTask CThreadPoolDispatch::PopTask() {
     tagTask task;
 
     if (m_taskQueue.size() == 0)
@@ -203,20 +186,17 @@ tagTask CThreadPoolDispatch::PopTask()
     return task;
 }
 
-CThreadPoolMgr::CThreadPoolMgr()
-{
+CThreadPoolMgr::CThreadPoolMgr() {
     m_bShouldRelease = false;
-    m_pThreadPool    = NULL;
+    m_pThreadPool = NULL;
 }
 
-CThreadPoolMgr::~CThreadPoolMgr()
-{}
+CThreadPoolMgr::~CThreadPoolMgr() {
+}
 
-bool CThreadPoolMgr::Initialize(int nThreadNum)
-{
+bool CThreadPoolMgr::Initialize(int nThreadNum) {
     m_pThreadPool = new CThreadPool<CMultiThreadResult>(nThreadNum);
-    if (m_pThreadPool == NULL)
-    {
+    if (m_pThreadPool == NULL) {
         LOGE("Allocation failed for thread pool.");
         return false;
     }
@@ -225,8 +205,7 @@ bool CThreadPoolMgr::Initialize(int nThreadNum)
     return true;
 }
 
-bool CThreadPoolMgr::Release()
-{
+bool CThreadPoolMgr::Release() {
     if (m_pThreadPool == NULL)
         return true;
 
@@ -237,12 +216,10 @@ bool CThreadPoolMgr::Release()
     return true;
 }
 
-void CThreadPoolMgr::Update(CDefaultTaskList *pList)
-{
+void CThreadPoolMgr::Update(CDefaultTaskList *pList) {
     int taskNum = pList->TaskCount();
 
-    for (int i = 0; i < taskNum; i++)
-    {
+    for (int i = 0; i < taskNum; i++) {
         CDefaultTask *pTask = pList->Pop();
 
         if (pTask == NULL)
@@ -251,8 +228,7 @@ void CThreadPoolMgr::Update(CDefaultTaskList *pList)
         m_threadPoolDispatch.PushDefaultTask(pTask);
     }
 
-    for (int i = 0; i < taskNum; i++)
-    {
+    for (int i = 0; i < taskNum; i++) {
         CDefaultTask *pTask = m_threadPoolDispatch.PopDefaultTask();
 
         boost::function<void()> bindFunc = pTask->GetBindFunc();
@@ -265,19 +241,16 @@ void CThreadPoolMgr::Update(CDefaultTaskList *pList)
     return;
 }
 
-void CThreadPoolMgr::Update(const std::vector<tagTask> &taskList)
-{
+void CThreadPoolMgr::Update(const std::vector<tagTask> &taskList) {
     int taskNum = taskList.size();
 
-    for (int i = 0; i < taskNum; i++)
-    {
+    for (int i = 0; i < taskNum; i++) {
         tagTask task = taskList[i];
 
         m_threadPoolDispatch.PushTask(task);
     }
 
-    for (int i = 0; i < taskNum; i++)
-    {
+    for (int i = 0; i < taskNum; i++) {
         tagTask task = m_threadPoolDispatch.PopTask();
 
         boost::function<void()> bindFunc = task.ofunc;
@@ -288,8 +261,7 @@ void CThreadPoolMgr::Update(const std::vector<tagTask> &taskList)
     return;
 }
 
-void CThreadPoolMgr::WaitAllTaskFinish()
-{
+void CThreadPoolMgr::WaitAllTaskFinish() {
     LOGD("wait all task finish");
     m_pThreadPool->WaitAllTask();
     LOGD("all task finished");
