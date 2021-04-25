@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #ifndef TQC_THREAD_POOL_H_
 #define TQC_THREAD_POOL_H_
@@ -22,13 +25,12 @@
 // number of threads.
 #define TQC_DEFAULT_THREAD_NUM 8
 
-class CMultiThreadResult
-{
-public:
-    CMultiThreadResult()
-    {}
-    ~CMultiThreadResult()
-    {}
+class CMultiThreadResult {
+  public:
+    CMultiThreadResult() {
+    }
+    ~CMultiThreadResult() {
+    }
 };
 
 //
@@ -37,41 +39,36 @@ public:
 // dispatch task to multi threads.
 //
 template<typename Result>
-class CThreadPool
-{
-public:
-    inline explicit CThreadPool(int nThreadNum = TQC_DEFAULT_THREAD_NUM)
-    {
-        m_nNextIndex   = 0;
-        m_nMaxIndex    = 0;
-        m_nStepSize    = 1;
+class CThreadPool {
+  public:
+    inline explicit CThreadPool(int nThreadNum = TQC_DEFAULT_THREAD_NUM) {
+        m_nNextIndex = 0;
+        m_nMaxIndex = 0;
+        m_nStepSize = 1;
         m_callPerIndex = boost::bind(&CThreadPool::CallPerIndexDefault, this);
 
-        m_bRunning   = true;
+        m_bRunning = true;
         m_nThreadNum = nThreadNum;  // number of workers of thread.
 
         // flag for synchronization between each worker.
-        m_pIsDone        = new bool[nThreadNum];
-        m_pGotOne        = new bool[nThreadNum];
+        m_pIsDone = new bool[nThreadNum];
+        m_pGotOne = new bool[nThreadNum];
         m_pWorkerThreads = new boost::thread[nThreadNum];
 
-        if (m_pIsDone == NULL || m_pGotOne == NULL || m_pWorkerThreads == NULL)
-        {
+        if (m_pIsDone == NULL || m_pGotOne == NULL || m_pWorkerThreads == NULL) {
             LOGE("Cannot allocate resources for threads.");
             return;
         }
 
         // Initialize each worker to done state.
-        for (int i = 0; i < m_nThreadNum; i++)
-        {
-            m_pIsDone[i]        = true;
-            m_pGotOne[i]        = false;
+        for (int i = 0; i < m_nThreadNum; i++) {
+            m_pIsDone[i] = true;
+            m_pGotOne[i] = false;
             m_pWorkerThreads[i] = boost::thread(&CThreadPool::TaskWorker, this, i);
         }
     }
 
-    ~CThreadPool()
-    {
+    ~CThreadPool() {
         m_bRunning = false;
 
         // before release thread pool, we should wait for all worker finish.
@@ -82,29 +79,24 @@ public:
         for (int i = 0; i < m_nThreadNum; i++)
             m_pWorkerThreads[i].join();
 
-        if (m_pWorkerThreads != NULL)
-        {
+        if (m_pWorkerThreads != NULL) {
             delete[] m_pWorkerThreads;
         }
 
-        if (m_pIsDone != NULL)
-        {
+        if (m_pIsDone != NULL) {
             delete[] m_pIsDone;
         }
 
-        if (m_pGotOne != NULL)
-        {
+        if (m_pGotOne != NULL) {
             delete[] m_pGotOne;
         }
 
         LOGI("destroyed ThreadReduce\n");
     }
 
-    inline void StartTask()
-    {
+    inline void StartTask() {
         // go worker threads!
-        for (int i = 0; i < m_nThreadNum; i++)
-        {
+        for (int i = 0; i < m_nThreadNum; i++) {
             m_pIsDone[i] = false;
             m_pGotOne[i] = false;
         }
@@ -113,8 +105,7 @@ public:
         m_todoSignal.notify_all();
     }
 
-    void Release()
-    {
+    void Release() {
         // before release thread pool, we should wait for all worker finish.
         // m_exMutex.lock();
         m_todoSignal.notify_all();
@@ -126,8 +117,7 @@ public:
         // }
     }
 
-    inline void WaitAllTask()
-    {
+    inline void WaitAllTask() {
         boost::unique_lock<boost::mutex> lock(m_exMutex);
 
         // check if actually all are finished.
@@ -144,8 +134,7 @@ public:
 
         // LOGI("reduce waiting for threads to finish\n");
         // wait for all worker threads to signal they are done.
-        while (true)
-        {
+        while (true) {
             // wait for at least one to finish
             // m_doneSignal.wait(lock);
             // LOGI("thread finished!\n");
@@ -171,20 +160,17 @@ public:
     }
 
     // Push task to wait queue.
-    inline void PushTask(boost::function<void()> callPerIndex)
-    {
+    inline void PushTask(boost::function<void()> callPerIndex) {
         m_taskQueueLock.Lock();
         m_taskQueue.push(callPerIndex);
         m_taskQueueLock.UnLock();
     }
 
-    inline void Reduce(boost::function<void(int, int, Result*, int)> callPerIndex, int first, int end,
-                       int m_nStepSize = 0)
-    {
+    inline void Reduce(boost::function<void(int, int, Result*, int)> callPerIndex, int first,
+        int end, int m_nStepSize = 0) {
         memset(&m_stats, 0, sizeof(Result));
 
-        if (m_pIsDone == NULL || m_pGotOne == NULL || m_pWorkerThreads == NULL)
-        {
+        if (m_pIsDone == NULL || m_pGotOne == NULL || m_pWorkerThreads == NULL) {
             LOGE("Cannot allocate resources for threads.");
             return;
         }
@@ -196,13 +182,12 @@ public:
 
         // save
         m_callPerIndex = callPerIndex;
-        m_nNextIndex   = first;
-        m_nMaxIndex    = end;
-        m_nStepSize    = m_nStepSize;
+        m_nNextIndex = first;
+        m_nMaxIndex = end;
+        m_nStepSize = m_nStepSize;
 
         // go worker threads!
-        for (int i = 0; i < m_nThreadNum; i++)
-        {
+        for (int i = 0; i < m_nThreadNum; i++) {
             m_pIsDone[i] = false;
             m_pGotOne[i] = false;
         }
@@ -211,8 +196,7 @@ public:
         m_todoSignal.notify_all();
 
         // wait for all worker threads to signal they are done.
-        while (true)
-        {
+        while (true) {
             // wait for at least one to finish
             m_doneSignal.wait(lock);
             // LOGI("thread finished!\n");
@@ -228,26 +212,23 @@ public:
                 break;
         }
 
-        m_nNextIndex   = 0;
-        m_nMaxIndex    = 0;
+        m_nNextIndex = 0;
+        m_nMaxIndex = 0;
         m_callPerIndex = boost::bind(&CThreadPool::CallPerIndexDefault, this);
     }
 
-private:
-    void CallPerIndexDefault()
-    {
+  private:
+    void CallPerIndexDefault() {
         LOGE("ERROR: should never be called....\n");
         assert(false);
     }
 
     // Get task from waiting queue to some worker.
-    bool GetTask(boost::function<void()> &task)
-    {
+    bool GetTask(boost::function<void()> &task) {
         bool bRes = false;
 
         m_taskQueueLock.Lock();
-        if (m_taskQueue.size() > 0)
-        {
+        if (m_taskQueue.size() > 0) {
             bRes = true;
             task = m_taskQueue.front();
             m_taskQueue.pop();
@@ -258,19 +239,16 @@ private:
         return bRes;
     }
 
-    void TaskWorker(int idx)
-    {
+    void TaskWorker(int idx) {
         boost::unique_lock<boost::mutex> lock(m_exMutex);
         boost::function<void()>          task;
 
-        while (m_bRunning)
-        {
+        while (m_bRunning) {
             // try to get something to do.
             bool bGotSomething = GetTask(task);
 
             // if got something: do it (unlock in the meantime)
-            if (bGotSomething)
-            {
+            if (bGotSomething) {
                 lock.unlock();
 
                 assert(m_callPerIndex != 0);
@@ -283,11 +261,7 @@ private:
                 m_pGotOne[idx] = true;
                 lock.lock();
                 m_stats = s;
-            }
-
-            // otherwise wait on signal, releasing lock in the meantime.
-            else
-            {
+            } else {
                 m_pIsDone[idx] = true;
                 lock.unlock();
                 // m_doneSignal.notify_all();
@@ -298,10 +272,10 @@ private:
         }
     }
 
-public:
+  public:
     Result m_stats;
 
-private:
+  private:
     boost::thread *m_pWorkerThreads;
     bool          *m_pIsDone;
     bool          *m_pGotOne;
@@ -321,34 +295,29 @@ private:
     CLock                                m_taskQueueLock;
 };
 
-union FuncParam
-{
+union FuncParam {
     int  x;
     char y;
 };
 
-enum FuncParamType
-{
+enum FuncParamType {
     FUNC_PARAM_INT,
     FUNC_PARAM_CHAR,
     FUNC_PARAM_MAX
 };
 
-struct tagParam
-{
+struct tagParam {
     FuncParam     param;
     FuncParamType type;
 
-    tagParam()
-    {
+    tagParam() {
         param.x = 0;
-        type    = FUNC_PARAM_MAX;
+        type = FUNC_PARAM_MAX;
     }
 };
 
-class CDefaultTask
-{
-public:
+class CDefaultTask {
+  public:
     CDefaultTask();
     ~CDefaultTask();
 
@@ -361,15 +330,14 @@ public:
     void                    SetBindFunc(boost::function<void()> func);
     boost::function<void()> GetBindFunc();
 
-private:
+  private:
     void                    *m_pFunc;
     std::queue<tagParam>    m_paramQueue;
     boost::function<void()> m_bindFunc;
 };
 
-class CDefaultTaskList
-{
-public:
+class CDefaultTaskList {
+  public:
     CDefaultTaskList();
     ~CDefaultTaskList();
 
@@ -377,18 +345,16 @@ public:
     CDefaultTask* Pop();
     int TaskCount();
 
-private:
+  private:
     std::queue<void*> m_funcQueue;
 };
 
-class CThreadPoolDispatch
-{
-public:
+class CThreadPoolDispatch {
+  public:
     CThreadPoolDispatch();
     ~CThreadPoolDispatch();
 
-    enum TaskDispatchType
-    {
+    enum TaskDispatchType {
         TASK_DISPATCH_FIFO,
         TASK_DISPATCH_MAX
     };
@@ -398,18 +364,17 @@ public:
     tagTask PopTask();
     void PushTask(const tagTask &task, TaskDispatchType dispatchType = TASK_DISPATCH_FIFO);
 
-private:
+  private:
     void PushTaskToFIFO(CDefaultTask *pTask);
     void PushTaskToFIFO(tagTask task);
 
-private:
+  private:
     std::queue<void*>   m_funcQueue;
     std::queue<tagTask> m_taskQueue;
 };
 
-class CThreadPoolMgr
-{
-public:
+class CThreadPoolMgr {
+  public:
     CThreadPoolMgr();
     ~CThreadPoolMgr();
 
@@ -418,15 +383,14 @@ public:
     void Update(CDefaultTaskList *pList);
     void Update(const std::vector<tagTask> &taskList);
     void WaitAllTaskFinish();
-    bool GetSholdRelease()
-    {
+    bool GetSholdRelease() {
         return m_bShouldRelease;
     }
 
-private:
+  private:
     CThreadPoolDispatch             m_threadPoolDispatch;
     CThreadPool<CMultiThreadResult> *m_pThreadPool;
     bool                            m_bShouldRelease;
 };
 
-#endif // TQC_THREAD_POOL_H_
+#endif  // TQC_THREAD_POOL_H_

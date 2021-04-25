@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
 import os
-import sys
-
-__dir__ = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(__dir__ + '/../../AgentAI')
+import logging
 
 from actionmanager.MobileActionMgrExt import MobileActionMgrExt
+from actionmanager.PCActionMgrExt import PCActionMgrExt
+
+
+class DeviceType(object):
+    ANDROID = "Android"
+    IOS = "IOS"
+    WINDOWS = "Windows"
+
+
+LOG = logging.getLogger('agent')
 
 
 class ActionAPIMgr(object):
@@ -19,7 +29,13 @@ class ActionAPIMgr(object):
     Action API for AI do actions
     """
     def __init__(self):
-        self.__actionMgr = MobileActionMgrExt()
+        device_type = os.environ.get('AISDK_DEVICE_TYPE', DeviceType.ANDROID)
+        if device_type == DeviceType.WINDOWS:
+            LOG.info("the device type is windows")
+            self.__actionMgr = PCActionMgrExt()
+        else:
+            LOG.info("the device type is android")
+            self.__actionMgr = MobileActionMgrExt()
         self.__enableFlag = True
 
     def Initialize(self):
@@ -199,6 +215,22 @@ class ActionAPIMgr(object):
 
         self.__actionMgr.SwipeMove(px, py, contact=contact, frameSeq=frameSeq,
                                    durationMS=durationMS)
+
+    def SimulatorKeyAction(self, px, py, contact=0, frameSeq=-1, alphabet="", action_type="", action_text=""):
+        LOG.debug("execute the simulator key action, px:%s, py:%s", px, py)
+        self.__actionMgr.SimulatorKeyAction(px, py, contact, frameSeq, alphabet, action_type, action_text)
+
+    def InputText(self, text, frameSeq=-1, waitTime=0):
+        if not isinstance(text, str):
+            return
+
+        self.__actionMgr.InputText(text, frameSeq=frameSeq, waitTime=waitTime)
+
+    def InputKey(self, key, frameSeq=-1, waitTime=0):
+        if not isinstance(key, str):
+            return
+
+        self.__actionMgr.InputKey(key, frameSeq=frameSeq, waitTime=waitTime)
 
     def SetEnable(self, enableFlag=True):
         """

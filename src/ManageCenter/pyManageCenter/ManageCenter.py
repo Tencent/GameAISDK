@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -9,23 +12,24 @@ import configparser
 import logging
 import os
 import time
-
 import cv2
 
-from common.Define import *
+from common.Define import RUN_TYPE_UI_AI, RESULT_TYPE_AI, SERVICE_UNREGISTER, SERVICE_TYPE_REG, SERVICE_TYPE_UI, \
+    ALL_NORMAL, AGENT_EXIT, UI_EXIT, REG_EXIT, RESULT_TYPE_UI, RUN_TYPE_AI, RUN_TYPE_UI
 from commmanager.CommManager import CommManager
 from msghandler.MsgHandler import MsgHandler
 from gamemanager.GameManager import GameManager
 from gamemanager.ResultManager import ResultManager
 from servicemanager.ServiceManager import ServiceManager
 from monitormanager.MonitorManager import MonitorManager
+from util.config_path_mgr import SYS_CONFIG_DIR, DEFAULT_USER_CONFIG_DIR
 
 MAIN_LOOP_RATE = 60
 MAIN_LOOP_SLEEP_TIME = 1. / MAIN_LOOP_RATE
 OTHERS_LOOP_RATE = 1
 OTHERS_LOOP_COUNT = int(MAIN_LOOP_RATE / OTHERS_LOOP_RATE)
 
-DEFAULT_TBUS_CFG_PATH = '../cfg/platform/bus.ini'
+TBUS_CFG_PATH = 'cfg/platform/bus.ini'
 
 LOG = logging.getLogger('ManageCenter')
 
@@ -55,6 +59,8 @@ class ManageCenter(object):
         self.__lastFrameSeq = 0
         self.__lastMonitorResult = None
 
+        self.__resultPath = None
+        self.__resultCfg = None
         self.__taskID = time.strftime("%Y%m%d_%H%M%S")
 
     def Initialize(self, runType='AI'):
@@ -83,16 +89,13 @@ class ManageCenter(object):
             LOG.error('ServiceManager Initialize failed!')
             return False
 
-        if not self.__commMgr.Initialize(DEFAULT_TBUS_CFG_PATH):
+        tbus_cfg_path = os.path.join(SYS_CONFIG_DIR, TBUS_CFG_PATH)
+        if not self.__commMgr.Initialize(tbus_cfg_path):
             LOG.error('CommMgr Initialize failed!')
             return False
 
-        if not self.__msgHandler.Initialize():
-            LOG.error('MsgHandler Initialize failed!')
-            return False
-
-        if not self.__monitorMgr.Initialize():
-            LOG.error('MonitorManager Initialize failed!')
+        if not self.__msgHandler.Initialize() or not self.__monitorMgr.Initialize():
+            LOG.error('MsgHandler Initialize failed! or MonitorManager Initialize failed!')
             return False
 
         if not self.__resultMgr.Initialize(taskID=self.__taskID,
@@ -126,10 +129,7 @@ class ManageCenter(object):
                 msgMS = int(1000 * (updateMsgTime - beginTime))
                 frameMS = int(1000 * (updateFrameTime - updateMsgTime))
                 othersMS = int(1000 * (endTime - updateFrameTime))
-                LOG.warning('MainLoop overschedule {0}ms: {1}={2}+{3}+{4}'.format(overMS, totalMS,
-                                                                                  msgMS,
-                                                                                  frameMS,
-                                                                                  othersMS))
+                LOG.warning('MainLoop overschedule %sms: %s=%s+%s+%s', overMS, totalMS, msgMS, frameMS, othersMS)
             self.__loopCount += 1
 
         self.__msgHandler.SendServiceRegisterMsgToIO(SERVICE_UNREGISTER)
@@ -226,18 +226,18 @@ class ManageCenter(object):
             self.__runType = RUN_TYPE_UI
             self.__resultType = RESULT_TYPE_UI
         else:
-            LOG.error('Invalid RunType {0}'.format(runType))
+            LOG.error('Invalid RunType %s', runType)
             return False
 
-        LOG.info('RunType is {0}'.format(self.__runType))
+        LOG.info('RunType is %s', self.__runType)
 
         if not self._LoadPlatformConfig():
             return False
 
         self._LoadTaskConfig()
 
-        self.__resultPath = os.getenv('AI_SDK_RESULT_SAVE_PATH', os.path.join('..', 'result'))
-
+        self.__resultPath = os.path.join(os.getenv('AI_SDK_PROJECT_PATH',
+                                                   os.path.join(DEFAULT_USER_CONFIG_DIR)), 'result')
         return True
 
     def _LoadPlatformConfig(self):
@@ -245,7 +245,7 @@ class ManageCenter(object):
             iniCfg = configparser.ConfigParser()
             iniCfg.read(self.__platformCfgPath)
         else:
-            LOG.error('Config File not exist in {0}'.format(self.__platformCfgPath))
+            LOG.error('Config File not exist in %s', self.__platformCfgPath)
             return False
 
         try:
@@ -262,10 +262,9 @@ class ManageCenter(object):
             self.__resultCfg['timeout'] = iniCfg.getint('RESULT', 'Timeout', fallback=3600)
 
             self.__resultType = iniCfg.get('RESULT', 'Type', fallback=self.__resultType)
-        except Exception as e:
-            LOG.error('Load Config File[{}] failed, err: {}'.format(self.__platformCfgPath, e))
+        except KeyError as e:
+            LOG.error('Load Config File[%s] failed, err: %s', self.__platformCfgPath, e)
             return False
-
         return True
 
     def _LoadTaskConfig(self):

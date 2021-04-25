@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include <direct.h>
 #include <io.h>
@@ -16,21 +19,19 @@
 //
 // Create thread
 //
-void* TqcOsCreateThread(void *threadMain, void *pThread)
-{
+void* TqcOsCreateThread(void *threadMain, void *pThread) {
     HANDLE ThreadID;
 
     ThreadID =
-        CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(threadMain), reinterpret_cast<void*>(pThread), 0,
-                     NULL);
+        CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(threadMain),
+            reinterpret_cast<void*>(pThread), 0, NULL);
     return reinterpret_cast<void*>(ThreadID);
 }
 
 //
 // Wait for thread exit.
 //
-bool TqcCloseThread(PTHREDID ThreadID)
-{
+bool TqcCloseThread(PTHREDID ThreadID) {
     HANDLE pThreadID = (HANDLE)ThreadID;
 
     // sleep(3);
@@ -41,16 +42,14 @@ bool TqcCloseThread(PTHREDID ThreadID)
 //
 // Sleep some milliseconds.
 //
-void TqcOsSleep(int millisecond)
-{
+void TqcOsSleep(int millisecond) {
     Sleep(millisecond);
 }
 
 //
 // Create mutex.
 //
-LockerHandle TqcOsCreateMutex()
-{
+LockerHandle TqcOsCreateMutex() {
     CRITICAL_SECTION *sect = new CRITICAL_SECTION();
 
     ::InitializeCriticalSectionAndSpinCount(sect, 0);
@@ -60,10 +59,8 @@ LockerHandle TqcOsCreateMutex()
 //
 // Delete mutex
 //
-void TqcOsDeleteMutex(LockerHandle handle)
-{
-    if (NULL == handle)
-    {
+void TqcOsDeleteMutex(LockerHandle handle) {
+    if (NULL == handle) {
         return;
     }
 
@@ -75,10 +72,8 @@ void TqcOsDeleteMutex(LockerHandle handle)
 //
 // Acquire mutex
 //
-bool TqcOsAcquireMutex(LockerHandle handle)
-{
-    if (NULL == handle)
-    {
+bool TqcOsAcquireMutex(LockerHandle handle) {
+    if (NULL == handle) {
         return false;
     }
 
@@ -89,10 +84,8 @@ bool TqcOsAcquireMutex(LockerHandle handle)
 //
 // Release mutex
 //
-void TqcOsReleaseMutex(LockerHandle handle)
-{
-    if (NULL == handle)
-    {
+void TqcOsReleaseMutex(LockerHandle handle) {
+    if (NULL == handle) {
         return;
     }
 
@@ -102,8 +95,7 @@ void TqcOsReleaseMutex(LockerHandle handle)
 //
 // Get current system time by microsecond.
 //
-unsigned int TqcOsGetMicroSeconds(void)
-{
+unsigned int TqcOsGetMicroSeconds(void) {
     LARGE_INTEGER t1;
     LARGE_INTEGER tc;
     unsigned int  time;
@@ -111,7 +103,8 @@ unsigned int TqcOsGetMicroSeconds(void)
     QueryPerformanceFrequency(&tc);
     QueryPerformanceCounter(&t1);
 
-    time = static_cast<unsigned int>((static_cast<double>(t1.QuadPart) / static_cast<double>(tc.QuadPart)) * 1000000);
+    time = static_cast<unsigned int>((static_cast<double>(t1.QuadPart)
+        / static_cast<double>(tc.QuadPart)) * 1000000);
 
     return time;
 }
@@ -158,7 +151,8 @@ unsigned int TqcOsGetMicroSeconds(void)
 //         return false;
 //     }
 
-//     HBITMAP hBmp    = CreateCompatibleBitmap((HDC)stCapScreen.m_pFromHandle, nScissorWidth, nScissorHeight);
+//     HBITMAP hBmp    = CreateCompatibleBitmap((HDC)stCapScreen.m_pFromHandle,
+//                              nScissorWidth, nScissorHeight);
 //     HBITMAP hOld    = (HBITMAP)SelectObject((HDC)stCapScreen.m_pToHandle, hBmp);
 //     BOOL    bResult = BitBlt((HDC)stCapScreen.m_pToHandle, 0, 0, nScissorWidth, nScissorHeight,
 //                              (HDC)stCapScreen.m_pFromHandle, nColBegin, nRowBegin, SRCCOPY);
@@ -177,15 +171,12 @@ unsigned int TqcOsGetMicroSeconds(void)
 //     return true;
 // }
 
-bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecFileName)
-{
-    if (poVecFileName == NULL)
-    {
+bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecFileName) {
+    if (poVecFileName == NULL) {
         return false;
     }
 
-    if (strPathName.empty())
-    {
+    if (strPathName.empty()) {
         return false;
     }
 
@@ -193,24 +184,20 @@ bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecF
     std::string p;
     _finddata_t fileInfo;
     intptr_t    handle = _findfirst(p.assign(strPathName.c_str()).append("\\*").c_str(), &fileInfo);
-    if (handle == -1L)
-    {
+    if (handle == -1L) {
         return false;
     }
 
-    do
-    {
+    do {
         char szImageName[256] = { 0 };
         SNPRINTF(szImageName, sizeof(szImageName), "%s/%s", strPathName.c_str(), fileInfo.name);
         poVecFileName->push_back(std::string(szImageName));
-    }
-    while (_findnext(handle, &fileInfo) == 0);
+    } while (_findnext(handle, &fileInfo) == 0);
 
     return true;
 }
 
-bool TqcOsStartProcess(const char *strWorkPath, const char *args)
-{
+bool TqcOsStartProcess(const char *strWorkPath, const char *args) {
     PROCESS_INFORMATION pi;
     STARTUPINFO         si;
     BOOL                bRes = FALSE;
@@ -218,45 +205,35 @@ bool TqcOsStartProcess(const char *strWorkPath, const char *args)
     ZeroMemory(&si, sizeof(si));
     ZeroMemory(&pi, sizeof(pi));
 
-    bRes = CreateProcess(NULL, (LPTSTR)(LPCTSTR)args, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, (LPCSTR)strWorkPath,
-                         &si, &pi);
+    bRes = CreateProcess(NULL, (LPTSTR)(LPCTSTR)args, NULL, NULL, FALSE, CREATE_NEW_CONSOLE,
+        NULL, (LPCSTR)strWorkPath, &si, &pi);
     return static_cast<bool>(bRes);
 }
 
-bool  TqcOsGetCWD(char *buff, int nMaxLen)
-{
-    if (buff == NULL || nMaxLen <= 0)
-    {
+bool  TqcOsGetCWD(char *buff, int nMaxLen) {
+    if (buff == NULL || nMaxLen <= 0) {
         return false;
     }
 
     char *pszBuff;
     pszBuff = getcwd(NULL, 0);
-    if (NULL == pszBuff)
-    {
+    if (NULL == pszBuff) {
         return false;
-    }
-    else
-    {
+    } else {
         /* code */
-        if (strlen(pszBuff) < nMaxLen)
-        {
+        if (strlen(pszBuff) < nMaxLen) {
             memcpy(buff, pszBuff, strlen(pszBuff));
             free(pszBuff);
             return true;
-        }
-        else
-        {
+        } else {
             free(pszBuff);
             return false;
         }
     }
 }
 
-bool IsFileExist(const char *pszFileName)
-{
-    if ((_access(pszFileName, 0)) != -1)
-    {
+bool IsFileExist(const char *pszFileName) {
+    if ((_access(pszFileName, 0)) != -1) {
         return true;
     }
 

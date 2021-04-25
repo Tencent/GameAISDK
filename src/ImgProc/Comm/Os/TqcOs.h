@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef TQC_OS_H_
-#define TQC_OS_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_OS_TQCOS_H_
+#define GAME_AI_SDK_IMGPROC_COMM_OS_TQCOS_H_
 
 #if defined(_WINDOWS) || defined(WIN32) || defined(WIN64) || defined(WINDOWS)
 #include <direct.h>
@@ -32,8 +35,7 @@
 #define SNPRINTF snprintf
 #endif
 
-enum PixelFormat
-{
+enum PixelFormat {
     /* Bytes: 0 1 2 3 (Low to high)*/
     RGBA_8888 = 306,  /*        R G B A */
     BGRA_8888 = 212,  /*        B G R A */
@@ -60,8 +62,7 @@ enum PixelFormat
 
 
 typedef void*LockerHandle;
-struct CapScreen
-{
+struct CapScreen {
     void *m_pFromHandle;
     void *m_pToHandle;
 };
@@ -79,35 +80,8 @@ void            TqcOsReleaseMutex(LockerHandle handle);
 unsigned int    TqcOsGetMicroSeconds(void);
 bool            TqcOsGetCWD(char *buff, int nMaxLen);
 
-/*
-   capture part of screen image
-   example:
-   CapScreen stCapScreen;
-   bool bresult = TqcOsCreateCapScreen(&stCapScreen);
-   if(bresult)
-   {
-    for(int i = 0; i < 100; i++)
-    {
-        Mat oImage; // Mat is a type of  OPenCV
-        oImage.create(100, 100, CV_8UC4);
-        PixelFormat ePixelFormat;
-        bool bCapres = TqcOsCapScreen(stCapScreen, 0, 0, 100, 100, oImage.data,ePixelFormat);
-        if(!bCapres)
-        {
-            break;
-        }
-    }
-    TqcOsReleaseCapScreen(&stCapScreen);
-   }
- */
-// bool TqcOsCreateCapScreen(CapScreen *stCapScreen);
-// bool TqcOsReleaseCapScreen(CapScreen *stCapScreene);
-// bool TqcOsCapScreen(const CapScreen stCapScreen, const int nColBegin, const int nRowBegin,
-//                     const int nScissorWidth, const int nScissorHeight, unsigned char *pImageData,
-//                     PixelFormat &ePixelFormat);
-
 bool TqcOsReadFileList(std::string strPathName, std::vector<std::string> *poVecFileName);
 
 bool IsFileExist(const char *pszFileName);
 
-#endif // TQC_OS_H_
+#endif  // GAME_AI_SDK_IMGPROC_COMM_OS_TQCOS_H_

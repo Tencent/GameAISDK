@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef LOCATION_REG_H_
-#define LOCATION_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CLOCATIONREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CLOCATIONREG_H_
 
 #include <string>
 #include <vector>
@@ -18,8 +21,7 @@
 //          CLocationReg Structure Define
 // **************************************************************************************
 
-struct tagLocationRegParam
-{
+struct tagLocationRegParam {
     int                   nMatchCount;
     int                   nScaleLevel;
     float                 fMinScale;
@@ -33,36 +35,33 @@ struct tagLocationRegParam
     std::vector<tagTmpl>  oVecTmpls;
 
 
-    tagLocationRegParam()
-    {
-        nMatchCount   = 5;
-        nScaleLevel   = 9;
-        fMinScale     = 0.80f;
-        fMaxScale     = 1.20f;
-        fExpandWidth  = 0.10f;
+    tagLocationRegParam() {
+        nMatchCount = 5;
+        nScaleLevel = 9;
+        fMinScale = 0.80f;
+        fMaxScale = 1.20f;
+        fExpandWidth = 0.10f;
         fExpandHeight = 0.10f;
-        strAlgorithm  = "Detect";
-        oLocation     = cv::Rect(-1, -1, -1, -1);
-        oInferROI     = cv::Rect(-1, -1, -1, -1);
+        strAlgorithm = "Detect";
+        oLocation = cv::Rect(-1, -1, -1, -1);
+        oInferROI = cv::Rect(-1, -1, -1, -1);
         oVecInferLocations.clear();
         oVecTmpls.clear();
     }
 };
 
-struct tagLocationRegResult
-{
+struct tagLocationRegResult {
     int      nState;
     int      nRectNum;
     float    fScale;
     float    fScore;
     cv::Rect szRects[MAX_ELEMENT_SIZE];
 
-    tagLocationRegResult()
-    {
-        nState   = 0;
+    tagLocationRegResult() {
+        nState = 0;
         nRectNum = 0;
-        fScale   = 0.0f;
-        fScore   = 0.0f;
+        fScale = 0.0f;
+        fScore = 0.0f;
     }
 };
 
@@ -70,9 +69,8 @@ struct tagLocationRegResult
 //          CLocationRegTmplMatch Class Define
 // **************************************************************************************
 
-class CLocationRegTmplMatch
-{
-public:
+class CLocationRegTmplMatch {
+  public:
     CLocationRegTmplMatch();
     ~CLocationRegTmplMatch();
 
@@ -80,15 +78,16 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagLocationRegResult &stResult);
     int Release();
 
-private:
+  private:
     int FillColorMatchParam(const tagLocationRegParam &stParam, CColorMatchParam &oParam);
     int SetPoint(const cv::Rect &oRect, std::vector<cv::Point> &oVecPoints);
     int SetROI(const cv::Rect &oRect, int nImgWidth, int nImgHeight, cv::Rect &oROI);
     int InferROI(const cv::Rect &oRect, float fScale, cv::Rect &oROILoc);
     int InferLocation(const cv::Rect &oROILoc, float fScale, std::vector<cv::Rect> &oVecRects);
-    int ComputeOffset(const int nLocIdx, const cv::Rect &oLocation, const cv::Rect &oRect, cv::Point &oOffset);
+    int ComputeOffset(const int nLocIdx, const cv::Rect &oLocation,
+        const cv::Rect &oRect, cv::Point &oOffset);
 
-private:
+  private:
     int                   m_nTaskID;
     int                   m_nMatchCount;
     float                 m_fExpandWidth;
@@ -111,13 +110,12 @@ private:
 //          CLocationRegParam Class Define
 // **************************************************************************************
 
-class CLocationRegParam : public IComnBaseRegParam
-{
-public:
+class CLocationRegParam : public IComnBaseRegParam {
+  public:
     CLocationRegParam() {}
     virtual ~CLocationRegParam() {}
 
-public:
+  public:
     tagLocationRegParam m_stParam;
 };
 
@@ -125,23 +123,20 @@ public:
 //          CLocationRegResult Class Define
 // **************************************************************************************
 
-class CLocationRegResult : public IComnBaseRegResult
-{
-public:
+class CLocationRegResult : public IComnBaseRegResult {
+  public:
     CLocationRegResult() {}
     virtual ~CLocationRegResult() {}
 
-    void SetResult(tagLocationRegResult *pstResult)
-    {
+    void SetResult(tagLocationRegResult *pstResult) {
         m_stResult = *pstResult;
     }
 
-    void GetResult(tagLocationRegResult *pstResult)
-    {
+    void GetResult(tagLocationRegResult *pstResult) {
         *pstResult = m_stResult;
     }
 
-private:
+  private:
     tagLocationRegResult m_stResult;
 };
 
@@ -149,9 +144,8 @@ private:
 //          CLocationReg Class Define
 // **************************************************************************************
 
-class CLocationReg : public IComnBaseReg
-{
-public:
+class CLocationReg : public IComnBaseReg {
+  public:
     CLocationReg();
     ~CLocationReg();
 
@@ -160,19 +154,19 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
-    tagLocationRegParam   m_stParam; // parameter
-    CLocationRegTmplMatch m_oMethod; // method
+  private:
+    tagLocationRegParam   m_stParam;  // parameter
+    CLocationRegTmplMatch m_oMethod;  // method
 };
 
 // **************************************************************************************
 //          Interface for UI
 // **************************************************************************************
-int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const tagActionState &oSrcPoint,
-    cv::Point *pDstPoint);
+int DetectPoint(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg,
+    const tagActionState &oSrcPoint, cv::Point *pDstPoint);
 int DetectRect(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::Rect &oSrcRect,
     const float fThreshold, cv::Rect *pDstRect, float *pScore);
-int DetectCloseIcon(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg, const cv::Rect &oSrcRect,
-    const float fThreshold, cv::Rect *pDstRect, float *pScore);
+int DetectCloseIcon(int nID, const cv::Mat &oSrcImg, const cv::Mat &oTmplImg,
+    const cv::Rect &oSrcRect, const float fThreshold, cv::Rect *pDstRect, float *pScore);
 
-#endif /* LOCATION_REG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CLOCATIONREG_H_

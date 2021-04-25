@@ -1,0 +1,11 @@
+{
+    "Debug":true,
+    "GameName":"output",
+    "SavePath":".\\project\\im1/",
+    "FrameFPS":10,
+    "FrameHeight":360,
+    "FrameWidth":640,
+    "ActionCfgFile":"cfg/action.json",
+    "OutputAsVideo":false,
+    "LogTimestamp":false
+}

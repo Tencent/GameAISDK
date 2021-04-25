@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef MAP_REG_H_
-#define MAP_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMAPREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMAPREG_H_
 
 #include <string>
 #include <vector>
@@ -17,8 +20,7 @@
 //          CMapReg Structure Define
 // **************************************************************************************
 
-struct tagMapRegParam
-{
+struct tagMapRegParam {
     int         nFilterSize;
     int         nMaxPointNum;
     std::string strCondition;
@@ -29,22 +31,20 @@ struct tagMapRegParam
     std::string strMapMaskPath;
     cv::Rect    oROI;
 
-    tagMapRegParam()
-    {
-        nMaxPointNum           = 512;
-        nFilterSize            = 1;
-        oROI                   = cv::Rect(-1, -1, -1, -1);
-        strCondition           = "";
-        strMyLocCondition      = "";
+    tagMapRegParam() {
+        nMaxPointNum = 512;
+        nFilterSize = 1;
+        oROI = cv::Rect(-1, -1, -1, -1);
+        strCondition = "";
+        strMyLocCondition = "";
         strFriendsLocCondition = "";
-        strViewLocCondition    = "";
-        strMapTempPath         = "";
-        strMapMaskPath         = "";
+        strViewLocCondition = "";
+        strMapTempPath = "";
+        strMapMaskPath = "";
     }
 };
 
-struct tagMapRegResult
-{
+struct tagMapRegResult {
     int       nState;
     int       nFreindsPointNum;
     cv::Point oMyLocPoint;
@@ -53,11 +53,10 @@ struct tagMapRegResult
     cv::Point oViewAnglePoint;
     cv::Rect  oROI;
 
-    tagMapRegResult()
-    {
-        nState           = 0;
+    tagMapRegResult() {
+        nState = 0;
         nFreindsPointNum = 0;
-        oROI             = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -65,9 +64,8 @@ struct tagMapRegResult
 //          CMapRegColorDet Class Define
 // **************************************************************************************
 
-class CMapRegColorDet
-{
-public:
+class CMapRegColorDet {
+  public:
     CMapRegColorDet();
     ~CMapRegColorDet();
 
@@ -75,10 +73,13 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagMapRegResult &stResult);
     int Release();
 
-private:
+  private:
     int FillColorDetParam(const tagMapRegParam &stParam, CColorDetParam &oParam);
+    int SolveLocation(CPixDetResult &oMyLocPixDetResult, tagMapRegResult &stResult);
+    int SolveFriendLocation(CPixDetResult &oFriendsLocPixDetResult, tagMapRegResult &stResult);
+    int SolveViewPoint(CPixDetResult &oViewLocPixDetResult, tagMapRegResult &stResult);
 
-private:
+  private:
     int      m_nTaskID;
     cv::Rect m_oROI;
 
@@ -94,17 +95,15 @@ private:
 //          CMapRegParam Class Define
 // **************************************************************************************
 
-class CMapRegParam : public IComnBaseRegParam
-{
-public:
-    CMapRegParam()
-    {
+class CMapRegParam : public IComnBaseRegParam {
+  public:
+    CMapRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CMapRegParam() {}
 
-public:
+  public:
     std::vector<tagMapRegParam> m_oVecElements;
 };
 
@@ -112,33 +111,28 @@ public:
 //          CMapRegResult Class Define
 // **************************************************************************************
 
-class CMapRegResult : public IComnBaseRegResult
-{
-public:
-    CMapRegResult()
-    {
+class CMapRegResult : public IComnBaseRegResult {
+  public:
+    CMapRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CMapRegResult() {}
 
-    void SetResult(tagMapRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagMapRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagMapRegResult* GetResult(int *pResultNum)
-    {
+    tagMapRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int             m_nResultNum;
     tagMapRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -147,9 +141,8 @@ private:
 //          CMapReg Class Define
 // **************************************************************************************
 
-class CMapReg : public IComnBaseReg
-{
-public:
+class CMapReg : public IComnBaseReg {
+  public:
     CMapReg();
     ~CMapReg();
 
@@ -158,10 +151,10 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
+  private:
     std::vector<tagMapRegParam>  m_oVecParams;
     std::vector<CMapRegColorDet> m_oVecMethods;
 };
 
-#endif /* __MAP_REG_H */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMAPREG_H_
 

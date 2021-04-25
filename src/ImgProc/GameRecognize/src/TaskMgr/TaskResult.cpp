@@ -1,8 +1,11 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
+
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
 
 #include <iostream>
 
@@ -13,33 +16,28 @@
 // CTaskResult 成员函数的实现
 // =========================================================================
 
-CTaskResult::CTaskResult()
-{
+CTaskResult::CTaskResult() {
     m_pRegRst = NULL;
-    m_eType   = TYPE_BEGIN;
+    m_eType = TYPE_BEGIN;
     m_nTaskID = -1;
 }
 
-CTaskResult::~CTaskResult()
-{}
+CTaskResult::~CTaskResult() {
+}
 
 // 释放资源
 // 使用内存池的FreePoolMemory接口
-void CTaskResult::Release()
-{
-    if (m_pRegRst != NULL)
-    {
+void CTaskResult::Release() {
+    if (m_pRegRst != NULL) {
         CGameRegMemPool::getInstance()->FreePoolMemory<IRegResult>(m_pRegRst);
         m_pRegRst = NULL;
     }
 }
 
-IRegResult* CTaskResult::GetInstance(EREGTYPE eType)
-{
+IRegResult* CTaskResult::GetInstance(EREGTYPE eType) {
     m_eType = eType;
 
-    switch (eType)
-    {
+    switch (eType) {
     case TYPE_STUCKREG:
     {
         // 创建stuck结果对象
@@ -153,134 +151,102 @@ IRegResult* CTaskResult::GetInstance(EREGTYPE eType)
 // 使用AllocPoolMemory接口
 // ================================================================================================
 
-void CTaskResult::CreateShootBloodRegRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateShootBloodRegRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CShootGameBloodRegResult>();
     }
 }
 
-void CTaskResult::CreateShootHurtRegRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateShootHurtRegRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CShootGameHurtRegResult>();
     }
 }
 
-void CTaskResult::CreateMultColorVarRegRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateMultColorVarRegRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CMultColorVarRegResult>();
     }
 }
 
-void CTaskResult::CreateMapDirectionRegRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateMapDirectionRegRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CMapDirectionRegResult>();
     }
 }
 
-void CTaskResult::CreateMapRegRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateMapRegRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CMapRegResult>();
     }
 }
 
-void CTaskResult::CreateKingGloryBloodRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateKingGloryBloodRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CKingGloryBloodRegResult>();
     }
 }
 
-void CTaskResult::CreateFixBloodRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateFixBloodRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CFixBloodRegResult>();
     }
 }
 
-void CTaskResult::CreateLocationRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateLocationRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CLocationRegResult>();
     }
 }
 
-void CTaskResult::CreateBloodRegRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateBloodRegRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CBloodLengthRegResult>();
     }
 }
 
-void CTaskResult::CreatePixRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreatePixRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CPixRegResult>();
     }
 }
 
-void CTaskResult::CreateFixObjRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateFixObjRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CFixObjRegResult>();
     }
 }
 
-void CTaskResult::CreateStuckRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateStuckRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CStuckRegResult>();
     }
 }
 
-void CTaskResult::CreateDeformRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateDeformRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CDeformObjRegResult>();
     }
 }
 
-void CTaskResult::CreateNumberRst()
-{
-    if (NULL == m_pRegRst)
-    {
+void CTaskResult::CreateNumberRst() {
+    if (NULL == m_pRegRst) {
         m_pRegRst = CGameRegMemPool::getInstance()->AllocPoolMemory<CNumRegResult>();
     }
 }
 
-void CTaskResult::SetType(EREGTYPE eType)
-{
+void CTaskResult::SetType(EREGTYPE eType) {
     m_eType = eType;
 }
 
-EREGTYPE CTaskResult::GetType()
-{
+EREGTYPE CTaskResult::GetType() {
     return m_eType;
 }
 
-void CTaskResult::SetTaskID(int nTaskID)
-{
+void CTaskResult::SetTaskID(int nTaskID) {
     m_nTaskID = nTaskID;
 }
 
-int CTaskResult::GetTaskID()
-{
+int CTaskResult::GetTaskID() {
     return m_nTaskID;
 }

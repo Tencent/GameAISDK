@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -9,7 +12,9 @@ import logging
 import numpy as np
 
 from protocol import common_pb2
-from common.Define import *
+from common.Define import UI_SCREEN_ORI_LANDSCAPE, SERVICE_REGISTER, SERVICE_UNREGISTER, TASK_STATUS_INIT_SUCCESS, \
+    TASK_STATUS_INIT_FAILURE, SERVICE_TYPE_AGENT, SERVICE_TYPE_UI, GAME_STATE_START, GAME_STATE_OVER, \
+    GAME_STATE_MATCH_WIN, GAME_STATE_UI, GAME_STATE_NONE, SERVICE_TYPE_REG, RUN_TYPE_UI_AI, RUN_TYPE_UI
 
 LOG = logging.getLogger('ManageCenter')
 
@@ -26,6 +31,7 @@ class MsgHandler(object):
         self.__serviceMgr = serviceMgr
         self.__resultMgr = resultMgr
         self.__msgDict = {}
+        self.__source_info = None
 
     def Initialize(self):
         """
@@ -46,6 +52,8 @@ class MsgHandler(object):
         self._RegisterMsgHandler(common_pb2.MSG_NEW_TASK, self._OnNewTask)
         self._RegisterMsgHandler(common_pb2.MSG_TEST_ID, self._OnTestID)
         self._RegisterMsgHandler(common_pb2.MSG_IM_TRAIN_STATE, self._OnIMTrainState)
+        self._RegisterMsgHandler(common_pb2.MSG_PROJECT_SOURCE, self._get_source_info)
+        self._RegisterMsgHandler(common_pb2.MSG_PROJECT_SOURCE_RES, self._get_source_response)
         return True
 
     def Update(self):
@@ -67,6 +75,7 @@ class MsgHandler(object):
             # Call message handler function
             handleFunc = self.__msgDict.get(msg.eMsgID)
             if handleFunc is not None:
+                LOG.warning('MsgID[{0}], addr:{1}, handle function{2}'.format(msg.eMsgID, addr, handleFunc))
                 handleFunc(msg, addr)
             else:
                 LOG.warning('Unhandled MsgID[{0}]'.format(msg.eMsgID))
@@ -390,6 +399,26 @@ class MsgHandler(object):
         msgBuff = msg.SerializeToString()
         self.__commMgr.SendMsgToIOService(msgBuff)
 
+    def _get_source_info(self, msg, addr):
+
+        LOG.info('get source info request, msg: {}'.format(msg))
+        if self.__source_info is not None:
+            response = self.__source_info.SerializeToString()
+            self.__commMgr.SendMsgToIOService(response)
+
+        # msgBuff = msg.SerializeToString()
+        # addrList = self.__serviceMgr.GetAllServiceAddr(serviceType=SERVICE_TYPE_AGENT)
+        # LOG.info("the address List is {}, SERVICE_TYPE_AGENT:{}".format(addrList, SERVICE_TYPE_AGENT))
+        # for addr in addrList:
+        #     LOG.info('Send source request to AI[{}]'.format(addr))
+        #     self.__commMgr.SendTo(addr, msgBuff)
+
+    def _get_source_response(self, msg, address):
+        LOG.info('get source response from the agent, msg: {}'.format(msg))
+        self.__source_info = msg
+        # msg_buff = msg.SerializeToString()
+        #self.__commMgr.SendMsgToIOService(msg_buff)
+
     def SendServiceRegisterMsgToIO(self, regType):
         """
         Send service register/unregister to IO
@@ -418,7 +447,7 @@ class MsgHandler(object):
         :return:
         """
         msgBuff = self._CreateSrcImgMsg(frameSeq, gameFrame, gameData)
-        LOG.debug('send frame data, frameIndex={1} to addr[{0}]'.format(addr, frameSeq))
+        LOG.info('send frame data, frameIndex={1} to addr[{0}]'.format(addr, frameSeq))
         self.__commMgr.SendTo(addr, msgBuff)
 
     def SendUIAPIStateMsgTo(self, addr, gameFrame, frameSeq, stucked=False):
@@ -440,7 +469,7 @@ class MsgHandler(object):
         if gameFrame is None:
             return
 
-        LOG.debug('Send UIAPIState to [{0}], frame_seq[{1}]'.format(addr, frameSeq))
+        LOG.info('Send UIAPIState to [{0}], frame_seq[{1}]'.format(addr, frameSeq))
 
         msgBuff = self._CreateUIAPIStateMsg(uiAPIState, frameSeq, gameFrame, screenOri, gameState)
         self.__commMgr.SendTo(addr, msgBuff)

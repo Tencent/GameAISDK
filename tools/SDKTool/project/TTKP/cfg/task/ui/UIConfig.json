@@ -1,0 +1,73 @@
+{
+    "matchStartState": [
+        {
+            "id": 1000
+        }
+    ],
+    "uiStates": [
+        {
+            "id": 1,
+            "name": "fh",
+            "desc": "",
+            "actionType": "click",
+            "imgPath": "data/KPIM/HallUI_fh_5.jpg",
+            "keyPoints": 5,
+            "checkSameFrameCnt": 5,
+            "template": 1,
+            "x": 806,
+            "y": 628,
+            "w": 168,
+            "h": 57,
+            "actionX": 888,
+            "actionY": 658,
+            "actionThreshold": 0.7,
+            "actionTmplExpdWPixel": 25,
+            "actionTmplExpdHPixel": 25,
+            "actionROIExpdWRatio": 0.275,
+            "actionROIExpdHRatio": 0.275
+        },
+        {
+            "id": 1000,
+            "name": "start",
+            "desc": "",
+            "actionType": "click",
+            "imgPath": "data/KPIM/StartUI_start_5.jpg",
+            "keyPoints": 5,
+            "checkSameFrameCnt": 5,
+            "template": 1,
+            "x": 792,
+            "y": 601,
+            "w": 245,
+            "h": 79,
+            "actionX": 924,
+            "actionY": 641,
+            "actionThreshold": 0.7,
+            "actionTmplExpdWPixel": 25,
+            "actionTmplExpdHPixel": 25,
+            "actionROIExpdWRatio": 0.275,
+            "actionROIExpdHRatio": 0.275
+        }
+    ],
+    "gameOver": [
+        {
+            "id": 1,
+            "name": "over",
+            "desc": "",
+            "imgPath": "data/KPIM/OverUI_over_4.jpg",
+            "actionType": "click",
+            "x": 335,
+            "y": 483,
+            "w": 162,
+            "h": 49,
+            "actionX": 419,
+            "actionY": 509,
+            "actionThreshold": 0.7,
+            "actionTmplExpdWPixel": 25,
+            "actionTmplExpdHPixel": 25,
+            "actionROIExpdWRatio": 0.275,
+            "actionROIExpdHRatio": 0.275
+        }
+    ],
+    "closeIcons": [],
+    "devicesCloseIcons": []
+}

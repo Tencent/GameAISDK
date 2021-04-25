@@ -2,8 +2,6 @@
 
 # 图像模块的二次开发
 
-[TOC]
-
 # 1 添加新的识别器
 
 src\\ImgProc\\GameRecognize\\src\\Recognizer

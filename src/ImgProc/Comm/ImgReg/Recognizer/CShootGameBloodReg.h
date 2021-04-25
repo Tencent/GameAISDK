@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef SHOOT_GAME_BLOOD_REG_H_
-#define SHOOT_GAME_BLOOD_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CSHOOTGAMEBLOODREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CSHOOTGAMEBLOODREG_H_
 
 #include <string>
 #include <vector>
@@ -18,8 +21,7 @@
 //          CShootGameBloodReg Structure Define
 // **************************************************************************************
 
-struct tagShootGameBloodRegParam
-{
+struct tagShootGameBloodRegParam {
     int                  nBloodLength;
     int                  nMaxPointNum;
     int                  nFilterSize;
@@ -30,30 +32,27 @@ struct tagShootGameBloodRegParam
     std::string          strCondition;
     std::vector<tagTmpl> oVecTmpls;
 
-    tagShootGameBloodRegParam()
-    {
+    tagShootGameBloodRegParam() {
         nBloodLength = 123;
         nMaxPointNum = 1024;
-        nFilterSize  = 0;
-        nScaleLevel  = 1;
-        fMinScale    = 1.0;
-        fMaxScale    = 1.0;
-        oROI         = cv::Rect(-1, -1, -1, -1);
+        nFilterSize = 0;
+        nScaleLevel = 1;
+        fMinScale = 1.0;
+        fMaxScale = 1.0;
+        oROI = cv::Rect(-1, -1, -1, -1);
         strCondition = "";
         oVecTmpls.clear();
     }
 };
 
-struct tagShootGameBloodRegResult
-{
+struct tagShootGameBloodRegResult {
     int      nState;
     tagBlood stBlood;
     cv::Rect oROI;
 
-    tagShootGameBloodRegResult()
-    {
+    tagShootGameBloodRegResult() {
         nState = 0;
-        oROI   = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -61,9 +60,8 @@ struct tagShootGameBloodRegResult
 //          CShootGameBloodRegMethod Class Define
 // **************************************************************************************
 
-class CShootGameBloodRegMethod
-{
-public:
+class CShootGameBloodRegMethod {
+  public:
     CShootGameBloodRegMethod();
     ~CShootGameBloodRegMethod();
 
@@ -71,11 +69,11 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagShootGameBloodRegResult &stResult);
     int Release();
 
-private:
+  private:
     int FillGradMatchParam(const tagShootGameBloodRegParam &stParam, CGradMatchParam &oParam);
     int FillColorDetParam(const tagShootGameBloodRegParam &stParam, CColorDetParam &oParam);
 
-private:
+  private:
     int      m_nTaskID;
     int      m_nBloodLength;
     cv::Rect m_oROI;
@@ -88,17 +86,15 @@ private:
 //          CShootGameBloodRegParam Class Define
 // **************************************************************************************
 
-class CShootGameBloodRegParam : public IComnBaseRegParam
-{
-public:
-    CShootGameBloodRegParam()
-    {
+class CShootGameBloodRegParam : public IComnBaseRegParam {
+  public:
+    CShootGameBloodRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CShootGameBloodRegParam() {}
 
-public:
+  public:
     std::vector<tagShootGameBloodRegParam> m_oVecElements;
 };
 
@@ -106,33 +102,28 @@ public:
 //          CShootGameBloodRegResult Class Define
 // **************************************************************************************
 
-class CShootGameBloodRegResult : public IComnBaseRegResult
-{
-public:
-    CShootGameBloodRegResult()
-    {
+class CShootGameBloodRegResult : public IComnBaseRegResult {
+  public:
+    CShootGameBloodRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CShootGameBloodRegResult() {}
 
-    void SetResult(tagShootGameBloodRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagShootGameBloodRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagShootGameBloodRegResult* GetResult(int *pResultNum)
-    {
+    tagShootGameBloodRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                        m_nResultNum;
     tagShootGameBloodRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -141,9 +132,8 @@ private:
 //          CShootGameBloodReg Class Define
 // **************************************************************************************
 
-class CShootGameBloodReg : public IComnBaseReg
-{
-public:
+class CShootGameBloodReg : public IComnBaseReg {
+  public:
     CShootGameBloodReg();
     ~CShootGameBloodReg();
 
@@ -152,9 +142,9 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
-    std::vector<tagShootGameBloodRegParam> m_oVecParams; // vector of parameters
-    std::vector<CShootGameBloodRegMethod>  m_oVecMethods; // vector of methods
+  private:
+    std::vector<tagShootGameBloodRegParam> m_oVecParams;  // vector of parameters
+    std::vector<CShootGameBloodRegMethod>  m_oVecMethods;  // vector of methods
 };
 
-#endif /* SHOOT_GAME_BLOOD_REG_H_ */
+#endif   // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CSHOOTGAMEBLOODREG_H_

@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef IMG_CLS_H_
-#define IMG_CLS_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGCLS_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGCLS_H_
 
 #include <vector>
 
@@ -15,9 +18,8 @@
 //          IImgClsParam Class
 // **************************************************************************************
 
-class IImgClsParam : public IImgProcParam
-{
-public:
+class IImgClsParam : public IImgProcParam {
+  public:
     IImgClsParam() {}
     virtual ~IImgClsParam() {}
 };
@@ -26,9 +28,8 @@ public:
 //          CImgClsData Class
 // **************************************************************************************
 
-class CImgClsData : public IImgProcData
-{
-public:
+class CImgClsData : public IImgProcData {
+  public:
     CImgClsData() {}
     virtual ~CImgClsData() {}
 };
@@ -37,13 +38,12 @@ public:
 //          CImgClsResult Class
 // **************************************************************************************
 
-class CImgClsResult : public IImgProcResult
-{
-public:
+class CImgClsResult : public IImgProcResult {
+  public:
     CImgClsResult() {}
     virtual ~CImgClsResult() {}
 
-public:
+  public:
     std::vector<tagBBox> m_oVecBBoxes;
 };
 
@@ -51,9 +51,8 @@ public:
 //          IImgClsFactory Class
 // **************************************************************************************
 
-class IImgClsFactory : public IImgProcFactory
-{
-public:
+class IImgClsFactory : public IImgProcFactory {
+  public:
     IImgClsFactory() {}
     virtual ~IImgClsFactory() {}
 
@@ -64,11 +63,10 @@ public:
 //          IImgCls Class
 // **************************************************************************************
 
-class IImgCls : public IImgProc
-{
-public:
+class IImgCls : public IImgProc {
+  public:
     IImgCls() {}
     virtual ~IImgCls() {}
 };
 
-#endif /* IMG_CLS_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IIMGCLS_H_

@@ -1,41 +1,39 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
-import csv
-import glob
 import logging
-import random
-import shutil
-import sys
-import operator
 import os
-
+import shutil
 import cv2
+import random
 import numpy as np
-
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.python.keras import regularizers
+
 from tensorflow.python.keras import backend as K
-from tensorflow.python.keras.layers import Input, Activation, BatchNormalization, Flatten, Conv2D
+from tensorflow.python.keras import regularizers
 from tensorflow.python.keras.applications.resnet50 import conv_block, identity_block
 from tensorflow.python.keras.layers import Convolution2D, ZeroPadding2D
+from tensorflow.python.keras.layers import Input, Activation, BatchNormalization, Flatten, Conv2D
 from tensorflow.python.keras.layers import MaxPooling2D, Dense, GlobalAveragePooling2D, PReLU, LSTM
-from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
-from .ProgressReport import ProgressReport
+from tensorflow.python.keras.models import Model
+from util.util import ConvertToSDKFilePath
 
-from .util import *
+from .ProgressReport import ProgressReport
+from .util import ObtainTaskDict, ReadTxt, DataGenerator, PreprocessImage, GetFeatureAndLabel
 
 K.set_image_data_format('channels_last')
 
-DATA_ROOT_DIR = '../'
-if os.environ.get('AI_SDK_PATH') is not None:
-    DATA_ROOT_DIR = os.environ.get('AI_SDK_PATH') + '/'
+DATA_ROOT_DIR = ConvertToSDKFilePath('')
+# DATA_ROOT_DIR = '../'
+# if os.environ.get('AI_SDK_PATH') is not None:
+#     DATA_ROOT_DIR = os.environ.get('AI_SDK_PATH') + '/'
 
 
 class Network(object):
@@ -74,6 +72,8 @@ class Network(object):
 
         self.actionDefine = cfgData.get('actionDefine')
 
+        self.useLstm = cfgData.get('useLstm')
+
         self.taskList, self.taskActionDict, self.actionNameDict = ObtainTaskDict(self.actionDefine)
 
         self.actionSpaceList = list()
@@ -84,8 +84,10 @@ class Network(object):
         if len(self.taskList) > 2:
             self.logger.error('Imitation learning only supports one or two tasks')
 
-        self.actionPriorWeights = [cfgData['actionDefine'][n]['prior']
-                                   for n in range(len(cfgData['actionDefine']))]
+        self.actionPriorWeightsDict = dict()
+        for key in self.taskActionDict.keys():
+            self.actionPriorWeightsDict[key] = [self.taskActionDict[key][n]['prior']
+                                                for n in range(len(self.taskActionDict[key]))]
 
         self.trainDataDir = trainDataDir
         self.testDataDir = testDataDir
@@ -98,26 +100,28 @@ class Network(object):
             os.mkdir(self.modelPath)
 
         self.netBatchSize = 32
-
         self.kerasModel = None
-
         self.netLSTMBatchSize = 64
-
         self.kerasModelLSTM = None
+
+        self.trainLabel = None
+        self.trainLabelOri = None
+        self.kerasModelExtFea = None
 
     def Init(self):
         """
         Initialize function
         """
-        pass
+        self.logger.info('execute the init in network of imitation')
 
     def Finish(self):
         """
         Finish fuction
         """
-        pass
+        self.logger.info('execute the finish in network of imitation')
 
-    def LossCCEPieceWise(self, y_true, y_pred):
+    @staticmethod
+    def LossCCEPieceWise(y_true, y_pred):
         """
         Define piece-wise class cross entropy loss
         """
@@ -174,37 +178,37 @@ class Network(object):
 
         for trainIter in range(self.trainIter):
             # obtain input features for network
-            self.logger.info('trainIter is {}'.format(trainIter))
-
+            self.logger.info('trainIter is %d, image size: %d', trainIter, self.imageSize)
+            validation_steps = int(nb_val_samples / self.netBatchSize)
+            self.logger.info("the nb_val_samples is %d, batchSize: %d, validation_steps:%d",
+                             nb_val_samples, self.netBatchSize, validation_steps)
             trainHistory = kerasModel.fit_generator(DataGenerator(self.actionSpaceList,
                                                                   imgFiles=self.trainFileName,
                                                                   labels=self.trainLabel,
                                                                   batchSize=self.netBatchSize,
                                                                   dim=self.imageSize),
-                                                    steps_per_epoch=
-                                                    nb_train_samples / self.netBatchSize,
-                                                    epochs=1, verbose=1,
-                                                    validation_data=
-                                                    DataGenerator(self.actionSpaceList,
-                                                                  imgFiles=self.testFileName,
-                                                                  labels=self.testLabel,
-                                                                  batchSize=self.netBatchSize,
-                                                                  dim=self.imageSize),
-                                                    validation_steps=
-                                                    nb_val_samples / self.netBatchSize)
+                                                    steps_per_epoch=int(nb_train_samples / self.netBatchSize),
+                                                    epochs=1,
+                                                    verbose=1,
+                                                    validation_data=DataGenerator(self.actionSpaceList,
+                                                                                  imgFiles=self.testFileName,
+                                                                                  labels=self.testLabel,
+                                                                                  batchSize=self.netBatchSize,
+                                                                                  dim=self.imageSize),
+                                                    validation_steps=validation_steps)
             trainAcc, valAcc = self.GetAcc(trainHistory)
             valAccList.append(valAcc + trainAcc)
 
             kerasModel.save_weights(self.modelPath + 'my_model_weights' + np.str(trainIter) + '.h5')
 
-            logging.info('Network: Iteration {}....{}: train_acc is {} and val_acc is {}'.format(
-                trainIter, self.trainIter, trainAcc, valAcc))
+            logging.info('Network: Iteration %d....%d: train_acc is %s and val_acc is %s',
+                trainIter, self.trainIter, str(trainAcc), str(valAcc))
             if trainIter < (self.trainIter - 1):
                 self.progressReport.SendTrainProgress(int((trainIter + 1) * 100 / self.trainIter))
 
         indexAccValMax = valAccList.index(np.max(valAccList))
 
-        logging.info('Use model from the {}th iteration'.format(indexAccValMax))
+        logging.info('Use model from the %sth iteration', str(indexAccValMax))
 
         srcModelName = self.modelPath + 'my_model_weights' + np.str(indexAccValMax) + '.h5'
         dstModelName = self.modelPath + 'my_model_weights' + '.h5'
@@ -299,16 +303,21 @@ class Network(object):
         Construct two structures of network
         """
         input_shape = (self.imageSize, self.imageSize, self.imageChannel)
+        self.logger.info('input shape:%s', str(input_shape))
         imgInput = Input(shape=input_shape)
 
         if self.isSmallNet:
+            self.logger.info('use small net(50), KerasModelSmallNet50')
             x = self.KerasModelSmallNet50(imgInput)
         else:
             if self.useResNet:
+                self.logger.info('use res net, KerasModelResNet')
                 x = self.KerasModelResNet(imgInput)
             else:
+                self.logger.info('use small net(150), KerasModelSmallNet150')
                 x = self.KerasModelSmallNet150(imgInput)
 
+        self.logger.info('task list:%s', str(self.taskList))
         for taskIndex in self.taskList:
             actionName = self.actionNameDict[taskIndex]
             if taskIndex == 0:
@@ -393,7 +402,7 @@ class Network(object):
             kerasModelExtFea)
 
         if feaTrain is None:
-            self.logger.error('No image is found in {}'.format(self.trainDataDir))
+            self.logger.error('No image is found in %s', self.trainDataDir)
 
         valAccList = list()
         for trainIter in range(self.trainIter):
@@ -407,12 +416,12 @@ class Network(object):
             modelLSTM.save_weights(self.modelPath + 'my_model_weights_LSTM'
                                    + np.str(trainIter) + '.h5')
 
-            logging.info('NetworkLSTM: Iter {}....{}: train_acc is {} and val_acc is {}'
-                         .format(trainIter, self.trainIter, trainAcc, valAcc))
+            logging.info('NetworkLSTM: Iter %d....%d: train_acc is %s and val_acc is %s',
+                         trainIter, self.trainIter, str(trainAcc), str(valAcc))
 
         indexAccValMax = valAccList.index(np.max(valAccList))
 
-        logging.info('Use model from the {}th iteration'.format(indexAccValMax))
+        logging.info('Use model from the %sth iteration', str(indexAccValMax))
 
         srcModelName = self.modelPath + 'my_model_weights_LSTM' + np.str(indexAccValMax) + '.h5'
         dstModelName = self.modelPath + 'my_model_weights_LSTM' + '.h5'
@@ -526,9 +535,9 @@ class Network(object):
         self.kerasModel.load_weights(self.modelPath + 'my_model_weights.h5')
         self.kerasModelExtFea = Model(inputs=self.kerasModel.input,
                                       outputs=self.kerasModel.get_layer('fc_feature').output)
-
-        self.kerasModelLSTM = self.KerasModelLSTM()
-        self.kerasModelLSTM.load_weights(self.modelPath + 'my_model_weights_LSTM.h5')
+        if self.useLstm is True:
+            self.kerasModelLSTM = self.KerasModelLSTM()
+            self.kerasModelLSTM.load_weights(self.modelPath + 'my_model_weights_LSTM.h5')
 
     def Predict(self, image):
         """
@@ -540,10 +549,10 @@ class Network(object):
             predAction = list()
             for n in range(len(self.taskList)):
                 actionScore = self.kerasModel.predict(inputData)[n][0]
-                predAction.append(self.ChooseAction(actionScore))
+                predAction.append(self.ChooseAction(actionScore, n))
         else:
             actionScore = self.kerasModel.predict(inputData)[0]
-            predAction = self.ChooseAction(actionScore)
+            predAction = self.ChooseAction(actionScore, 0)
         return predAction
 
     def PrepareData(self, image):
@@ -570,14 +579,14 @@ class Network(object):
             predAction = list()
             for n in range(len(self.taskList)):
                 actionScore = self.kerasModelLSTM.predict(inputData)[n][0]
-                predAction.append(self.ChooseAction(actionScore))
+                predAction.append(self.ChooseAction(actionScore, n))
         else:
             actionScore = self.kerasModelLSTM.predict(inputData)[0]
-            predAction = self.ChooseAction(actionScore)
+            predAction = self.ChooseAction(actionScore, 0)
 
         return predAction
 
-    def ChooseAction(self, actionScore):
+    def ChooseAction(self, actionScore, taskIndex):
         """
         choose action according to score of different actions
         There are two modes: max or randomly choose action
@@ -586,24 +595,25 @@ class Network(object):
             actionScore = [max(np.floor(actionScore[n] * 1000), 10)
                            for n in range(len(actionScore))]
 
-            actionScore = [actionScore[n] * self.actionPriorWeights[n]
+            actionScore = [actionScore[n] * self.actionPriorWeightsDict[taskIndex][n]
                            for n in range(len(actionScore))]
-            self.logger.info('actionScore is {}'.format(actionScore))
+            self.logger.info('actionScore is %s', str(actionScore))
             predAction = np.argmax(actionScore)
         else:
             actionScore = [np.floor(actionScore[n] * 1000) + self.randomRatio
                            for n in range(len(actionScore))]
 
-            actionScore = [actionScore[n] * self.actionPriorWeights[n]
+            actionScore = [actionScore[n] * self.actionPriorWeightsDict[taskIndex][n]
                            for n in range(len(actionScore))]
 
-            self.logger.info('actionScore is {}'.format(actionScore))
+            self.logger.info('actionScore is %s', str(actionScore))
 
             predAction = int(self.RandomIndex(actionScore))
 
         return predAction
 
-    def RandomIndex(self, rate):
+    @staticmethod
+    def RandomIndex(rate):
         """
         Randomly select a index based on probability distribution
         """

@@ -1,0 +1,119 @@
+/** 
+ * Client-Server Package Protobuffer Protocol for Touch Module.
+ * Author: guoruihe
+ * Date: 2018.10.1
+ *
+ */
+
+syntax = "proto3";
+
+package com.tencent.wetest.pb.touch;
+
+option java_package = "com.tencent.wetest.pb.touch";
+option java_outer_classname = "TouchPkgPB";
+
+
+enum TouchCommand {
+    UNKNOWN_TOUCH                                   = 0;
+    TOUCH_HEARTBEAT_REQ                             = 1;
+    TOUCH_HEARTBEAT_RES                             = 2;
+    TOUCH_VERSION_REQ                               = 3;
+    TOUCH_VERSION_RES                               = 4;
+    TOUCH_DEVICE_INIT_REQ                           = 5; // request to init device, just mean reinit and return device info 
+    TOUCH_DEVICE_INIT_RES                           = 6; // response by reinit device, and return device info
+    TOUCH_DEVICE_INFO_REQ                           = 7; // request current input device info, do not reinit.
+    TOUCH_DEVICE_INFO_RES                           = 8;
+    TOUCH_EVENT_NOTIFY                              = 9; // send touch event, such as down, move, up, commit, wait, reset
+    TOUCH_ERROR_NOTIFY                              = 10; // notify some error to user, such as no device to inject or else
+}
+
+message TouchVersionRes {
+    int32                   versioncode             = 1;
+    string                  version                 = 2;
+}
+
+enum TouchErrorCode {
+    TOUCH_SUCC                                      = 0; // succ
+    TOUCH_NO_DEVICE                                 = 1; // cannot find device to use
+}
+
+message TouchResult {
+    TouchErrorCode          errorcode               = 1;
+    string                  errordesc               = 2;
+}
+
+message TouchDeviceInfo {
+    string                  devpath                 = 1; // device path
+    string                  devicename              = 2; // input device name
+    bool                    hasMTSlot               = 3; // EV_ABS - ABS_MT_SLOT
+    bool                    hasTrackingID           = 4; // EV_ABS - ABS_MT_TRACKING_ID
+    bool                    hasBtnTouch             = 5; // EV_KEY - BTN_TOUCH
+    bool                    hasTouchMajor           = 6; // EV_ABS - ABS_MT_TOUCH_MAJOR
+    bool                    hasWidthMajor           = 7; // EV_ABS - ABS_MT_WIDTH_MAJOR
+    bool                    hasPressure             = 8; // EV_ABS - ABS_MT_PRESSURE
+    int32                   minPressure             = 9; // EV_ABS - ABS_MT_PRESSURE - MIN
+    int32                   maxPressure             = 10; // EV_ABS - ABS_MT_PRESSURE - MAX
+    int32                   maxPostionX             = 11; // EV_ABS - ABS_MT_POSITION_X - MAX
+    int32                   maxPostionY             = 12; // EV_ABS - ABS_MT_POSITION_Y - MAX
+    int32                   maxTrackingID           = 13; // but, we just support max 20 slot.
+    int32                   minPostionX             = 14; // EV_ABS - ABS_MT_POSITION_X - MIN
+    int32                   minPostionY             = 15; // EV_ABS - ABS_MT_POSITION_Y - MIN
+}
+
+message TouchDeviceInitRes {
+    TouchResult             result                  = 1;
+    TouchDeviceInfo         touchDeviceInfo         = 2;
+}
+
+message TouchDeviceInfoRes {
+    TouchResult             result                  = 1;
+    TouchDeviceInfo         touchDeviceInfo         = 2;
+}
+
+enum TouchType 
+{
+    TOUCH_TOUCH_UP                                  = 0; // touch up
+    TOUCH_TOUCH_DOWN                                = 1; // touch down
+    TOUCH_TOUCH_MOVE                                = 2; // touch move
+    TOUCH_COMMIT                                    = 3; // commit touch events
+    TOUCH_RESET                                     = 4; // reset all touch slot
+    TOUCH_WAIT                                      = 5; // just wait some time
+}
+
+message TouchEvent {
+    TouchType               touchType               = 1; // touch type
+    int32                   slotId                  = 2; // touch slot id
+    int32                   x                       = 3; // touch x location
+    int32                   y                       = 4; // touch y location
+    int32                   pressure                = 5; // touch pressure
+    int32                   waittime                = 6; // unit: ms, just use in TOUCH_WAIT
+}
+
+message TouchEventNotify {
+    repeated TouchEvent     touchevents              = 1; // one or more touch event
+}
+
+message TouchErrorNotify {
+    TouchErrorCode          errorcode               = 1;
+    string                  errordesc               = 2;
+}
+
+message TouchHeader {
+    int64                   sequenceId              = 1;
+    int64                   timestamp               = 2;
+    TouchCommand            command                 = 3;
+}
+
+message TouchBody {
+    TouchVersionRes         touchVersionRes         = 1;
+    TouchDeviceInitRes      touchDeviceInitRes      = 2;
+    TouchDeviceInfoRes      touchDeviceInfoRes      = 3;
+    TouchEventNotify        touchEventNotify        = 4;
+    TouchErrorNotify        touchErrorNotify        = 5;
+}
+
+message TouchPkg {
+    TouchHeader             header                  = 1;
+    TouchBody               body                    = 2;
+}
+

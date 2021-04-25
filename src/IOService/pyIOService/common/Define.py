@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
-# msg_id枚举
-
-#与ASM消息
 MSG_ID_REGISTER = 1
 MSG_ID_UNREGISTER = 2
 MSG_ID_REPORT = 3
@@ -15,7 +15,7 @@ MSG_ID_CONTROL_REP = 4
 MSG_ID_AI_SERVICE_STATE = 5
 MSG_ID_AI_TRAIN_SCHEDULE = 6
 
-#与AI Client消息
+# 与AI Client消息
 MSG_ID_NEW_TASK = 1000
 MSG_ID_CONTROL_REQ = 1001
 MSG_ID_AI_ACTION = 2000
@@ -31,7 +31,11 @@ MSG_ID_RESTORE = 3003
 MSG_ID_RESTART = 3004
 MSG_ID_CLIENT_REQ = 3100
 
-#与Http client消息
+# 获取信息
+MSG_ID_SOURCE_REQ = 3201
+MSG_ID_SOURCE_RES = 3202
+
+# 与Http client消息
 MSG_ID_CLIENT_UI_REQ = 3000
 
 # UI识别的游戏状态game_state枚举，语义和原PB协议一致

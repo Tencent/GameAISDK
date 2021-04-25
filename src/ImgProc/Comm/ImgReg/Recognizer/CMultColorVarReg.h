@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef MULT_COLOR_VAR_REG_H_
-#define MULT_COLOR_VAR_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMULTCOLORVARREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMULTCOLORVARREG_H_
 
 #include <string>
 #include <vector>
@@ -18,27 +21,23 @@
 //          CMultColorVarReg Structure Define
 // **************************************************************************************
 
-struct tagMultColorVarRegElement
-{
+struct tagMultColorVarRegElement {
     std::string strImageFilePath;
     std::string szDirectionNames[DIRECTION_SIZE] = { "HurtDown", "HurtDownLeft", "HurtDownRight",
-                                                     "HurtUp", "HurtUpLeft", "HurtUpRight", "HurtLeft",
-                                                     "HurtLeftDown", "HurtLeftUp", "HurtRight",
-                                                     "HurtRightDown", "HurtRightUp" };
+                                                     "HurtUp", "HurtUpLeft", "HurtUpRight",
+                                                     "HurtLeft", "HurtLeftDown", "HurtLeftUp",
+                                                     "HurtRight", "HurtRightDown", "HurtRightUp" };
 
-    tagMultColorVarRegElement()
-    {
+    tagMultColorVarRegElement() {
         strImageFilePath = "";
     }
 };
 
-struct tagMultColorVarRegResult
-{
+struct tagMultColorVarRegResult {
     int   nState;
     float colorMeanVar[DIRECTION_SIZE];
 
-    tagMultColorVarRegResult()
-    {
+    tagMultColorVarRegResult() {
         nState = 0;
     }
 };
@@ -47,9 +46,8 @@ struct tagMultColorVarRegResult
 //          CMultColorVarRegCalculate Class Define
 // **************************************************************************************
 
-class CMultColorVarRegCalculate
-{
-public:
+class CMultColorVarRegCalculate {
+  public:
     CMultColorVarRegCalculate();
     ~CMultColorVarRegCalculate();
 
@@ -57,7 +55,7 @@ public:
     int Predict(const cv::Mat &oSrcImg, const int nFrameIdx, tagMultColorVarRegResult &stResult);
     int Release();
 
-private:
+  private:
     int      m_nTaskID;
     cv::Rect m_oROI;
     cv::Mat  m_oTmplImg[DIRECTION_SIZE];
@@ -69,17 +67,15 @@ private:
 //          CMultColorVarRegParam Class Define
 // **************************************************************************************
 
-class CMultColorVarRegParam : public IComnBaseRegParam
-{
-public:
-    CMultColorVarRegParam()
-    {
+class CMultColorVarRegParam : public IComnBaseRegParam {
+  public:
+    CMultColorVarRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CMultColorVarRegParam() {}
 
-public:
+  public:
     std::vector<tagMultColorVarRegElement> m_oVecElements;
 };
 
@@ -87,33 +83,28 @@ public:
 //          CMultColorVarRegResult Class Define
 // **************************************************************************************
 
-class CMultColorVarRegResult : public IComnBaseRegResult
-{
-public:
-    CMultColorVarRegResult()
-    {
+class CMultColorVarRegResult : public IComnBaseRegResult {
+  public:
+    CMultColorVarRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CMultColorVarRegResult() {}
 
-    void SetResult(tagMultColorVarRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagMultColorVarRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagMultColorVarRegResult* GetResult(int *pResultNum)
-    {
+    tagMultColorVarRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                      m_nResultNum;
     tagMultColorVarRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -122,9 +113,8 @@ private:
 //          CMultColorVarReg Class Define
 // **************************************************************************************
 
-class CMultColorVarReg : public IComnBaseReg
-{
-public:
+class CMultColorVarReg : public IComnBaseReg {
+  public:
     CMultColorVarReg();
     ~CMultColorVarReg();
 
@@ -133,10 +123,10 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
+  private:
     std::vector<tagMultColorVarRegElement> m_oVecParams;
     std::vector<CMultColorVarRegCalculate> m_oVecMethods;
 };
 
-#endif /* __MULT_COLOR_VAR_REG_H */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CMULTCOLORVARREG_H_
 

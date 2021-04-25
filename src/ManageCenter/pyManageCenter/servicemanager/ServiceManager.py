@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -86,10 +89,13 @@ class ServiceManager(object):
             return False
         else:
             if serviceType == SERVICE_TYPE_UI:
+                LOG.info('Add UIRecogn Service addr[{0}]!'.format(addr))
                 self.__uiServiceContextDict[addr] = ServiceContext(SERVICE_TYPE_UI, addr)
             elif serviceType == SERVICE_TYPE_AGENT:
+                LOG.info('Add AgentAI Service addr[{0}]!'.format(addr))
                 self.__agentServiceContextDict[addr] = ServiceContext(SERVICE_TYPE_AGENT, addr)
             elif serviceType == SERVICE_TYPE_REG:
+                LOG.info('Add GameReg Service addr[{0}]!'.format(addr))
                 self.__regServiceContextDict[addr] = ServiceContext(SERVICE_TYPE_REG, addr)
 
             self._CheckServiceReady()

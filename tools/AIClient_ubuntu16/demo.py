@@ -1,7 +1,17 @@
+# -*- coding: utf-8 -*-
+"""
+Tencent is pleased to support the open source community by making GameAISDK available.
+
+This source code file is licensed under the GNU General Public License Version 3.
+For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+"""
 
 import os
 import sys
 import signal
+import time
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.join(ROOT_DIR, "log")
@@ -23,8 +33,16 @@ class Main(object):
     def init(self):
         return self.action_execute_inst.init()
 
+    def exit_adb(self):
+        if sys.platform.startswith("linux"):
+            # kill adb
+            time.sleep(5)
+            cmd_str = "ps -ef|grep 'adb -s' |grep -v grep |awk '{print $2}'|xargs kill -9"
+            os.system(cmd_str)
+
     def finish(self):
         self.action_execute_inst.finish()
+        self.exit_adb()
 
     def run(self):
         self.action_execute_inst.run()
@@ -46,6 +64,11 @@ class Main(object):
 
     def add_signal(self):
 
+        def exit_aiclient(sig_num, frame):
+            print("begin to stop aiclient......")
+            self.finish()
+            exit(1)
+
         def restart_ai(siga_num, frame):
             self.restart_ai()
             self.start_game()
@@ -63,7 +86,8 @@ class Main(object):
             pass
         elif sys.platform.startswith("linux"):
             # signal.SIGUSR1 restart sig, signal.SIGUSR2 pause and restore sig
-            signal.signal(signal.SIGUSR1, restart_ai)
+            signal.signal(signal.SIGUSR1, exit_aiclient)
+            # signal.signal(signal.SIGUSR1, restart_ai)
             signal.signal(signal.SIGUSR2, pause_ai)
 
 
@@ -84,6 +108,7 @@ def start_ai():
             main_inst.run()
         main_inst.finish()
     except KeyboardInterrupt:
+        print("KeyboardInterrupt .......................")
         main_inst.finish()
 
 

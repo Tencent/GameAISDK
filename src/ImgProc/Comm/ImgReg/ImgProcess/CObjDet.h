@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef OBJ_DET_H_
-#define OBJ_DET_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_COBJDET_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_COBJDET_H_
 
 #include <vector>
 
@@ -15,9 +18,8 @@
 //          CObjDetParam Class Define
 // **************************************************************************************
 
-class CObjDetParam : public IImgProcParam
-{
-public:
+class CObjDetParam : public IImgProcParam {
+  public:
     CObjDetParam() {}
     virtual ~CObjDetParam() {}
 };
@@ -26,9 +28,8 @@ public:
 //          CObjDetData Class Define
 // **************************************************************************************
 
-class CObjDetData : public IImgProcData
-{
-public:
+class CObjDetData : public IImgProcData {
+  public:
     CObjDetData() {}
     virtual ~CObjDetData() {}
 };
@@ -37,13 +38,12 @@ public:
 //          CObjDetResult Class Define
 // **************************************************************************************
 
-class CObjDetResult : public IImgProcResult
-{
-public:
+class CObjDetResult : public IImgProcResult {
+  public:
     CObjDetResult() {}
     virtual ~CObjDetResult() {}
 
-public:
+  public:
     std::vector<tagBBox> m_oVecBBoxes;
 };
 
@@ -51,9 +51,8 @@ public:
 //          IObjDetFactory Class Define
 // **************************************************************************************
 
-class IObjDetFactory : public IImgProcFactory
-{
-public:
+class IObjDetFactory : public IImgProcFactory {
+  public:
     IObjDetFactory() {}
     virtual ~IObjDetFactory() {}
 
@@ -64,16 +63,15 @@ public:
 //          CObjDet Class Define
 // **************************************************************************************
 
-class CObjDet : public IImgProc
-{
-public:
+class CObjDet : public IImgProc {
+  public:
     CObjDet();
     ~CObjDet();
 
-protected:
+  protected:
     int CheckPointer(IImgProcData *pData, IImgProcResult *pResult);
     int SetROI(CObjDetData *pD, cv::Rect *pROI);
     int SetResult(const cv::Rect &oROI, const std::vector<tagBBox> oVecBBoxes, CObjDetResult *pR);
 };
 
-#endif /* OBJ_DET_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_COBJDET_H_

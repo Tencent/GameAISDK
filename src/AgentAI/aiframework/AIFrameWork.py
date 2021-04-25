@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
 import logging
-import configparser
-import os
-import sys
 import time
+import os
 
 from protocol import common_pb2
 from connect.BusConnect import BusConnect
+from .AIPlugin import AIPlugin
 from util import util
-
-OLD_PLUGIN_CFG_FILE = 'cfg/task/agent/agentai.ini'
-PLUGIN_CFG_FILE = 'cfg/task/agent/AgentAI.ini'
 
 ENV_STATE_WAITING_START = 0
 ENV_STATE_PLAYING = 1
@@ -24,19 +23,18 @@ ENV_STATE_PAUSE_PLAYING = 2
 ENV_STATE_RESTORE_PLAYING = 3
 ENV_STATE_OVER = 4
 
+
 class AIFrameWork(object):
     """
     Agent AI framework, run AI test
     """
 
     def __init__(self):
-        self.__usePluginEnv = False
-        self.__usePluginAIModel = False
-        self.__useDefaultRunFunc = True
         self.__logger = logging.getLogger('agent')
         self.__aiModel = None
         self.__agentEnv = None
-        self.__RunAIFunc = None
+        self.__runAIFunc = None
+        self.__aiPlugin = AIPlugin()
         self.__outputAIAction = True
         self.__connect = BusConnect()
 
@@ -53,38 +51,47 @@ class AIFrameWork(object):
             self._SendTaskReport(common_pb2.PB_TASK_INIT_FAILURE)
             return False
 
-        if self._InitAITask() is True:
+        if self._send_resource_info() is not True:
+            self.__logger.error('send the source info failed.')
+            self._SendTaskReport(common_pb2.PB_TASK_INIT_FAILURE)
+            return False
+
+        if self._InitAIObject() is True:
+            self.__logger.info('AIFrameWork.Init, _SendTaskReport PB_TASK_INIT_SUCCESS to MC.')
             self._SendTaskReport(common_pb2.PB_TASK_INIT_SUCCESS)
         else:
+            self.__logger.error('AIFrameWork.Init, _SendTaskReport PB_TASK_INIT_FAILURE to MC.')
             self._SendTaskReport(common_pb2.PB_TASK_INIT_FAILURE)
             return False
 
         return True
 
-    def _InitAITask(self):
-        if self._GetPluginInConfig() is not True:
+    def _InitAIObject(self):
+        if self.__aiPlugin.Init() is not True:
             return False
 
-        self._CreateAgentEnvObj()
-        self._CreateAIModelObj()
+        self.__agentEnv = self.__aiPlugin.CreateAgentEnvObj()
+        self.__aiModel = self.__aiPlugin.CreateAIModelObj()
 
         if self.__aiModel is None or self.__agentEnv is None:
             self.__logger.error('Create agent env or aimodel object failed.')
             return False
 
-        self._CreateRunFunc()
-        if self.__useDefaultRunFunc is not True and self.__RunAIFunc is None:
+        self.__runAIFunc = self.__aiPlugin.CreateRunFunc()
+        if self.__aiPlugin.UseDefaultRun() is not True and self.__runAIFunc is None:
             self.__logger.error('Create run function failed.')
             return False
 
         if self.__agentEnv.Init() is not True:
             self.__logger.error('Agent env init failed.')
             return False
+        self.__logger.info('AIFrameWork.InitAIObject agentEnv init success')
 
         if self.__aiModel.Init(self.__agentEnv) is not True:
             self.__logger.error('AI model init failed.')
             return False
 
+        self.__logger.info('AIFrameWork.InitAIObject aiModel init success')
         return True
 
     def Finish(self):
@@ -102,8 +109,9 @@ class AIFrameWork(object):
         """
         Main framework, run AI test
         """
-        if self.__RunAIFunc:
-            self.__RunAIFunc(self.__agentEnv, self.__aiModel, isTestMode)
+        if self.__runAIFunc:
+            logging.debug("execute the run ai func")
+            self.__runAIFunc(self.__agentEnv, self.__aiModel, isTestMode)
         else:
             self._DefaultRun(isTestMode)
 
@@ -126,9 +134,11 @@ class AIFrameWork(object):
         self.__agentEnv.UpdateEnvState(ENV_STATE_RESTORE_PLAYING, 'Resume ai playing')
 
     def _DefaultRun(self, isTestMode):
+        self.__logger.debug("execute the default run")
         self.__agentEnv.UpdateEnvState(ENV_STATE_WAITING_START, 'Wait episode start')
         while True:
             #wait new episode start
+            self.__logger.debug("begin to wait the start")
             self._WaitEpisode()
             self.__logger.info('Episode start')
             self.__agentEnv.UpdateEnvState(ENV_STATE_PLAYING, 'Episode start, ai playing')
@@ -150,7 +160,7 @@ class AIFrameWork(object):
 
             if self.__agentEnv.IsEpisodeStart() is True:
                 break
-            time.sleep(0.001)
+            time.sleep(0.1)
 
         return
 
@@ -175,11 +185,13 @@ class AIFrameWork(object):
         return
 
     def _HandleMsg(self):
-        msg = self.__connect.RecvMsg()
+        msg = self.__connect.RecvMsg(BusConnect.PEER_NODE_MC)
         if msg is None:
             return common_pb2.MSG_NONE
 
         msgID = msg.eMsgID
+        self.__logger.info('the message from mc is %s, msgID: %d'.format(msg, msgID))
+
         if msgID == common_pb2.MSG_UI_GAME_START:
             self.__logger.info('Enter new episode...')
             self.__aiModel.OnEnterEpisode()
@@ -191,129 +203,39 @@ class AIFrameWork(object):
 
         return msgID
 
-    def _GetPluginInConfig(self):
-        pluginCfgPath = util.ConvertToSDKFilePath(PLUGIN_CFG_FILE)
-        if os.path.exists(pluginCfgPath):
-            return self._LoadPlugInParams(pluginCfgPath)
+    def _send_resource_info(self):
+        self.__logger.info('send source info to mc, project_path:%s'.format(os.environ.get('AI_SDK_PROJECT_FILE_PATH')))
+        project_config_path = os.environ.get('AI_SDK_PROJECT_FILE_PATH')
+        if not project_config_path:
+            raise Exception('environ var(AI_SDK_PROJECT_FILE_PATH) is invalid')
 
-        oldPluginCfgPath = util.ConvertToSDKFilePath(OLD_PLUGIN_CFG_FILE)
-        if os.path.exists(oldPluginCfgPath):
-            return self._LoadOldPlugInParams(oldPluginCfgPath)
+        content = util.get_configure(project_config_path)
+        if not content:
+            self.__logger.warning("failed to get project config content, file:%s".format(project_config_path))
+            return False
 
-        self.__logger.error('agentai cfg file {0} not exist.'.format(pluginCfgPath))
+        if not content.get('source'):
+            self.__logger.warning("invalid the source in the project config, content:%s".format(content))
+            content['source'] = {}
+            content['source']['device_type'] = "Android"
+            content['source']['platform'] = "Local"
+            content['source']['long_edge'] = 1280
+
+        # if content['source'] is None:
+        #     self.__logger.info("invalid the source in the project config, content:{}", content)
+        #     return False
+        self.__logger.info("the project config is {}, project_config_path:{}".format(content, project_config_path))
+        source = content['source']
+        source_res_message = util.create_source_response(source)
+        self.__logger.info("send the source message to mc, source_res_message:{}".format(source_res_message))
+
+        # 发送设备源信息到MC, 由MC把信息缓存起来
+        if self.__connect.SendMsg(source_res_message, BusConnect.PEER_NODE_MC) == 0:
+            self.__logger.info("send the source info to mc service success")
+            return True
+
+        self.__logger.warning("send the source info to mc service failed, please check")
         return False
-
-    def _LoadPlugInParams(self, pluginCfgPath):
-        try:
-            config = configparser.ConfigParser()
-            config.read(pluginCfgPath)
-
-            envSection = 'AGENT_ENV'
-            aiSection = 'AI_MODEL'
-            runSection = 'RUN_FUNCTION'
-
-            if config.has_section('AgentEnv'):
-                envSection = 'AgentEnv'
-
-            if config.has_section('AIModel'):
-                aiSection = 'AIModel'
-
-            if config.has_section('RunFunc'):
-                runSection = 'RunFunc'
-
-            self.__usePluginEnv = config.getboolean(envSection, 'UsePluginEnv')
-            self.__usePluginAIModel = config.getboolean(aiSection, 'UsePluginAIModel')
-            self.__useDefaultRunFunc = config.getboolean(runSection, 'UseDefaultRunFunc')
-
-            #if self.__usePluginEnv is True:
-            self.__envPackage = config.get(envSection, 'EnvPackage')
-            self.__envModule = config.get(envSection, 'EnvModule')
-            self.__envClass = config.get(envSection, 'EnvClass')
-
-            #if self.__usePluginAIModel is True:
-            self.__aiModelPackage = config.get(aiSection, 'AIModelPackage')
-            self.__aiModelModule = config.get(aiSection, 'AIModelModule')
-            self.__aiModelClass = config.get(aiSection, 'AIModelClass')
-
-            if self.__useDefaultRunFunc is not True:
-                self.__runFuncPackage = config.get(runSection, 'RunFuncPackage')
-                self.__runFuncModule = config.get(runSection, 'RunFuncModule')
-                self.__runFuncName = config.get(runSection, 'RunFuncName')
-        except Exception as e:
-            self.__logger.error('Load file {} failed, error: {}.'.format(pluginCfgPath, e))
-            return False
-
-        return True
-
-    def _LoadOldPlugInParams(self, pluginCfgPath):
-        try:
-            config = configparser.ConfigParser()
-            config.read(pluginCfgPath)
-
-            self.__usePluginEnv = config.getboolean('AgentEnv', 'UsePluginEnv')
-            self.__usePluginAIModel = config.getboolean('AIModel', 'UsePluginAIModel')
-            self.__useDefaultRunFunc = config.getboolean('RunFunc', 'UseDefaultRunFunc')
-
-            #if self.__usePluginEnv is True:
-            self.__envPackage = config.get('AgentEnv', 'EnvPackage')
-            self.__envModule = config.get('AgentEnv', 'EnvModule')
-            self.__envClass = config.get('AgentEnv', 'EnvClass')
-
-            #if self.__usePluginAIModel is True:
-            self.__aiModelPackage = config.get('AIModel', 'AIModelPackage')
-            self.__aiModelModule = config.get('AIModel', 'AIModelModule')
-            self.__aiModelClass = config.get('AIModel', 'AIModelClass')
-
-            if self.__useDefaultRunFunc is not True:
-                self.__runFuncPackage = config.get('RunFunc', 'RunFuncPackage')
-                self.__runFuncModule = config.get('RunFunc', 'RunFuncModule')
-                self.__runFuncName = config.get('RunFunc', 'RunFuncName')
-        except Exception as e:
-            self.__logger.error('Load file {} failed, error: {}.'.format(pluginCfgPath, e))
-            return False
-
-        return True
-
-    def _CreateAgentEnvObj(self):
-        if self.__usePluginEnv is True:
-            sys.path.append('PlugIn/ai')
-
-        modulename = '{0}.{1}'.format(self.__envPackage, self.__envModule)
-        envPackage = __import__(modulename)
-        envModule = getattr(envPackage, self.__envModule)
-        envClass = getattr(envModule, self.__envClass)
-        self.__logger.info('agent env class: {0}'.format(envClass))
-        self.__agentEnv = envClass()
-
-        if self.__usePluginEnv is True:
-            sys.path.pop()
-
-    def _CreateAIModelObj(self):
-        if self.__usePluginAIModel is True:
-            sys.path.append('PlugIn/ai')
-        else:
-            sys.path.append('AgentAI/aimodel')
-
-        modulename = '{0}.{1}'.format(self.__aiModelPackage, self.__aiModelModule)
-        aiModelPackage = __import__(modulename)
-        aiModelModule = getattr(aiModelPackage, self.__aiModelModule)
-        aiModelClass = getattr(aiModelModule, self.__aiModelClass)
-        self.__logger.info('aimodel class: {0}'.format(aiModelClass))
-        self.__aiModel = aiModelClass()
-
-        sys.path.pop()
-
-    def _CreateRunFunc(self):
-        if self.__useDefaultRunFunc is not True:
-            sys.path.append('PlugIn/ai')
-
-            modulename = '{0}.{1}'.format(self.__runFuncPackage, self.__runFuncModule)
-            runFuncPackage = __import__(modulename)
-            runFuncModule = getattr(runFuncPackage, self.__runFuncModule)
-            self.__RunAIFunc = getattr(runFuncModule, self.__runFuncName)
-            self.__logger.info('run function: {0}'.format(self.__RunAIFunc))
-
-            sys.path.pop()
 
     def _RegisterService(self):
         regMsg = common_pb2.tagMessage()
@@ -321,7 +243,7 @@ class AIFrameWork(object):
         regMsg.stServiceRegister.eRegisterType = common_pb2.PB_SERVICE_REGISTER
         regMsg.stServiceRegister.eServiceType = common_pb2.PB_SERVICE_TYPE_AI
 
-        if self.__connect.SendMsg(regMsg) == 0:
+        if self.__connect.SendMsg(regMsg, BusConnect.PEER_NODE_MC) == 0:
             return True
         return False
 
@@ -330,10 +252,9 @@ class AIFrameWork(object):
         taskMsg.eMsgID = common_pb2.MSG_TASK_REPORT
         taskMsg.stTaskReport.eTaskStatus = reportCode
 
-        if self.__connect.SendMsg(taskMsg) == 0:
+        if self.__connect.SendMsg(taskMsg, BusConnect.PEER_NODE_MC) == 0:
             return True
         return False
-
 
     def _UnRegisterService(self):
         unRegMsg = common_pb2.tagMessage()
@@ -341,6 +262,6 @@ class AIFrameWork(object):
         unRegMsg.stServiceRegister.eRegisterType = common_pb2.PB_SERVICE_UNREGISTER
         unRegMsg.stServiceRegister.eServiceType = common_pb2.PB_SERVICE_TYPE_AI
 
-        if self.__connect.SendMsg(unRegMsg) == 0:
+        if self.__connect.SendMsg(unRegMsg, BusConnect.PEER_NODE_MC) == 0:
             return True
         return False

@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef COMMON_POOL_H_
-#define COMMON_POOL_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_UTILS_POOL_H_
+#define GAME_AI_SDK_IMGPROC_COMM_UTILS_POOL_H_
 
 #include <stdint.h>
 #include <stdio.h>
@@ -17,9 +20,8 @@
 #include "UI/Src/Communicate/DataComm.h"
 
 
-class CMemoryPool : public TSingleton<CMemoryPool>
-{
-public:
+class CMemoryPool : public TSingleton<CMemoryPool> {
+  public:
     DECLARE_SINGLETON_CLASS(CMemoryPool);
 
     CMemoryPool();
@@ -31,7 +33,8 @@ public:
     char*           AllocateChar(int nSize);
     int*            AllocateInt(int nSize);
     bool*           AllocateBool(int nSize);
-private:
+
+  private:
     // Plain Old Data
     // Includes int/char/bool/unsigned int/unsigned char.
     boost::pool<> *m_pUCharPool;
@@ -63,4 +66,4 @@ unsigned char*  AllocateUCharFromPool(int nSize);
 unsigned int*   AllocateUIntFromPool(int nSize);
 // stGameMsg*      AllocateGameMsgFromPool();
 
-#endif // COMMON_POOL_H_
+#endif  // GAME_AI_SDK_IMGPROC_COMM_UTILS_POOL_H_

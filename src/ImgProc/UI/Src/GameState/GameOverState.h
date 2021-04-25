@@ -1,29 +1,31 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef GAME_OVER_STATE_H_
-#define GAME_OVER_STATE_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_UI_GAMESTATE_GAMEOVERSTATE_H_
+#define GAME_AI_SDK_IMGPROC_UI_GAMESTATE_GAMEOVERSTATE_H_
 
 #include "Comm/Utils/TSingleton.h"
 #include "UI/Src/GameState/UIState.h"
 
 
-class CGameOverState : public TSingleton<CGameOverState>, public CUIState
-{
-public:
+class CGameOverState : public TSingleton<CGameOverState>, public CUIState {
+  public:
     CGameOverState();
     virtual ~CGameOverState();
 
     /*!
-     * @brief 游戏结束状态处理图像帧
-     * @param[in] stFrameCtx　当前帧信息
-     * @param[in] pContext
-     */
+      * @brief 游戏结束状态处理图像帧
+      * @param[in] stFrameCtx　当前帧信息
+      * @param[in] pContext
+    */
     virtual void Handle(const tagFrameContext &stFrameCtx, CContext *pContext);
 };
 
 
-#endif // GAME_OVER_STATE_H_
+#endif  // GAME_AI_SDK_IMGPROC_UI_GAMESTATE_GAMEOVERSTATE_H_

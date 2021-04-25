@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef NUM_REG_H_
-#define NUM_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CNUMREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CNUMREG_H_
 
 #include <string>
 #include <vector>
@@ -17,8 +20,7 @@
 //          CNumReg Structure Define
 // **************************************************************************************
 
-struct tagNumRegElement
-{
+struct tagNumRegElement {
     int                  nScaleLevel;
     float                fMinScale;
     float                fMaxScale;
@@ -26,28 +28,25 @@ struct tagNumRegElement
     cv::Rect             oROI;
     std::vector<tagTmpl> oVecTmpls;
 
-    tagNumRegElement()
-    {
+    tagNumRegElement() {
         nScaleLevel = 1;
-        fMinScale   = 1.0;
-        fMaxScale   = 1.0;
-        oROI        = cv::Rect(-1, -1, -1, -1);
-        oAlgorithm  = "TemplateMatch";
+        fMinScale = 1.0;
+        fMaxScale = 1.0;
+        oROI = cv::Rect(-1, -1, -1, -1);
+        oAlgorithm = "TemplateMatch";
         oVecTmpls.clear();
     }
 };
 
-struct tagNumRegResult
-{
+struct tagNumRegResult {
     int      nState;
     float    fNum;
     cv::Rect oROI;
 
-    tagNumRegResult()
-    {
+    tagNumRegResult() {
         nState = 0;
-        fNum   = -1.0;
-        oROI   = cv::Rect(-1, -1, -1, -1);
+        fNum = -1.0;
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -55,9 +54,8 @@ struct tagNumRegResult
 //          CNumRegTmplMatch Class Define
 // **************************************************************************************
 
-class CNumRegTmplMatch
-{
-public:
+class CNumRegTmplMatch {
+  public:
     CNumRegTmplMatch();
     ~CNumRegTmplMatch();
 
@@ -65,7 +63,7 @@ public:
     int Predict(const cv::Mat &oSrcImg, tagNumRegResult &stResult);
     int Release();
 
-private:
+  private:
     int         m_nTaskID;
     cv::Rect    m_oROI;
     CColorMatch m_oMatchMethod;
@@ -75,17 +73,15 @@ private:
 //          CNumRegParam Class Define
 // **************************************************************************************
 
-class CNumRegParam : public IComnBaseRegParam
-{
-public:
-    CNumRegParam()
-    {
+class CNumRegParam : public IComnBaseRegParam {
+  public:
+    CNumRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CNumRegParam() {}
 
-public:
+  public:
     std::vector<tagNumRegElement> m_oVecElements;
 };
 
@@ -93,33 +89,28 @@ public:
 //          CNumRegResult Class Define
 // **************************************************************************************
 
-class CNumRegResult : public IComnBaseRegResult
-{
-public:
-    CNumRegResult()
-    {
+class CNumRegResult : public IComnBaseRegResult {
+  public:
+    CNumRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CNumRegResult() {}
 
-    void SetResult(tagNumRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagNumRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagNumRegResult* GetResult(int *pResultNum)
-    {
+    tagNumRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int             m_nResultNum;
     tagNumRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -128,9 +119,8 @@ private:
 //          CNumReg Class Define
 // **************************************************************************************
 
-class CNumReg : public IComnBaseReg
-{
-public:
+class CNumReg : public IComnBaseReg {
+  public:
     CNumReg();
     ~CNumReg();
 
@@ -139,9 +129,9 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
-    std::vector<tagNumRegElement> m_oVecParams; // vector of parameters
-    std::vector<CNumRegTmplMatch> m_oVecMethods; // vector of methods
+  private:
+    std::vector<tagNumRegElement> m_oVecParams;  // vector of parameters
+    std::vector<CNumRegTmplMatch> m_oVecMethods;  // vector of methods
 };
 
-#endif /* NUM_REG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CNUMREG_H_

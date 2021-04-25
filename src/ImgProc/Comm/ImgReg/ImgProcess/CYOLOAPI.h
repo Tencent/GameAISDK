@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef YOLO_API_H_
-#define YOLO_API_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_CYOLOAPI_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_CYOLOAPI_H_
 
 #include <string>
 #include <vector>
@@ -21,9 +24,8 @@
 #ifdef WINDOWS
 #include "Comm/ImgReg/ImgProcess/CObjDet.h"
 #include "GameRecognize/src/FrameWorkDefine.h"
-extern "C"
-{
-    #include "Modules/darknetV3-win/src/parser.h"
+extern "C" {
+#include "Modules/darknetV3-win/src/parser.h"
 }
 
 #include "Modules/darknetV3-win/src/blas.h"
@@ -37,8 +39,7 @@ extern "C"
 //          tagYoloNetWork Structure Define
 // **************************************************************************************
 
-struct tagYoloNetWork
-{
+struct tagYoloNetWork {
     bool         bState;
 #ifdef WINDOWS
     network stNet;
@@ -49,26 +50,22 @@ struct tagYoloNetWork
 #endif
     LockerHandle Mutex;
 
-    tagYoloNetWork()
-    {
+    tagYoloNetWork() {
 #ifdef LINUX
-        pNet   = NULL;
+        pNet = NULL;
 #endif
         bState = true;
-        Mutex  = NULL;
+        Mutex = NULL;
     }
 
-    ~tagYoloNetWork()
-    {
+    ~tagYoloNetWork() {
         // TqcOsDeleteMutex(Mutex);
     }
 
-    bool IsFree()
-    {
+    bool IsFree() {
         TqcOsAcquireMutex(Mutex);
         bool bTmp = bState;
-        if (bState)
-        {
+        if (bState) {
             bState = false;
         }
 
@@ -76,8 +73,7 @@ struct tagYoloNetWork
         return bTmp;
     }
 
-    void SetFree()
-    {
+    void SetFree() {
         TqcOsAcquireMutex(Mutex);
         bState = true;
         TqcOsReleaseMutex(Mutex);
@@ -88,19 +84,19 @@ struct tagYoloNetWork
 //          CYOLO Class Define
 // **************************************************************************************
 
-class CYOLO
-{
-public:
+class CYOLO {
+  public:
     CYOLO();
     ~CYOLO();
 
-    int Initialize(char *pszCfgFile, char *pszWeightFile, char *pszNameFile, float fThreshold = 0.5f);
+    int Initialize(char *pszCfgFile, char *pszWeightFile, char *pszNameFile,
+        float fThreshold = 0.5f);
 
     int Predict(const cv::Mat &oSrcImg, std::vector<tagBBox> &oVecBBoxes);
 
     int Release();
 
-private:
+  private:
     char                        **m_pszNames;
     float                       m_fThreshold;
     std::vector<tagYoloNetWork> m_oVecNets;
@@ -110,23 +106,21 @@ private:
 //          CYOLOAPIParam Class Define
 // **************************************************************************************
 
-class CYOLOAPIParam
-{
-public:
-    CYOLOAPIParam()
-    {
-        m_nTaskID       = -1;
-        m_nMaskValue    = 127;
-        m_fThreshold    = 0.5f;
-        m_oROI          = cv::Rect(-1, -1, -1, -1);
-        m_strCfgPath    = "";
+class CYOLOAPIParam {
+  public:
+    CYOLOAPIParam() {
+        m_nTaskID = -1;
+        m_nMaskValue = 127;
+        m_fThreshold = 0.5f;
+        m_oROI = cv::Rect(-1, -1, -1, -1);
+        m_strCfgPath = "";
         m_strWeightPath = "";
-        m_strNamePath   = "";
-        m_strMaskPath   = "";
+        m_strNamePath = "";
+        m_strMaskPath = "";
     }
     virtual ~CYOLOAPIParam() {}
 
-public:
+  public:
     int         m_nTaskID;
     int         m_nMaskValue;
     float       m_fThreshold;
@@ -141,13 +135,12 @@ public:
 //          CYOLOAPIData Class Define
 // **************************************************************************************
 
-class CYOLOAPIData
-{
-public:
+class CYOLOAPIData {
+  public:
     CYOLOAPIData() {}
     virtual ~CYOLOAPIData() {}
 
-public:
+  public:
     cv::Mat m_oSrcImg;
 };
 
@@ -155,13 +148,12 @@ public:
 //          CYOLOAPIResult Class Define
 // **************************************************************************************
 
-class CYOLOAPIResult
-{
-public:
+class CYOLOAPIResult {
+  public:
     CYOLOAPIResult() {}
     virtual ~CYOLOAPIResult() {}
 
-public:
+  public:
     std::vector<tagBBox> m_oVecBBoxes;
 };
 
@@ -169,9 +161,8 @@ public:
 //          CYOLOAPI Class Define
 // **************************************************************************************
 
-class CYOLOAPI
-{
-public:
+class CYOLOAPI {
+  public:
     CYOLOAPI();
     ~CYOLOAPI();
 
@@ -180,7 +171,7 @@ public:
     int Predict(const CYOLOAPIData &oData, CYOLOAPIResult &oResult);
     int Release();
 
-private:
+  private:
     int      m_nTaskID;
     int      m_nMaskValue;
     cv::Rect m_oROI;
@@ -188,4 +179,4 @@ private:
     CYOLO    m_oYOLO;
 };
 
-#endif /* YOLO_API_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_CYOLOAPI_H_

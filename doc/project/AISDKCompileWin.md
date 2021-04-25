@@ -2,7 +2,9 @@
 
 1）安装VS 2017
 
-在windows上编译AISDK，需要安装VS2017，安装完成后需要把vs的IDE路径添加到用户环境变量PATH下，如图1所示：
+在windows上编译AISDK，需要安装VS2017
+
+安装完成后需要把vs的IDE路径添加到用户环境变量PATH下，如图1所示：
 
 ![](../img/env_var.png)
 
@@ -12,7 +14,7 @@
 
 进入AISDK/build目录，执行以下命令：
 
-`./build.bat`
+./build.bat
 
 编译后前后bin目录对比，见下图2、图3所示
 

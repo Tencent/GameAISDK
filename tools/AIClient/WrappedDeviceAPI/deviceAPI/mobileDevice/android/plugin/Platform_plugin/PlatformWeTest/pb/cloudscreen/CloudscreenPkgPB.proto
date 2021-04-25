@@ -1,0 +1,220 @@
+/** 
+ * Client-Server Package Protobuffer Protocol for Cloudscreen Module.
+ * Author: guoruihe
+ * Date: 2018.10.1
+ *
+ */
+
+syntax = "proto3";
+
+package com.tencent.wetest.pb.cloudscreen;
+
+option java_package = "com.tencent.wetest.pb.cloudscreen";
+option java_outer_classname = "CloudscrennPkgPB";
+
+
+enum CloudscreenCommand {
+    UNKNOWN_CLOUDSCREEN                             = 0;
+    CLOUDSCREEN_HEARTBEAT_REQ                       = 1;
+    CLOUDSCREEN_HEARTBEAT_RES                       = 2;
+    CLOUDSCREEN_VERSION_REQ                         = 3;
+    CLOUDSCREEN_VERSION_RES                         = 4;
+    DISPLAY_DEVICE_INFO_REQ                         = 5;
+    DISPLAY_DEVICE_INFO_RES                         = 6;
+    SCREEN_CAPTURE_REQ                              = 7; // request for screen capture
+    SCREEN_CAPTURE_RES                              = 8; // response for screen capture
+    START_H264VIDEO_REQ                             = 9; // request to start h.264 video
+    START_H264VIDEO_RES                             = 10; // response for start h.264 video
+    STOP_H264VIDEO_REQ                              = 11; // request to stop h.264 video
+    STOP_H264VIDEO_RES                              = 12; // response for stop h.264 video
+    H264VIDEO_FRAME_NOTIFY                          = 13; // notify for h.264 video stream
+    SCREEN_CAPTURE_PUSH_MODE_REQ                    = 14; // request for screen capture push mode, this mode is fast mode
+    SCREEN_CAPTURE_PUSH_MODE_RES                    = 15; // response to screen capture push mode
+    SCREEN_CAPTURE_PUSH_STOP_REQ                    = 16; // request for stop screen capture push mode
+    SCREEN_CAPTURE_PUSH_STOP_RES                    = 17; // response to stop screen capture push mode
+    SCREEN_CAPTURE_FRAME_NOTIFY                     = 18; // notify for screen capture in jpeg, only use in screen capture push mode
+    DEVICE_TIMESTAMP_REQ                            = 19;
+    DEVICE_TIMESTAMP_RES                            = 20;
+    SCREEN_CAPTURE_PUSH_MODE_STOP_NOTIFY            = 21; // notify client, capture push mode stopped, client should restart if need
+}
+
+message CloudscreenVersionRes {
+    int32                   versioncode             = 1;
+    string                  version                 = 2;
+}
+
+enum CloudscreenErrorCode {
+    CLOUDSCREEN_SUCC                                = 0;
+    CLOUDSCREEN_GET_DISPLAY_INFO_ERROR              = 1;
+    CLOUDSCREEN_CAPTURE_ERROR                       = 2;
+    CLOUDSCREEN_CAPTURE_HEIGHT_ERROR                = 3; // the height config is error, height <= 0
+    CLOUDSCREEN_CAPTURE_JPEG_COMPRESS_ERROR         = 4;
+    CLOUDSCREEN_CREATE_PTHREAD_ERROR                = 5;
+    CLOUDSCREEN_CPU_CONSUMER_ERROR                  = 6;
+    CLOUDSCREEN_MEDIACODEC_CONFIG_ERROR             = 7;
+    CLOUDSCREEN_VIDEO_FPS_UNSUPPORT_ERROR           = 8;
+    CLOUDSCREEN_SCREENCAP_OPEN_FAILED               = 9;
+    CLOUDSCREEN_SCREENCAP_READ_ERROR                = 10;
+    CLOUDSCREEN_SCREENCAP_EOF_ERROR                 = 11;
+    CLOUDSCREEN_SCREENCAP_FORMAT_ERROR              = 12;
+}
+
+message CloudscreenResult {
+    CloudscreenErrorCode    errorcode               = 1;
+    string                  errordesc               = 2;
+}
+
+enum ScreenOrientation {
+    SCREEN_ORIENTATION_0                            = 0;
+    SCREEN_ORIENTATION_90                           = 1;
+    SCREEN_ORIENTATION_180                          = 2;
+    SCREEN_ORIENTATION_270                          = 3;
+    SCREEN_ORIENTATION_UNKNOW                       = 4;
+}
+
+message DisplayDeviceInfoRes {
+    CloudscreenResult       result                  = 1;
+    int32                   width                   = 2;
+    int32                   height                  = 3;
+    float                   fps                     = 4;
+    float                   density                 = 5;
+    float                   xdpi                    = 6;
+    float                   ydpi                    = 7;
+    ScreenOrientation       orientation             = 8;
+    bool                    secure                  = 9;
+}
+
+enum ScreenCaptureMode {
+    UNKNOWN_SCREEN_CAPTURE_MODE                     = 0;
+    FULL_SCREEN_CAPTURE_MODE                        = 1; // capture with no scaled
+    SCALED_CAPTURE_MODE                             = 2; // scaled capture as height setted
+    DEFAULT_CONFIG_CAPTURE_MODE                     = 3; // use default config capture, height is 960px
+    GLOBAL_CONFIG_CAPTURE_MODE                      = 4; // set global config and capture(init global config with default config).
+    PRESET_CONFIG_CAPTURE_MODE                      = 5; // use config the same with golbal config, include height, and quelity for jpeg
+}
+
+enum ScreenCaptureType {
+    UNKWOWN_SCREEN_CAPTURE_TYPE                     = 0; // this is error value
+    JPEG_CAPTURE                                    = 1; // compress image in jpeg
+    RGBA_CAPTURE                                    = 2; // no compress, format is rgba
+}
+
+message ScreenCaptureReq {
+    int32                   index                   = 1;
+    ScreenCaptureMode       screenCaptureMode       = 2;
+    ScreenCaptureType       captureType             = 3;
+    int32                   height                  = 4; // only in SCALED and GLOBAL_CONFIG
+    int32                   quality                 = 5; // only for compress JPEG mode, must '0 < value <100', else will use preset
+    bool                    alignment               = 6; // wether need to alienment in 16 bytes for h264 encoder
+}
+
+message ScreenCaptureRes {
+    CloudscreenResult       result                  = 1;
+    int32                   index                   = 2;
+    ScreenCaptureType       captureType             = 3;
+    int32                   width                   = 4;
+    int32                   height                  = 5;
+    int32                   stride                  = 6; // stride, for rgb serial format
+    int32                   bpp                     = 7; // byte per pixel
+    int32                   orientation             = 8; // current screen orientation(image is always in vertical, rotation=0).
+    int32                   len                     = 9; // image data length
+    bytes                   datas                   = 10; // image data
+    
+}
+
+message StartH264VideoReq {
+    bool                    landscape               = 1; // is landscape
+    int32                   height                  = 2; // height is need to scale from screen
+    int64                   bitrate                 = 3; // h.264 bitrate
+    int32                   iFrameInterval          = 4; // IFrame Interval(IFrame group count)
+    int32                   fps                     = 5; // 0 is not limit, if > 0, fps will not over the value 
+}
+
+message StartH264VideoRes {
+    CloudscreenResult       result                  = 1; 
+    bool                    landscape               = 3; 
+    int32                   width                   = 4; 
+    int32                   height                  = 5; 
+    int64                   bitrate                 = 6; 
+    int32                   iFrameInterval          = 7; 
+    int32                   fps                     = 8; // 0 is not limit, if > 0, fps will not over the value 
+}
+
+enum H264VideoFrameType {
+    UNKOWN_H264VIDEO_FRAME_TYPE                     = 0;
+    SPS_FRAME                                       = 1;
+    PPS_FRAME                                       = 2;
+    VIDEO_FRAME                                     = 3;
+}
+
+message H264Config {
+    int32                   width                   = 1;
+    int32                   height                  = 2;
+}
+
+message H264VideoFrameNotify {
+    CloudscreenResult       result                  = 1;
+    int64                   timestamp               = 2;
+    int64                   pts                     = 3;
+    int32                   delay                   = 4;
+    int32                   orientation             = 5;
+    int32                   pkgSize                 = 6;
+    bytes                   datas                   = 7;
+    H264VideoFrameType      frameType               = 8;
+    H264Config              h264Config              = 9; 
+}
+
+// according to bandwidth of usb, push mode only afford jpeg
+message ScreenCapturePushModeReq {
+    int32                   height                  = 1; // only set height,
+    int32                   quality                 = 2; // jpeg quality, must '0 < value <100'
+    int32                   minInterval             = 3; // unit: ms, min interval to push image, we will push jpeg interval not less by this value, in order release cpu and usb comsume. value less than zero will do not set interval
+    bool                    landscape               = 4; // is landscape
+    bool                    alignment               = 5; // wether need to alienment in 16 bytes for h264 encoder
+}
+
+message ScreenCapturePushModeRes {
+    CloudscreenResult       result                  = 1;
+}
+
+message ScreenCaptureFrameNotify {
+    CloudscreenResult       result                  = 1;
+    int32                   index                   = 2;
+    int32                   width                   = 3;
+    int32                   height                  = 4;
+    int32                   orientation             = 5; // current screen orientation(image is always in vertical, rotation=0).
+    int32                   len                     = 6; // image data length
+    bytes                   datas                   = 7; // image data
+}
+
+message DeviceTimestampRes {
+    int64                   timestamp               = 1; // 0 is error
+}
+
+message CloudscreenHeader {
+    int64                   sequenceId              = 1;
+    int64                   timestamp               = 2;
+    CloudscreenCommand      command                 = 3;
+}
+
+message CloudscreenBody {
+    CloudscreenVersionRes   cloudscreenVersionRes   = 1;
+    DisplayDeviceInfoRes    displayDeviceInfoRes    = 2;
+    ScreenCaptureReq        screenCaptureReq        = 3;
+    ScreenCaptureRes        screenCaptureRes        = 4;
+    StartH264VideoReq       startH264VideoReq       = 5;
+    StartH264VideoRes       startH264VideoRes       = 6;
+    H264VideoFrameNotify    h264VideoFrameNotify    = 7;
+    ScreenCapturePushModeReq
+                            screenCapturePushModeReq= 8;
+    ScreenCapturePushModeRes
+                            screenCapturePushModeRes= 9;
+    ScreenCaptureFrameNotify
+                            screenCaptureFrameNotify= 10;
+    DeviceTimestampRes      deviceTimestampRes      = 11;
+}
+
+message CloudscreenPkg {
+    CloudscreenHeader       header                  = 1;
+    CloudscreenBody         body                    = 2;
+}

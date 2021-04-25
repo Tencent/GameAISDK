@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef FIX_BLOOD_REG_H_
-#define FIX_BLOOD_REG_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CFIXBLOODREG_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CFIXBLOODREG_H_
 
 #include <string>
 #include <vector>
@@ -17,37 +20,33 @@
 //          CFixBloodReg Structure Define
 // **************************************************************************************
 
-struct tagFixBloodRegParam
-{
+struct tagFixBloodRegParam {
     int         nBloodLength;
     int         nFilterSize;
     int         nMaxPointNum;
     std::string strCondition;
     cv::Rect    oROI;
 
-    tagFixBloodRegParam()
-    {
+    tagFixBloodRegParam() {
         nBloodLength = 100;
         nMaxPointNum = 512;
-        nFilterSize  = 1;
+        nFilterSize = 1;
         strCondition = "";
-        oROI         = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
-struct tagFixBloodRegResult
-{
+struct tagFixBloodRegResult {
     int      nState;
-    float    fPercent; // blood percent
-    cv::Rect oRect; // blood rectangle
+    float    fPercent;  // blood percent
+    cv::Rect oRect;  // blood rectangle
     cv::Rect oROI;
 
-    tagFixBloodRegResult()
-    {
-        nState   = 0;
+    tagFixBloodRegResult() {
+        nState = 0;
         fPercent = 0.0f;
-        oRect    = cv::Rect(-1, -1, -1, -1);
-        oROI     = cv::Rect(-1, -1, -1, -1);
+        oRect = cv::Rect(-1, -1, -1, -1);
+        oROI = cv::Rect(-1, -1, -1, -1);
     }
 };
 
@@ -55,9 +54,8 @@ struct tagFixBloodRegResult
 //          CFixBloodRegColorDet Class Define
 // **************************************************************************************
 
-class CFixBloodRegColorDet
-{
-public:
+class CFixBloodRegColorDet {
+  public:
     CFixBloodRegColorDet();
     ~CFixBloodRegColorDet();
 
@@ -67,7 +65,7 @@ public:
 
     int FillColorDetParam(const tagFixBloodRegParam &stParam, CColorDetParam &oParam);
 
-private:
+  private:
     int       m_nTaskID;
     int       m_nBloodLength;
     cv::Rect  m_oROI;
@@ -78,17 +76,15 @@ private:
 //          CFixBloodRegParam Class Define
 // **************************************************************************************
 
-class CFixBloodRegParam : public IComnBaseRegParam
-{
-public:
-    CFixBloodRegParam()
-    {
+class CFixBloodRegParam : public IComnBaseRegParam {
+  public:
+    CFixBloodRegParam() {
         m_oVecElements.clear();
     }
 
     virtual ~CFixBloodRegParam() {}
 
-public:
+  public:
     std::vector<tagFixBloodRegParam> m_oVecElements;
 };
 
@@ -96,33 +92,28 @@ public:
 //          CFixBloodRegResult Class Define
 // **************************************************************************************
 
-class CFixBloodRegResult : public IComnBaseRegResult
-{
-public:
-    CFixBloodRegResult()
-    {
+class CFixBloodRegResult : public IComnBaseRegResult {
+  public:
+    CFixBloodRegResult() {
         m_nResultNum = 0;
     }
 
     virtual ~CFixBloodRegResult() {}
 
-    void SetResult(tagFixBloodRegResult szResults[], int *pResultNum)
-    {
+    void SetResult(tagFixBloodRegResult szResults[], int *pResultNum) {
         m_nResultNum = *pResultNum;
 
-        for (int i = 0; i < *pResultNum; i++)
-        {
+        for (int i = 0; i < *pResultNum; i++) {
             m_szResults[i] = szResults[i];
         }
     }
 
-    tagFixBloodRegResult* GetResult(int *pResultNum)
-    {
+    tagFixBloodRegResult* GetResult(int *pResultNum) {
         *pResultNum = m_nResultNum;
         return m_szResults;
     }
 
-private:
+  private:
     int                  m_nResultNum;
     tagFixBloodRegResult m_szResults[MAX_ELEMENT_SIZE];
 };
@@ -131,9 +122,8 @@ private:
 //          CFixBloodReg Class Define
 // **************************************************************************************
 
-class CFixBloodReg : public IComnBaseReg
-{
-public:
+class CFixBloodReg : public IComnBaseReg {
+  public:
     CFixBloodReg();
     ~CFixBloodReg();
 
@@ -142,9 +132,9 @@ public:
     virtual int Predict(const tagRegData &stData, IRegResult *pResult);
     virtual int Release();
 
-private:
-    std::vector<tagFixBloodRegParam>  m_oVecParams; // vector of parameters
-    std::vector<CFixBloodRegColorDet> m_oVecMethods; // vector of methods
+  private:
+    std::vector<tagFixBloodRegParam>  m_oVecParams;   // vector of parameters
+    std::vector<CFixBloodRegColorDet> m_oVecMethods;  // vector of methods
 };
 
-#endif /* FIX_BLOOD_REG_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_RECOGNIZER_CFIXBLOODREG_H_

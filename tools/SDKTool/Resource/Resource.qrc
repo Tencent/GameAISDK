@@ -1,22 +1,26 @@
 <RCC>
   <qresource prefix="menu">
-    <file>switchimage.jpg</file>
-    <file>Square.jpg</file>
-    <file>Rect.jpg</file>
-    <file>switch.jpg</file>
-    <file>import.jpg</file>
-    <file>set.jpg</file>
-    <file>treeIcon.png</file>
-    <file>image.jpg</file>
-    <file>json.jpg</file>
-    <file>floder.jpg</file>
-    <file>video.jpg</file>
-    <file>开始.png</file>
-    <file>快退.png</file>
-    <file>快进.png</file>
-    <file>暂停.png</file>
-    <file>保存.jpg</file>
-    <file>退出.png</file>
-    <file>graph.jpg</file>
+    <file>save.png</file>
+    <file>open_folder.png</file>
+    <file>debug.png</file>
+    <file>stop.png</file>
+    <file>left_arrow.png</file>
+    <file>right_arrow.png</file>
+    <file>play.png</file>
+    <file>stop_paly.png</file>
+    <file>project.png</file>
+    <file>setting.png</file>
+    <file>item.png</file>
+    <file>done.png</file>
+    <file>undo.png</file>
+    <file>app.png</file>
+	<file>analysis.png</file>
+	<file>file.png</file>
+	<file>image-gallery.png</file>
+	<file>operation.png</file>
+	<file>path.png</file>
+	<file>settings.png</file>
+	<file>save1.png</file>
+	<file>switch.jpg</file>
   </qresource>
 </RCC>

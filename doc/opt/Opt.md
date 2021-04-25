@@ -1,12 +1,12 @@
-# 调试技巧说明
 
-[TOC]
+
+# 调试技巧说明
 
 ## 1 多分辨率参考任务配置技巧
 
 ### 1.1 阈值设定
 
-threshold 默认为0.8，如果误匹配比较高，可以提高此阈值，但不应当高于1.0; 如果漏匹配比较高，可适当较低此阈值，但一般不建议低于0.7。
+threshold 默认为0.8，如果误匹配比较高，可以提高此阈值，但不应当高于1.0; 如果漏匹配比较高，可适当降低此阈值，但一般不建议低于0.7。
 
 ### 1.2 异形屏搜索区域
 
@@ -21,40 +21,10 @@ threshold 默认为0.8，如果误匹配比较高，可以提高此阈值，但�
 
 可适当增加检测范围,即ROI区域。
 
-## 3 SDKTool调试
+## 3 docker容器的参数调试
 
-SDKTool还提供导入之前手动配置的配置文件的功能。
+打开docker desktop的设置，取消Use the WSL 2 based engine的勾选。
+![img](../img/New_SDKTool/Opt/dockerSet1.png)
 
-### **3.1** 新建空的工程
-
-右键树窗口，点击新建工程，创建一个新项目，并将需要导入的配置文件所用的图像导入工程，如图3-1所示：
-
-![img](../img/wps1.jpg) 
-
-图3-1 导入配置文件
-
-### 3.2 导入需要调试的配置文件
-
-将需要导入的task.json，refer.json，UIConfig.json拷贝至<project_path>/v1.0/jsonFile/下，替换掉原有的配置文件，如图3-2所示：
-
-![img](../img/wps2.jpg) 
-
-图3-2 导入task、refer
-
-右键树窗口，点击导入工程，导入刚才创建的项目，即可看到task和UI，如图3-3所示：
-
-![img](../img/wps3.jpg) 
-
-图3-3 工程文件project.json
-
-导入后的结果如下图3-4所示：
-
-![img](../img/wps4.jpg) 
-
-图3-4 导入结果
-
-### 3.3 开始调试
-
-UI的调试请参考 [UI配置文件说明](../SDKTool/UIConf.md) 第5小节。
-
-识别进程调试 请参考 [任务配置文件说明](../SDKTool/TaskConf.md) 第5小节。
+取消上述勾选后，Resources会多一个高级选项。根据情况修改CPU和内存，这是默认配置。
+![img](../img/New_SDKTool/Opt/dockerSet2.png)

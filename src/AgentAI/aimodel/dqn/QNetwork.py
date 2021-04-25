@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -19,15 +22,15 @@ class QNetwork(object):
 
     def __init__(self, args):
         self.duelingNetwork = args['dueling_network']
-        self.stateImgWidth = args['input_img_width']
-        self.stateImgHeight = args['input_img_height']
+        self.stateImgWidth = int(args['input_img_width'])
+        self.stateImgHeight = int(args['input_img_height'])
         self.stateRecentFrame = args['state_recent_frame']
         self.termDelayFrame = args['terminal_delay_frame']
         self.actionSpace = args['action_space']
         self.gama = args['reward_discount']
         self.lr = args['learn_rate']
         self.qnetUpdateStep = args['qnet_update_step']
-        self.memorySize = args['memory_size']
+        self.memorySize = int(args['memory_size'])
         self.miniBatchSize = args['mini_batch_size']
         self.trainWithDoubleQ = args['train_with_double_q']
         self.gpuMemoryFraction = args['gpu_memory_fraction']
@@ -104,7 +107,13 @@ class QNetwork(object):
         Train Q-Network use replay memory
         """
         # Step 1: obtain random minibatch from replay memory
+        self.logger.debug("begin to train, trainStep:{}".format(self.trainStep))
         minibatch = self.memory.Random(self.miniBatchSize)
+        if len(minibatch) == 0:
+            self.logger.warning("the size of memory hasn't reach the mini bach")
+            return
+
+        self.logger.debug("the size of memory reach the mini bach")
         stateBatch = [data[0] for data in minibatch]
         actionBatch = [data[1] for data in minibatch]
         rewardBatch = [data[2] for data in minibatch]
@@ -113,13 +122,13 @@ class QNetwork(object):
 
         # Step 2: calculate y label
         yBatch = []
-
         if self.trainWithDoubleQ:
             qValueBatch = self.QValue.eval(feed_dict={self.stateInput : nextStateBatch})
             actionIndexBatch = [np.argmax(qv) for qv in qValueBatch]
             qValueTBatch = self.QValueT.eval(feed_dict={self.stateInputT : nextStateBatch})
 
-            for i in range(0, self.miniBatchSize):
+            min_batch_size = int(self.miniBatchSize)
+            for i in range(0, min_batch_size):
                 terminal = terminalBatch[i]
                 if terminal:
                     yBatch.append(rewardBatch[i])
@@ -135,20 +144,28 @@ class QNetwork(object):
                 else:
                     yBatch.append(rewardBatch[i] + self.gama * np.max(qValueBatch[i]))
 
+        #self.cost(yBatch)
+
         # Step 3: optimize network params
-        self.trainOptimizer.run(feed_dict={self.yInput : yBatch,
-                                           self.actionInput : actionBatch,
-                                           self.stateInput : stateBatch})
+        self.trainOptimizer.run(feed_dict={self.yInput: yBatch,
+                                           self.actionInput: actionBatch,
+                                           self.stateInput: stateBatch})
+
 
         # save network every 10000 iteration
         if self.trainStep % 10000 == 0 and self.trainStep != 0:
+            logging.debug("begin to save the network, trainStep:{}".format(self.trainStep))
             self.Save()
 
         # sync network params, from current network to target network
         if self.trainStep % self.qnetUpdateStep == 0:
             self.session.run(self.copyTargetQNet)
 
+        self.session.run([self.trainOptimizer, self.cost], feed_dict={self.yInput: yBatch,
+                                                                      self.actionInput: actionBatch,
+                                                                      self.stateInput: stateBatch})
         self.trainStep += 1
+        self.logger.debug("the train finished, trainStep: %d", self.trainStep)
 
     def EvalQValue(self, state):
         """
@@ -177,14 +194,21 @@ class QNetwork(object):
         """
         checkpoint = tf.train.get_checkpoint_state(self.checkPointPath)
         if checkpoint and checkpoint.model_checkpoint_path:
-            base = len(self.checkPointPath + 'network-dqn-')
-            self.trainStepBase = int(checkpoint.model_checkpoint_path[base:])
-            self.saver.restore(self.session, checkpoint.model_checkpoint_path)
-            self.logger.info('Loaded network weights: {}'.format(checkpoint.model_checkpoint_path))
+            self.logger.debug("the checkpoint path is %s, checkpoint: %s", self.checkPointPath, str(checkpoint))
+            index = checkpoint.model_checkpoint_path.find('-dqn-')
+            if index == -1:
+                self.logger.warning("the model checkpoint path not exist, path:%s",
+                                    checkpoint.model_checkpoint_path)
+                return
+            self.trainStepBase = int(checkpoint.model_checkpoint_path[index + 5:])
+            path = self.checkPointPath + 'network-dqn-' + str(self.trainStepBase)
+            self.saver.restore(self.session, path)
+            self.logger.info('Loaded network weights: %s', path)
         else:
             self.logger.warning('Could not find old network weights')
 
-    def VariableSummaries(self, var):
+    @staticmethod
+    def VariableSummaries(var):
         """
         Attach a lot of summaries to a Tensor (for TensorBoard visualization)
         """
@@ -218,13 +242,15 @@ class QNetwork(object):
             self.VariableSummaries(variable)
         return variable
 
-    def Conv2d(self, x, W, stride, paddingStyle="SAME"):
+    @staticmethod
+    def Conv2d(x, W, stride, paddingStyle="SAME"):
         """
         Conv operation used by Q network
         """
         return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1], padding=paddingStyle)
 
-    def MaxPool2x2(self, x, paddingStyle="SAME"):
+    @staticmethod
+    def MaxPool2x2(x, paddingStyle="SAME"):
         """
         Pooling operation used by Q network
         """

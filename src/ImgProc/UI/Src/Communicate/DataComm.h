@@ -1,11 +1,14 @@
-﻿/*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+/*
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef DATA_COMM_H_
-#define DATA_COMM_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_UI_COMMUNICATE_DATACOMM_H_
+#define GAME_AI_SDK_IMGPROC_UI_COMMUNICATE_DATACOMM_H_
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/opencv.hpp>
@@ -24,8 +27,7 @@
 #include "Comm/Utils/TqcLock.h"
 
 
-enum enSourceType
-{
+enum enSourceType {
     DATA_SRC_VIDEO = 0,
     DATA_SRC_PICTURE,
     DATA_SRC_TBUS,
@@ -33,8 +35,7 @@ enum enSourceType
     DATA_SRC_INVALID
 };
 
-enum enPeerName
-{
+enum enPeerName {
     PEER_AGENT = 0,
     PEER_UIAUTO,
     PEER_UIRECOGNIZE,
@@ -47,22 +48,20 @@ enum enPeerName
     PEER_NONE
 };
 
-struct tagPicParams
-{
+struct tagPicParams {
     char filePath[TQC_PATH_STR_LEN];
     char fileName[TQC_PATH_STR_LEN];
     char fileSuffix[TQC_PATH_STR_LEN];
     int  nStart;
     int  nEnd;
 
-    tagPicParams()
-    {
+    tagPicParams() {
         memset(filePath, 0, TQC_PATH_STR_LEN);
         memset(fileName, 0, TQC_PATH_STR_LEN);
         memset(fileSuffix, 0, TQC_PATH_STR_LEN);
 
         nStart = -1;
-        nEnd   = -1;
+        nEnd = -1;
     }
 };
 
@@ -72,14 +71,12 @@ struct tagPicParams
 #define MAX_IMAGE_DATA_LEN 1024 * 1000 * 8
 #define FRAME_QUEUE_NUM    4
 
-struct  stTBUSParas
-{
+struct  stTBUSParas {
     // char szConfigFile[TQC_PATH_STR_LEN];
     int                        nSelfAddr;
     std::map<std::string, int> mapAddr;
     // int narryPeerAddr[MAXNUMPEER];
-    stTBUSParas()
-    {
+    stTBUSParas() {
         //  memset(szConfigFile, 0, TQC_PATH_STR_LEN);
         // memset(narryPeerAddr, 0, sizeof(int)*MAXNUMPEER);
         nSelfAddr = 0;
@@ -87,19 +84,17 @@ struct  stTBUSParas
 };
 
 // tbus parameters.
-struct stTBUSInitParams
-{
+struct stTBUSInitParams {
     char                               szConfigFile[TQC_PATH_STR_LEN];
     std::string                        strSelfAddr;  // tbus address
     std::map<std::string, std::string> mapStrAddr;   // the other processes tbus address.
-    stTBUSInitParams()
-    {
+    stTBUSInitParams() {
         memset(szConfigFile, 0, TQC_PATH_STR_LEN);
     }
 };
 
 
 
-typedef void (*MSG_HANDLER_ROUTINE)(void *pMsg);
+typedef void(*MSG_HANDLER_ROUTINE)(void *pMsg);
 
-#endif // DATA_COMM_H_
+#endif  // GAME_AI_SDK_IMGPROC_UI_COMMUNICATE_DATACOMM_H_

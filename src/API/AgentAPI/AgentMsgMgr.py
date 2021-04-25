@@ -1,42 +1,22 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
-"""
-Module: manage message between Agent and GameRecognize.
-send message type from Agent to GameRecognize  in
-[MSG_SEND_GROUP_ID,
-MSG_SEND_TASK_FLAG,
-MSG_SEND_ADD_TASK,
-MSG_SEND_DEL_TASK,
-MSG_SEND_CHG_TASK,
-MSG_SEND_TASK_CONF]
-
-recv message from GameRecognize to Agent contained the recognize results and the processed image.
-
-all messages are packed with PB(Google Protocol Buff)
-"""
-
-import os
-import sys
+import configparser
 import logging
+import os
+
 import numpy as np
-
-if sys.version_info < (3, 0):
-    import ConfigParser as ConfigParser
-else:
-    import configparser as ConfigParser
-
-__dir__ = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(__dir__ + "/protocol")
-
 import tbus
+
 from .protocol import common_pb2
 from .protocol import gameregProtoc_pb2
-
 
 MSG_SEND_ID_START = 40000
 MSG_SEND_GROUP_ID = MSG_SEND_ID_START + 1
@@ -67,11 +47,11 @@ class MsgMgr(object):
     """
     message manager implement
     """
-    def __init__(self, cfgPath='../cfg/bus.ini', initParamFile='../cfg/param.file', index=1):
+    def __init__(self, cfgPath='../cfg/bus.ini', index=1):
         self.__selfAddr = None
         self.__gameRegAddr = None
+        self.__sdkToolAddr = None
         self.__cfgPath = cfgPath
-        self.__initParamFile = initParamFile
         self.__index = index
         self.__serialMsgHandle = dict()
         self.__serialRegerHandle = dict()
@@ -85,11 +65,11 @@ class MsgMgr(object):
         if os.path.exists(self.__cfgPath):
             self._Register()
 
-            config = ConfigParser.ConfigParser(strict=False)
+            config = configparser.ConfigParser(strict=False)
             config.read(self.__cfgPath)
             gameRegAddr = "GameReg" + str(self.__index) + "Addr"
             strgameRegAddr = config.get('BusConf', gameRegAddr)
-
+            strToolAddr = config.get('BusConf', 'SDKToolAddr')
             if selfAddr is None:
                 AgentAddr = "Agent" + str(self.__index) + "Addr"
                 strselfAddr = config.get('BusConf', AgentAddr)
@@ -97,18 +77,18 @@ class MsgMgr(object):
                 strselfAddr = config.get('BusConf', selfAddr)
             self.__gameRegAddr = tbus.GetAddress(strgameRegAddr)
             self.__selfAddr = tbus.GetAddress(strselfAddr)
-            LOG.info("gamereg addr is {0}, self addr is {1}" \
-                     .format(self.__gameRegAddr, self.__selfAddr))
+            self.__sdkToolAddr = tbus.GetAddress(strToolAddr)
+            LOG.info("gamereg addr is %s, self addr is %s", self.__gameRegAddr, self.__selfAddr)
             ret = tbus.Init(self.__selfAddr, self.__cfgPath)
             if ret != 0:
-                LOG.error('tbus init failed with return code[{0}]'.format(ret))
+                LOG.error('tbus init failed with return code[%s]', ret)
                 return False
 
             return True
 
-        else:
-            LOG.error('tbus config file not exist in {0}'.format(self.__cfgPath))
-            return False
+        LOG.error('tbus config file not exist in %s', self.__cfgPath)
+
+        return False
 
     def ProcMsg(self, msgID, msgValue):
         """
@@ -168,11 +148,15 @@ class MsgMgr(object):
             msg = self._UnSerialResultMsg(msgBuffRet)
 
             frameSeq = msg['value'].get('frameSeq')
-            LOG.debug('recv frame data, frameIndex={0}'.format(frameSeq))
-            return msg
+            img_data = msg['value'].get('image')
+            if img_data is not None:
+                h, w = img_data.shape[:2]
+                result = msg['value'].get('result')
+                if result:
+                    LOG.debug('recv frame data, frameIndex=%s, h:%s, w:%s, result:%s', frameSeq, h, w, str(result))
 
-        else:
-            return None
+            return msg
+        return None
 
     def Release(self):
         """
@@ -189,15 +173,35 @@ class MsgMgr(object):
         # outBuff = msgpack.packb(msgDic, use_bin_type=True)
 
         outBuff = self._SerialSendMsg(msgDic)
-
         return outBuff
 
     def _Send(self, outBuff):
         ret = tbus.SendTo(self.__gameRegAddr, outBuff)
         if ret != 0:
-            LOG.error('TBus Send To UI Anuto Addr return code[{0}]'.format(ret))
+            LOG.error('TBus Send To UI Anuto Addr return code[%s]', ret)
+            return False
+        return True
+
+    def SendImageToTool(self, srcImgDict):
+        msg = common_pb2.tagMessage()
+        msg.eMsgID = common_pb2.MSG_SRC_IMAGE_INFO
+        stSrcImageInfo = msg.stSrcImageInfo
+        stSrcImageInfo.uFrameSeq = srcImgDict['frameSeq']
+        stSrcImageInfo.nWidth = srcImgDict['width']
+        stSrcImageInfo.nHeight = srcImgDict['height']
+        stSrcImageInfo.byImageData = srcImgDict['image'].tobytes()
+        stSrcImageInfo.uDeviceIndex = srcImgDict['deviceIndex']
+
+        msgBuff = msg.SerializeToString()
+
+        if msgBuff is None:
+            LOG.error('create msg failed')
             return False
 
+        ret = tbus.SendTo(self.__sdkToolAddr, msgBuff)
+        if ret != 0:
+            LOG.error('TBus Send To SDKTool Addr return code[%s]', ret)
+            return False
         return True
 
     def _Register(self):
@@ -305,17 +309,20 @@ class MsgMgr(object):
             taskPB = value.stPBAgentTaskTsks.add()
             self.__serialRegerHandle[self._GetValueFromDict(taskVal, 'type')](taskPB, taskVal)
 
-    def _SerialFlagTask(self, msg, msgValue):
+    @staticmethod
+    def _SerialFlagTask(msg, msgValue):
         for taskID in msgValue:
             value = msg.stPBTaskFlagMaps.add()
             value.nTaskID = int(taskID)
             value.bFlag = msgValue[taskID]
 
-    def _SerialDelTask(self, msg, msgValue):
+    @staticmethod
+    def _SerialDelTask(msg, msgValue):
         for key in msgValue:
             msg.nDelTaskIDs.append(key)
 
-    def _SerialConfTask(self, msg, msgValue):
+    @staticmethod
+    def _SerialConfTask(msg, msgValue):
         for filename in msgValue:
             if filename is not None:
                 msg.strConfFileName.append(filename)
@@ -580,7 +587,7 @@ class MsgMgr(object):
         ResDict['value']['frameSeq'] = Result.stPBResultValue.nFrameSeq
         ResDict['value']['deviceIndex'] = Result.stPBResultValue.nDeviceIndex
         ResDict['value']['strJsonData'] = Result.stPBResultValue.strJsonData
-        ResDict['value']['groupID'] = 1 # for test
+        ResDict['value']['groupID'] = 1  # for test
         data = np.fromstring(Result.stPBResultValue.byImgData, np.uint8)
         ResDict['value']['image'] = np.reshape(
             data, (Result.stPBResultValue.nHeight, Result.stPBResultValue.nWidth, 3)
@@ -598,7 +605,8 @@ class MsgMgr(object):
 
         return ResDict
 
-    def _UnSerialFixObjRegResult(self, result):
+    @staticmethod
+    def _UnSerialFixObjRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             fixObjSingleDict = {}
@@ -625,7 +633,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialKingGloryBloodResult(self, result):
+    @staticmethod
+    def _UnSerialKingGloryBloodResult(result):
         ResList = []
         for res in result.stPBResultRes:
             ResSingleDict = {}
@@ -655,7 +664,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialMapRegResult(self, result):
+    @staticmethod
+    def _UnSerialMapRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             mapSingleDict = {}
@@ -686,7 +696,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialMapDirectionRegResult(self, result):
+    @staticmethod
+    def _UnSerialMapDirectionRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             mapDirSingleDict = {}
@@ -710,7 +721,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialMultColorVar(self, result):
+    @staticmethod
+    def _UnSerialMultColorVar(result):
         ResList = []
         for res in result.stPBResultRes:
             ResSingleDict = {}
@@ -724,7 +736,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialShootGameBloodRegResult(self, result):
+    @staticmethod
+    def _UnSerialShootGameBloodRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             SGSingleDict = {}
@@ -746,7 +759,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialShootGameHurtRegResult(self, result):
+    @staticmethod
+    def _UnSerialShootGameHurtRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             SGHurtSingleDict = {}
@@ -761,7 +775,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialFixBloodRegResult(self, result):
+    @staticmethod
+    def _UnSerialFixBloodRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             fixBloodSingleDict = {}
@@ -783,7 +798,10 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialPixRegResult(self, result, height, width):
+    @staticmethod
+    def _UnSerialPixRegResult(result, height, width):
+
+        LOG.debug('_UnSerialPixRegResult, result:%s, height:%s, width:%s', result, height, width)
         ResList = []
         for res in result.stPBResultRes:
             pixSingleDict = {}
@@ -794,16 +812,12 @@ class MsgMgr(object):
                 ResPoint['x'] = point.nX
                 ResPoint['y'] = point.nY
                 pixSingleDict['points'].append(ResPoint)
-
-            # data = np.fromstring(res.byImage, np.uint8)
-            # ResSingleDict['dstImage'] = np.reshape(
-            #    data, (height, width, 1)
-            #)
             ResList.append(pixSingleDict)
 
         return ResList
 
-    def _UnSerialStuckRegResult(self, result):
+    @staticmethod
+    def _UnSerialStuckRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             stuckSingleDict = {}
@@ -816,7 +830,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialDeformRegResult(self, result):
+    @staticmethod
+    def _UnSerialDeformRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             deformSingleDict = {}
@@ -838,7 +853,8 @@ class MsgMgr(object):
 
         return ResList
 
-    def _UnSerialNumberRegResult(self, result):
+    @staticmethod
+    def _UnSerialNumberRegResult(result):
         ResList = []
         for res in result.stPBResultRes:
             numberSingleDict = {}
@@ -866,9 +882,10 @@ class MsgMgr(object):
         PBTemplate.fThreshold = self._GetValueFromDict(valueTemplate, 'threshold')
         PBTemplate.nClassID = self._GetValueFromDict(valueTemplate, 'classID')
 
-    def _GetValueFromDict(self, dic, key):
+    @staticmethod
+    def _GetValueFromDict(dic, key):
         if key not in dic.keys():
-            LOG.error("{} is needed".format(key))
+            LOG.error("%s is needed", key)
             raise Exception('{} is needed'.format(key))
 
         return dic[key]

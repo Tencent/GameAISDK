@@ -1,7 +1,5 @@
 # 依次安装依赖项说明
 
-[TOC]
-
 ## 1  安装相关依赖
 
 ```
@@ -138,15 +136,17 @@ sudo apt-get install autoconf automake libtool
 
 ## 6 安装android adb工具集
 
-adb工具下载链接如下所示：https://developer.android.com/studio/releases/platform-tools          
+adb工具下载链接如下所示：https://developer.android.com/studio/releases/platform-tools  ，具体如下图6-1所示： 
 
 ![1561605407801](../img/ENV/android.png)                     
 
-选择对应操作系统的版本，下载后将其解压，得到adb可执行文件，将其路径加入PATH环境变量，或者将其拷贝至系统的可执行路径里（如/usr/bin），adb可执行文件如下图所示：
+图6-1 adb工具集
+
+选择对应操作系统的版本，下载后将其解压，得到adb可执行文件，将其路径加入PATH环境变量，或者将其拷贝至系统的可执行路径里（如/usr/bin），adb可执行文件如下图6-2所示：
 
 ![img](../img/ENV/adb.png)
 
-目前phone client 支持包括android10/11在内的android各机型。安装好adb之后，可以先验证下adb有没有安装成功。验证步骤如下：打开手机调试模式(以机型为VIVO X9 plus的手机为例, 进入“手机设置”-> "系统" ->"开发人员选项"，打开“开发人员选项”->"USB"调试->"USB调试（安全设置)" ->"显示点按操作反馈")，然后通过USB线连接手机，在终端输入命令:adb devices, 如果输出结果是已授权的手机设备序列号，则adb安装成功。
+图6-2 adb可执行文件
 
 ## 7 安装python3虚拟环境及python3依赖
 
@@ -192,12 +192,7 @@ workon game_ai_sdk
 找到AISDK根目录下的requirements.txt
 
 ```
-cd {path to AISDK} //进入到SDK目录
-sudo pip3 install -r requirements.txt //安装依赖
+sudo pip3 install -r requirements.txt
+sudo pip3 install -r requirements_SDKTool.txt
 ```
 
-安装SDKTool的相关依赖:
-
-`cd {path to AISDK} //进入到SDK目录`
-
-`pip install -r requirements_SDKTool.txt // 安装依赖`

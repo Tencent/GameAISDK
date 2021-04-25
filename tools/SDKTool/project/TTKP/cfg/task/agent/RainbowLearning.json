@@ -1,0 +1,56 @@
+{
+    "roiRegion": {
+        "path": "",
+        "region": {
+            "x": 0,
+            "y": 0,
+            "w": 640,
+            "h": 360
+        }
+    },
+    "excitationFunction": {
+        "startTaskID": 1,
+        "scoreTaskID": 4,
+        "initScore": 0.0,
+        "maxScoreRepeatedTimes": 1,
+        "rewardOverRepeatedTimes": 0.0,
+        "winTaskID": 2,
+        "winReward": 0.0,
+        "loseTaskID": 3,
+        "loseReward": 0.0,
+        "maxRunningReward": 0.5,
+        "minRunningReward": -0.5,
+        "rewardPerPostiveSection": 0.1,
+        "rewardPerNegtiveSection": -0.1,
+        "scorePerSection": 20.0
+    },
+    "network": {
+        "duelingNetwork": 1,
+        "inputImgWidth": 176,
+        "inputImgHeight": 108,
+        "stateRecentFrame": 4,
+        "terminalDelayFrame": 6,
+        "rewardDiscount": 0.99,
+        "learnRate": 0.000005,
+        "endLearnRate": 0.000001,
+        "framePerAction": 1,
+        "observeFrame": 10000,
+        "exploreFrame": 1000000,
+        "initialEpsilon": 0.01,
+        "finalEpsilon":0.001,
+        "qNetworkUpdateStep": 12000,
+        "memorySize": 240000,
+        "showImgState": 0,
+        "miniBatchSize": 32,
+        "trainWithDoubleQ": 1,
+        "gpuMemoryFraction": 0.6,
+        "gpuMemoryGrowth": 0,
+        "checkPointPath": "data/trained-networks/",
+        "trainFrameRate": 10,
+        "runType": 1
+    },
+    "server": {
+        "hostIp": "127.0.0.1",
+        "hostPort": 8080
+    }
+}

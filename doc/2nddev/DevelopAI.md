@@ -1,7 +1,5 @@
 ## AI的二次开发
 
-[TOC]
-
 AI的二次开发中，有依赖AgentAPIMgr和ActionAPIMgr，AgentAPIMgr是Agent和GameReg进行交互的接口模块。ActionAPIMgr是和手机交互的动作接口模块。在本章我们先对这两部分进行介绍，再介绍AI插件。
 
 ## 1 AgentAPIMgr 介绍

@@ -1,24 +1,25 @@
-
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef DATA_MANAGER_H_
-#define DATA_MANAGER_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_UI_COMMUNICATE_DATAMANAGER_H_
+#define GAME_AI_SDK_IMGPROC_UI_COMMUNICATE_DATAMANAGER_H_
 
 #include "UI/Src/Communicate/DataComm.h"
 
-class CDataManager
-{
-public:
+class CDataManager {
+  public:
     CDataManager();
     ~CDataManager();
 
     bool            Initialize(enSourceType srcType, enSourceType dstType);
     bool            InitializeFromData(enSourceType srcType, enSourceType dstType,
-                                       const void *pInitData);
+        const void *pInitData);
     bool            GetNextFrame(cv::Mat *pFrame, int step = 1);
     cv::Mat*        GetNextFrame(int step);
     bool            PopOneFrame();
@@ -33,7 +34,7 @@ public:
     // Frame Queue
     void    PushFrameQueue(int nQueueIndex, const stFrame &frame);
     stFrame PopFrameQueue(int nQueueIndex);
-    stFrame PopLastFrameQueue(int nQueueIndex);     // Pop all the frames in queue and return the latest frame.
+    stFrame PopLastFrameQueue(int nQueueIndex);
     int     GetFrameQueueSize(int nQueueIndex);
 
     // Message Queue
@@ -52,7 +53,7 @@ public:
     void    SetScreenOrient(int screen);
     int     GetScreenOrient();
 
-private:
+  private:
     bool GetNextFrameByVideo(cv::Mat *pFrame);
     bool GetNextFrameByPicture(cv::Mat *pFrame);
     bool GetNextFrameByTBus(cv::Mat *pFrame);
@@ -60,7 +61,7 @@ private:
     bool InitSrcVideo(const void *pInitData);
     bool InitSrcPicture(const void *pInitData);
 
-private:
+  private:
     enSourceType m_srcType;
     enSourceType m_dstType;
     // enGameName m_gameName;
@@ -89,10 +90,10 @@ private:
     int   m_nGameState;
     CLock m_gameStateLock;
 
-public:
+  public:
     cv::Mat m_currentFrame;
     cv::Mat *m_pCurrentFrame;
 };
 
 void MsgHandler(void *pMsg);
-#endif // DATA_MANAGER_H_
+#endif  // GAME_AI_SDK_IMGPROC_UI_COMMUNICATE_DATAMANAGER_H_

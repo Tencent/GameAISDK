@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef GAMEREG_THREADSAFEQUEUE_H
-#define GAMEREG_THREADSAFEQUEUE_H
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_UTILS_TQCTHREADSAFEQUEUE_H_
+#define GAME_AI_SDK_IMGPROC_COMM_UTILS_TQCTHREADSAFEQUEUE_H_
 
 #include <condition_variable>
 #include <iostream>
@@ -16,7 +19,7 @@
 
 template<class T, class Container = std::queue<T>>
 class ThreadSafeQueue {
-public:
+  public:
     ThreadSafeQueue() = default;
 
     // push操作，加锁实现同步
@@ -83,17 +86,17 @@ public:
         return queue_.empty();
     }
 
-private:
+  private:
     ThreadSafeQueue(const ThreadSafeQueue&) = delete;
     ThreadSafeQueue& operator=(const ThreadSafeQueue&) = delete;
     ThreadSafeQueue(ThreadSafeQueue&&) = delete;
     ThreadSafeQueue& operator=(ThreadSafeQueue&&) = delete;
 
-private:
+  private:
     Container queue_;
 
     std::condition_variable not_empty_cv_;
     mutable std::mutex mutex_;
 };
 
-#endif // GAMEREG_THREADSAFEQUEUE_H
+#endif  // GAME_AI_SDK_IMGPROC_COMM_UTILS_TQCTHREADSAFEQUEUE_H_

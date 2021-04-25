@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef PIX_DET_H_
-#define PIX_DET_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IPIXDET_H_
+#define GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IPIXDET_H_
 
 #include <vector>
 
@@ -15,9 +18,8 @@
 //          IPixDetParam Class Define
 // **************************************************************************************
 
-class IPixDetParam : public IImgProcParam
-{
-public:
+class IPixDetParam : public IImgProcParam {
+  public:
     IPixDetParam() {}
     virtual ~IPixDetParam() {}
 };
@@ -26,9 +28,8 @@ public:
 //          CPixDetData Class Define
 // **************************************************************************************
 
-class CPixDetData : public IImgProcData
-{
-public:
+class CPixDetData : public IImgProcData {
+  public:
     CPixDetData() {}
     virtual ~CPixDetData() {}
 };
@@ -37,13 +38,12 @@ public:
 //          CPixDetResult Class Define
 // **************************************************************************************
 
-class CPixDetResult : public IImgProcResult
-{
-public:
+class CPixDetResult : public IImgProcResult {
+  public:
     CPixDetResult() {}
     virtual ~CPixDetResult() {}
 
-public:
+  public:
     cv::Mat m_oDstImg;
     std::vector<cv::Point> m_oVecPoints;
 };
@@ -52,9 +52,8 @@ public:
 //          IPixDetFactory Class Define
 // **************************************************************************************
 
-class IPixDetFactory : public IImgProcFactory
-{
-public:
+class IPixDetFactory : public IImgProcFactory {
+  public:
     IPixDetFactory() {}
     virtual ~IPixDetFactory() {}
 
@@ -65,11 +64,10 @@ public:
 //          CPixDet Class Define
 // **************************************************************************************
 
-class IPixDet : public IImgProc
-{
-public:
+class IPixDet : public IImgProc {
+  public:
     IPixDet() {}
     virtual ~IPixDet() {}
 };
 
-#endif /* PIX_DET_H_ */
+#endif  // GAME_AI_SDK_IMGPROC_COMM_IMGREG_IMGPROCESS_IPIXDET_H_

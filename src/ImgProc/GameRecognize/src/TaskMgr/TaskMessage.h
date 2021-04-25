@@ -1,11 +1,14 @@
 /*
- * This source code file is licensed under the GNU General Public License Version 3.
- * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
- * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
- */
+  * Tencent is pleased to support the open source community by making GameAISDK available.
 
-#ifndef TASK_MESSAGE_H_
-#define TASK_MESSAGE_H_
+  * This source code file is licensed under the GNU General Public License Version 3.
+  * For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
+  * Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+*/
+
+#ifndef GAME_AI_SDK_IMGPROC_GAMERECOGNIZE_TASKMGR_TASKMESSAGE_H_
+#define GAME_AI_SDK_IMGPROC_GAMERECOGNIZE_TASKMGR_TASKMESSAGE_H_
 
 #include <iostream>
 #include <map>
@@ -20,14 +23,12 @@
 @brief : 任务的消息模块
 */
 
-class CTaskMessage
-{
-public:
+class CTaskMessage {
+  public:
     CTaskMessage();
     virtual ~CTaskMessage();
 
-public:
-
+  public:
     /*!
     * @brief 获取消息句柄
     * @param[in] eMsgID 消息类型
@@ -48,7 +49,7 @@ public:
 
     void Release();
 
-private:
+  private:
     /*!
     * @brief 创建组任务消息
     */
@@ -79,9 +80,9 @@ private:
     */
     void CreateConfTaskMsg();
 
-private:
-    tagCmdMsg *m_pCmdMsg;      // 任务消息指针
-    EAgentMsgID m_EAgentMsgID; // 消息类型
+  private:
+    tagCmdMsg *m_pCmdMsg;       // 任务消息指针
+    EAgentMsgID m_EAgentMsgID;  // 消息类型
 };
 
-#endif // TASK_MESSAGE_H_
+#endif  // GAME_AI_SDK_IMGPROC_GAMERECOGNIZE_TASKMGR_TASKMESSAGE_H_

@@ -1,0 +1,14 @@
+{
+    "UIReplay": {
+        "UIFolder": "data/UIExploreResult/Graph",
+        "GraphFolder": "data/UIExploreResult/Graph",
+        "TestExampleFolder": "data/UIExploreResult/ExpandExample/0",
+        "WaitTime": 4
+    },
+    "Debug": {
+        "ShowButton": true,
+        "ShowCostTime": false,
+        "ShowImageRatio": 0.5,
+        "TestGetState": false
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "UiExplore": {
+        "OutputFolder": "data/run_result",
+        "MaxClickNumber": 100,
+        "WaitTime": 4
+    },
+    "ButtonDetection": {
+        "ModelType": "RefineNet",
+        "PthModelPath": "data/Final_Refine_hc2net_version3_self_dataset.pth",
+        "Threshold": 0.1,
+        "MaskPath": ""
+    },
+    "UiCoverage": {
+        "ComputeCoverage": true,
+        "SampleFolder": "data/samples",
+        "ORBThreshold": 0.05
+    },
+    "Debug": {
+        "ShowButton": true,
+        "ShowCostTime": false,
+        "ShowImageRatio": 0.5,
+        "TestGetState": false
+    }
+}

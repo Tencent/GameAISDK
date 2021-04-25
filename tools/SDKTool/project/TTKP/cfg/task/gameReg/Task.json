@@ -1,0 +1,88 @@
+{
+    "alltask": [
+        {
+            "groupID": 1,
+            "name": "",
+            "task": [
+                {
+                    "taskID": 1,
+                    "taskName": "start",
+                    "description": "",
+                    "type": "fix object",
+                    "elements": [
+                        {
+                            "elementName": "",
+                            "roiImg": "data/KPIM/_start_1.jpg",
+                            "ROI": {
+                                "x": 1168,
+                                "y": 14,
+                                "w": 74,
+                                "h": 76
+                            },
+                            "algorithm": "ColorMatch",
+                            "minScale": 1.0,
+                            "maxScale": 1.0,
+                            "scaleLevel": 1,
+                            "maxBBoxNum": 100,
+                            "templates": [
+                                {
+                                    "templateID": "12",
+                                    "templateName": "",
+                                    "path": "data/KPIM/_start_2.jpg",
+                                    "name": "",
+                                    "location": {
+                                        "x": 1180,
+                                        "y": 28,
+                                        "w": 52,
+                                        "h": 49
+                                    },
+                                    "threshold": 0.8,
+                                    "classID": 0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "taskID": 2,
+                    "taskName": "over",
+                    "description": "",
+                    "type": "fix object",
+                    "elements": [
+                        {
+                            "elementName": "",
+                            "roiImg": "data/KPIM/_over_1.jpg",
+                            "ROI": {
+                                "x": 330,
+                                "y": 476,
+                                "w": 169,
+                                "h": 65
+                            },
+                            "algorithm": "ColorMatch",
+                            "minScale": 1.0,
+                            "maxScale": 1.0,
+                            "scaleLevel": 1,
+                            "maxBBoxNum": 100,
+                            "templates": [
+                                {
+                                    "templateID": "12",
+                                    "templateName": "",
+                                    "path": "data/KPIM/_over_2.jpg",
+                                    "name": "",
+                                    "location": {
+                                        "x": 345,
+                                        "y": 489,
+                                        "w": 142,
+                                        "h": 40
+                                    },
+                                    "threshold": 0.8,
+                                    "classID": 0
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

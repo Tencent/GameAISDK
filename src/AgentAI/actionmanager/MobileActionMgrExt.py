@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Tencent is pleased to support the open source community by making GameAISDK available.
+
 This source code file is licensed under the GNU General Public License Version 3.
 For full details, please refer to the file "LICENSE.txt" which is provided as part of this source code package.
+
 Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
 """
 
@@ -15,10 +18,12 @@ ACTION_ID_RESET = 0
 ACTION_ID_DOWN = 1
 ACTION_ID_UP = 2
 ACTION_ID_MOVE = 3
-ACTION_ID_CLICK = 4
-ACTION_ID_SWIPE = 5
+ACTION_ID_CLICK = 4  # pyIOService.msghandler.MsgHandler.py(_CreateUIActionList)定义的ACTION_ID_CLICK为4
+ACTION_ID_SWIPE = 5  # pyIOService.msghandler.MsgHandler.py(_CreateUIActionList)定义的ACTION_ID_SWIPE为5
 ACTION_ID_SWIPEDOWN = 6
 ACTION_ID_SWIPEMOVE = 7
+ACTION_ID_INPUT_TEXT = 8
+ACTION_ID_INPUT_KEY = 9
 
 LOG = logging.getLogger('agent')
 
@@ -58,7 +63,7 @@ class MobileActionMgrExt(object):
         """
         actionData = dict()
         actionData['img_id'] = frameSeq
-        LOG.debug('send frame data, frameIndex={0} Reset'.format(frameSeq))
+        LOG.debug('send frame data, frameIndex= %d Reset', frameSeq)
         ret = self.__actionMgr.SendAction(actionID=ACTION_ID_RESET, actionData=actionData,
                                           frameSeq=frameSeq)
         if ret:
@@ -89,11 +94,9 @@ class MobileActionMgrExt(object):
         :param waitTime: wait how long(ms) until next action
         :return:
         """
-        LOG.debug('MovingInit c({0}, {1}) r={2} contact={3} Wait {4}ms'.format(centerX,
-                                                                               centerY,
-                                                                               radius,
-                                                                               contact,
-                                                                               waitTime))
+        LOG.debug('MovingInit c({%s}, {%s}) r={%s} contact={%d} Wait {%d}ms',
+                  str(centerX), str(centerY), str(radius),contact, waitTime)
+
         ret = self.Down(centerX, centerY, contact=contact, frameSeq=frameSeq, waitTime=waitTime)
         if ret:
             self.__movingRadius = radius
@@ -127,7 +130,7 @@ class MobileActionMgrExt(object):
         :param durationMS: the duration time(ms) in this process
         :return:
         """
-        LOG.debug('Moving {0}'.format(dirAngle))
+        LOG.debug('Moving %s', str(dirAngle))
         if not self.__movingFlag:
             return False
 
@@ -159,8 +162,8 @@ class MobileActionMgrExt(object):
         actionData = self._SinglePointOp(px=px, py=py, contact=contact, wait_time=waitTime)
         actionData['img_id'] = frameSeq
 
-        LOG.debug('send frame data, frameIndex={3} Move ({0}, {1}) contact={2}'
-                  ' Wait {4}ms'.format(px, py, contact, frameSeq, waitTime))
+        LOG.debug('send frame data, frameIndex=%d Move ({%d}, {%d}) contact={%d} Wait {%d}ms',
+                  frameSeq, px, py, contact, waitTime)
 
         ret = self.__actionMgr.SendAction(actionID=ACTION_ID_MOVE, actionData=actionData,
                                           frameSeq=frameSeq)
@@ -168,6 +171,22 @@ class MobileActionMgrExt(object):
             self.__contactPoints[contact] = (px, py)
             return True
         return False
+
+    def SimulatorKeyAction(self, px, py, contact=0, frameSeq=-1, alphabet="", action_type="", action_text=""):
+        """
+
+        :param px:
+        :param py:
+        :param contact:
+        :param frameSeq:
+        :param alphabet:
+        :param action_type:
+        :param action_text:
+        :return:
+        """
+        LOG.debug("simulator key, px:%d, py:%d, contact:%d, frameSeq:%d, alphabet:%s, action_type:%s, action_text:%s",
+                  px, py, contact, frameSeq, alphabet, str(action_type), action_text)
+        return True
 
     def Click(self, px, py, contact=0, frameSeq=-1, durationMS=-1):
         """
@@ -184,16 +203,12 @@ class MobileActionMgrExt(object):
         actionData['img_id'] = frameSeq
 
         if durationMS < 0:
-            LOG.debug('send frame data, frameIndex={3}'
-                      ' Click ({0}, {1}) contact={2}'.format(px, py,
-                                                             contact,
-                                                             frameSeq))
+            LOG.debug('send frame data, frameIndex={%d} Click ({%d}, {%d}) contact={%d}',
+                      frameSeq, px, py, contact)
         else:
-            LOG.debug('send frame data, frameIndex={3}'
-                      ' Click ({0}, {1}) {4}ms contact={2}'.format(px, py,
-                                                                   contact,
-                                                                   frameSeq,
-                                                                   durationMS))
+            LOG.debug('send frame data, frameIndex={%d} Click ({%d}, {%d}) {%d}ms contact={%d}',
+                      frameSeq, px, py, durationMS, contact)
+
         ret = self.__actionMgr.SendAction(actionID=ACTION_ID_CLICK, actionData=actionData,
                                           frameSeq=frameSeq)
         if ret:
@@ -214,8 +229,8 @@ class MobileActionMgrExt(object):
         actionData = self._SinglePointOp(px=px, py=py, contact=contact, wait_time=waitTime)
         actionData['img_id'] = frameSeq
 
-        LOG.debug('send frame data, frameIndex={3} Down ({0}, {1}) contact={2}'
-                  ' Wait {4}ms'.format(px, py, contact, frameSeq, waitTime))
+        LOG.debug('send frame data, frameIndex={%d} Down ({%d}, {%d}) contact={%d} Wait {%d}ms',
+                  frameSeq, px, py, contact, waitTime)
 
         ret = self.__actionMgr.SendAction(actionID=ACTION_ID_DOWN, actionData=actionData,
                                           frameSeq=frameSeq)
@@ -235,8 +250,8 @@ class MobileActionMgrExt(object):
         actionData = self._SinglePointOp(px=0, py=0, contact=contact, wait_time=waitTime)
         actionData['img_id'] = frameSeq
 
-        LOG.debug('send frame data, frameIndex={1} Up contact={0}'
-                  ' Wait {2}ms'.format(contact, frameSeq, waitTime))
+        LOG.debug('send frame data, frameIndex={%d} Up contact={%d} Wait {%d}ms',
+                  frameSeq, contact, waitTime)
 
         ret = self.__actionMgr.SendAction(actionID=ACTION_ID_UP, actionData=actionData,
                                           frameSeq=frameSeq)
@@ -266,11 +281,8 @@ class MobileActionMgrExt(object):
                                              during_time=durationMS)
             actionData['img_id'] = frameSeq
 
-            LOG.debug('send frame data, frameIndex={5}'
-                      ' Swipe({0}, {1})->({2}, {3}) contact={4}'.format(sx, sy,
-                                                                        ex, ey,
-                                                                        contact,
-                                                                        frameSeq))
+            LOG.debug('send frame data, frameIndex={%d} Swipe({%d}, {%d})->({%d}, {%d}) contact={%d}',
+                      frameSeq, sx, sy, ex, ey, contact)
 
             ret = self.__actionMgr.SendAction(actionID=ACTION_ID_SWIPE, actionData=actionData,
                                               frameSeq=frameSeq)
@@ -278,25 +290,22 @@ class MobileActionMgrExt(object):
                 self.__contactPoints[contact] = None
                 return True
             return False
-        else:
-            actionData = self._DoublePointOp(start_x=sx, start_y=sy, end_x=ex, end_y=ey,
-                                             contact=contact,
-                                             during_time=durationMS)
-            actionData['img_id'] = frameSeq
 
-            LOG.debug('send frame data, frameIndex={5}'
-                      ' SwipeDown({0}, {1})->({2}, {3}) contact={4}'.format(sx, sy,
-                                                                            ex, ey,
-                                                                            contact,
-                                                                            frameSeq))
+        actionData = self._DoublePointOp(start_x=sx, start_y=sy, end_x=ex, end_y=ey,
+                                         contact=contact,
+                                         during_time=durationMS)
+        actionData['img_id'] = frameSeq
 
-            ret = self.__actionMgr.SendAction(actionID=ACTION_ID_SWIPEDOWN, actionData=actionData,
-                                              frameSeq=frameSeq)
+        LOG.debug('send frame data, frameIndex={%d} SwipeDown({%d}, {%d})->({%d}, {%d}) contact={%d}',
+                  frameSeq, sx, sy, ex, ey, contact)
 
-            if ret:
-                self.__contactPoints[contact] = (ex, ey)
-                return True
-            return False
+        ret = self.__actionMgr.SendAction(actionID=ACTION_ID_SWIPEDOWN, actionData=actionData,
+                                          frameSeq=frameSeq)
+
+        if ret:
+            self.__contactPoints[contact] = (ex, ey)
+            return True
+        return False
 
     def SwipeMove(self, px, py, contact=0, frameSeq=-1, durationMS=50):
         """
@@ -315,10 +324,8 @@ class MobileActionMgrExt(object):
                                              during_time=durationMS)
             actionData['img_id'] = frameSeq
 
-            LOG.debug('send frame data, frameIndex={3}'
-                      ' SwipeMove({0}, {1})) contact={2}'.format(px, py,
-                                                                 contact,
-                                                                 frameSeq))
+            LOG.debug('send frame data, frameIndex={%d} SwipeMove({%d}, {%d})) contact={%d}',
+                      frameSeq, px, py, contact)
 
             ret = self.__actionMgr.SendAction(actionID=ACTION_ID_SWIPEMOVE, actionData=actionData,
                                               frameSeq=frameSeq)
@@ -326,9 +333,27 @@ class MobileActionMgrExt(object):
                 self.__contactPoints[contact] = (px, py)
                 return True
             return False
-        else:
-            LOG.warning('SwipeMove needs previous Points on contact({})'.format(contact))
-            return False
+
+        LOG.warning('SwipeMove needs previous Points on contact(%d)', contact)
+        return False
+
+    def InputText(self, text, frameSeq=-1, waitTime=0):
+        actionData = dict()
+        actionData['img_id'] = frameSeq
+        actionData['text'] = text
+        if waitTime > 0:
+            actionData['wait_time'] = waitTime
+        return self.__actionMgr.SendAction(actionID=ACTION_ID_INPUT_TEXT, actionData=actionData,
+                                           frameSeq=frameSeq)
+
+    def InputKey(self, key, frameSeq=-1, waitTime=0):
+        actionData = dict()
+        actionData['img_id'] = frameSeq
+        actionData['key'] = key
+        if waitTime > 0:
+            actionData['wait_time'] = waitTime
+        return self.__actionMgr.SendAction(actionID=ACTION_ID_INPUT_KEY, actionData=actionData,
+                                           frameSeq=frameSeq)
 
     @staticmethod
     def _SinglePointOp(px, py, contact, during_time=0, wait_time=0):
@@ -340,6 +365,17 @@ class MobileActionMgrExt(object):
             msg_data['during_time'] = during_time
         if wait_time > 0:
             msg_data['wait_time'] = wait_time
+        return msg_data
+
+    @staticmethod
+    def _key_action_op(px, py, contact, alphabet="", action_type="", action_text= ""):
+        msg_data = dict()
+        msg_data['px'] = int(px)
+        msg_data['py'] = int(py)
+        msg_data['contact'] = contact
+        msg_data['alphabet'] = alphabet
+        msg_data['action_type'] = action_type
+        msg_data['action_text'] = action_text
         return msg_data
 
     @staticmethod
