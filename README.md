@@ -67,7 +67,7 @@ mac用户详细内容请参考[mac-docker镜像安装](doc/environment/MacDocker
 
   Windows:
 
-  用户下载源码后，需要安装python的依赖。有部分模块是基于c++语言实现的，所以需要用户下载vs2017,并编译源码，具体请参考 [python的依赖安装](doc/project/AISDKDownloadWin.md)、[安装vs2017并编译源码](doc/project/AISDKCompileWin.md)
+  用户下载源码后，需要安装python的依赖。有部分模块是基于c++语言实现的，所以需要用户下载vs2017,并编译源码，具体请参考 [python的依赖安装](doc/project/AISDKDownload.md)、[安装vs2017并编译源码](doc/project/AISDKCompileWin.md)
 
   
 
@@ -124,7 +124,7 @@ Windows:
 
 - Step1:下载工具包
 
-  下载AISDK，详细内容请参考文档[AISDK工具包下载](doc/project/AISDKDownloadWin.md)。
+  下载AISDK，详细内容请参考文档[AISDK工具包下载](doc/project/AISDKDownload.md)。
 
 - Step2:编译SDK
 
