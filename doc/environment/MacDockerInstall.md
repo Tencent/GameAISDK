@@ -49,7 +49,7 @@
  
      socat启动
 
-     socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"
+     socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\\"$DISPLAY\\"
 
      ![img](../img/Mac/socat.png)
 
