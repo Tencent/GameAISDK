@@ -10,7 +10,7 @@
 	![img](../img/Docker/hyper.png)  
 
 	2. 下载docker安装包  
-	<a href="https://aitest.qq.com-" data-link="/download/index">下载环境包</a>  
+	<a href="https://aitest.qq.com/download/index">下载环境包</a>  
 	解压zip文件  
 	运行install_rely.bat脚本  
 
@@ -23,7 +23,7 @@
 
 	2. aisdk环境镜像获取  
 
-	a)<a href="https://aitest.qq.com-" data-link="/download/index">下载本地docker包tar文件  </a> 镜像名称.tar
+	a)<a href="https://aitest.qq.com/download/index">下载本地docker包tar文件  </a> 镜像名称.tar
 
 	b)docker load –i 镜像名称.tar  
 
