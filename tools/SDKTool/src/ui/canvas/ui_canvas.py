@@ -1529,6 +1529,9 @@ class UICanvas(QWidget):
         self.rect_tree_item.clear()
         self.line_tree_item.clear()
         self.point_tree_item.clear()
+        self.h_shape = None
+        self.h_vertex = None
+        self.shape_tree.clear()
         self.update()
 
     def reset_shapes(self):
